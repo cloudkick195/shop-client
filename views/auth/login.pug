@@ -1,0 +1,190 @@
+extends ../layout.pug
+
+block content
+  .layout-account
+    .container-fluid
+      .row
+        .col-md-6.col-xs-12.wrapbox-heading-account
+          .header-page.clearfix
+            h1 &Dstrok;&abreve;ng nh&#x1EAD;p
+        .col-md-6.col-xs-12.wrapbox-content-account
+          #customer-login
+            #login.userbox
+              .accounttype
+                h2.title
+              .last-login
+                .frame_social
+                  a#btn-google-login.login-google(href="/account/auth/gg")
+                    i.fa.fa-google(style='font-size: 23px;color: #ff0000;float:left' aria-hidden='true')
+                    |  Google +
+                  a#btn-facebook-login.login-facebook(href="/account/auth/fb")
+                    i.fa.fa-facebook-official(style='font-size: 23px;color: #38579b;float:left' aria-hidden='true')
+                    | Facebook
+                p.mg-0.style-bold.text-center
+                  | HO&#x1EB6;C &Dstrok;&Abreve;NG NH&#x1EAC;P V&#x1EDA;I ...
+              if message.success_default
+                p.field-message.field-message-success #{message.success_default}
+              form#customer_login(accept-charset='UTF-8' action='/account/login' method='post')
+                input(name='form_type' type='hidden' value='customer_login')
+                input(name='utf8' type='hidden' value='✓')
+                .clearfix.large_form
+                  label.icon-field(for='email')
+                    i.icon-login.icon-envelope
+                  input#email.text(required='' type='text' value='' name='email' placeholder='Nhập email hoặc số điện thoại')
+                  if message.email
+                    p.field-message.field-message-error #{message.email}
+                .clearfix.large_form
+                  label.icon-field(for='password')
+                    i.icon-login.icon-shield
+                  input#password.text(required='' type='password' value='' name='password' placeholder='Mật khẩu' size='16')
+                  if message.password
+                    p.field-message.field-message-error #{message.password}
+                  if message.error_default
+                    p.field-message.field-message-error !{message.error_default}
+                .clearfix.action_account_custommer
+                  .action_bottom.button.dark
+                    input.btn.btn-signin(type='submit' value='Đăng nhập')
+                  .req_pass
+                    a(href='#' onclick='showRecoverPasswordForm();return false;') Qu&ecirc;n m&#x1EAD;t kh&#x1EA9;u?
+                    br
+                    |                                                    ho&#x1EB7;c 
+                    a.btn.btn-info.btn-lg.btn-modal-css(href="/account/register") &Dstrok;&abreve;ng k&yacute;
+            #recover-password.userbox(style='display:none;')
+              .optionSelected
+                .text-center
+                  .optionCheck
+                    input#emailCheck(type='radio' name='recoverLogin' value='email' checked='')
+                    label(for='emailCheck') Kh&ocirc;i ph&#x1EE5;c b&#x1EB1;ng email
+                .emailCheckShow
+                  form(accept-charset='UTF-8' action='/account/recover' method='post')
+                    input(name='form_type' type='hidden' value='recover_customer_password')
+                    input(name='utf8' type='hidden' value='✓')
+                    .clearfix.large_form
+                      
+                      label.icon-field(for='email')
+                        i.icon-login.icon-envelope
+                      
+                      input#recover-email.text(type='email' value='' size='30' name='email' placeholder='Email')
+                      if message.email
+                        p.field-message.field-message-error #{message.email}
+                      else if message.error_default
+                        p.field-message.field-message-error !{message.error_default}
+                    .clearfix.action_account_custommer
+                      .action_bottom.button.dark
+                        input.btn(type='submit' value='Gửi')
+                      .req_pass
+                        a(href='#' onclick='hideRecoverPasswordForm();return false;') H&#x1EE7;y
+  script.
+    $('.checkRecover').click(function(e){
+    e.prevevntDefault();
+    if($('input#recover-email').val().indexOf('@') == -1){
+    On_PhoneAuthRecaptchaCallback();
+    }
+    else{
+    $('#recover-password form').submit();
+    }
+    })
+    function On_PhoneAuthRecaptchaCallback(token)
+    {
+    debugger
+    var frm = $('#phone_auth_recaptcha');
+    $.ajax({
+    type: "POST",
+    url: '/phone_auth/send_verify_code',
+    data: frm.serialize(),
+    dataType : "json",
+    success: function(data, textStatus, jqXHR)
+    {
+    if(data && data.token)
+    {
+    if($('#session_info').length > 0){
+    $('#session_info').val(data.token);
+    $('#phone_auth_recaptcha').hide();
+    $('.otpcode').show();
+    }
+    }
+    },
+    error: function(jqXHR, textStatus, errorThrown)
+    {
+    }
+    });
+    }
+    $('#otp_submit').click(function(){
+    var otpCode = $(this).closest('.otpcode-form').find('#otp_code').val();
+    if(otpCode == ''){
+    $(this).closest('.otpcode-form').find('.error').html('Quý khách vui lòng nhập chính xác mã OTP được gửi đến số điện thoại của quý khách');
+    }else{
+    $(this).closest('.otpcode-form').submit();
+    }
+    })
+  script(type='text/javascript').
+    function showRecoverPasswordForm() {
+    document.getElementById('recover-password').style.display = 'block';
+    $('.header-page h1').html('Phục hồi mật khẩu');
+    document.getElementById('login').style.display='none';
+    }
+    function hideRecoverPasswordForm() {
+    $('.header-page h1').html('Đăng nhập');
+    document.getElementById('recover-password').style.display = 'none';
+    document.getElementById('login').style.display = 'block';
+    }
+    if (window.location.hash == '#recover') { showRecoverPasswordForm() }
+  style.
+    @media (min-width: 768px){
+    .modal-dialog {
+    width: 300px;
+    margin: -100px auto;
+    }
+    .modal.in .modal-dialog {
+    position: relative;
+    top: -10%;
+    }
+    }
+    .title-login {
+    position: relative;
+    right: 00px;
+    bottom: 30px;
+    font-size: 15px;
+    color: #333;
+    font-weight: bold;
+    }
+    .modal-dialog.modal-dialog .modal-content img {
+    height: 60px;
+    }
+    .modal.in .modal-dialog .modal-body a {
+    display: block;
+    background: #fae332;
+    margin-bottom: 10px;
+    text-align: center;
+    padding: 8px;
+    color: #FFF;
+    }
+    .modal.in .modal-dialog .modal-body a:first-child {
+    background: #fae332 !important;
+    }
+    .optionCheck {
+    float: left;
+    display: inline-block;
+    width: 50% !important;
+    margin: 10px 0px;
+    text-align: left;
+    }
+    .phoneCheckShow {
+    display: none;
+    }
+    .otpcode{
+    display: none;
+    }
+  script.
+    $('.optionCheck input[type=radio]').change(function(e){
+    console.log('change');
+    var valueCheck = $(this).val();
+    if(valueCheck == 'email'){
+    $('.phoneCheckShow').hide();
+    $('.emailCheckShow').show();
+    }
+    else{
+    $('.phoneCheckShow').show();
+    $('.emailCheckShow').hide();
+    }
+    })

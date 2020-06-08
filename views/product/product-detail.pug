@@ -1,0 +1,839 @@
+extends ../layout.pug
+
+block content
+    #product.productDetail-page.productTemplate(data-style='style_01')
+        .container-fluid
+            .row.breadcrumb-shop
+                .col-lg-12.col-md-12.col-sm-12.col-xs-12.pd5
+                    ol.breadcrumb.breadcrumb-arrows
+                        li
+                            a(href='/' target='_self') Trang chủ
+                        li.active
+                            span  #{ product.name }
+            .row.product-detail-wrapper
+                .col-md-12.col-sm-12.col-xs-12
+                    .row.product-detail-main.pr_style_01
+                        .col-md-8.col-sm-12.col-xs-12
+                            .hidden-md.hidden-lg
+                                .product-full-img
+                                    img.product-image-feature(src=product.avatar alt=product.name)
+                                if listSlides && listSlides.length > 0
+                                    #carousel.flexslider
+                                        ul.slides
+                                            each slide, index in listSlides
+                                                li(class={ 'product-thumb': true, 'checked': index == 0 })
+                                                    a(href='#' data-image=slide.image data-zoom-image=slide.image)
+
+                                                        img(src=slide.image data-image=slide.image alt='')
+                            .product-gallery
+                                .product-gallery__thumbs-container.hidden-sm.hidden-xs
+                                    if listSlides && listSlides.length > 0
+                                        .product-gallery__thumbs.thumb-fix
+                                            each slide, index in listSlides
+                                                div(class={ 'product-gallery__thumb': true, 'active': index })
+                                                    a.product-gallery__thumb-placeholder(href='javascript:void(0);' data-image=slide.image data-zoom-image=slide.image)
+                                                        img(alt=product.name src=slide.image data-image=slide.image)
+                                .product-image-detail.box__product-gallery.scroll.hidden-sm.hidden-xs
+                                    if listSlides && listSlides.length > 0
+                                        ul#sliderproduct.site-box-content.slide_product
+                                            each slide, index in listSlides
+                                                li.product-gallery-item.gallery-item
+                                                    img.product-image-feature(src=slide.image alt=product.name)
+                                    .product-image__button
+                                        #product-zoom-in.product-zoom.icon-pr-fix(aria-label='Zoom in' title='Zoom in')
+                                            span.zoom-in(aria-hidden='true')
+                                                svg(version='1.1' xmlns='http://www.w3.org/2000/svg', xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewbox='0 0 36 36' style='enable-background:new 0 0 36 36; width: 30px; height: 30px;', xml:space='preserve')
+                                                    polyline(points='6,14 9,11 14,16 16,14 11,9 14,6 6,6 ')
+                                                    polyline(points='22,6 25,9 20,14 22,16 27,11 30,14 30,6 ')
+                                                    polyline(points='30,22 27,25 22,20 20,22 25,27 22,30 30,30 ')
+                                                    polyline(points='14,30 11,27 16,22 14,20 9,25 6,22 6,30 ')
+                        #detail-product.col-md-4.col-sm-12.col-xs-12.product-content-desc
+                            .product-title
+                                h1 #{ product.name }
+                                span#pro_sku
+                                    strong SKU: 
+                                    span.sku-number #{ product.sku }
+                            #price-preview.product-price.pdPrice
+                                span.pro-price #{ product.price }
+                                if product.price != product.old_price
+                                    span.pro-price-del
+                                        del.compare-price #{ product.old_price }
+                            form#add-item-form.variants.clearfix(action='/cart/add' method='post')
+                                if combinationAttribute && combinationAttribute.length > 0
+                                    .product-swatch-content.clearfix
+                                        .select-swatch.clearfix
+                                            each attribute, index in combinationAttribute
+                                                #variant-swatch-0.swatch.clearfix.color.swFirst(data-option="option"+(index+1) data-option-index=index)
+                                                    .header #{ attribute.attribute_name }
+                                                    .select-swap
+                                                        if attribute.child && attribute.child.length > 0
+                                                            each entity, index in attribute.child
+                                                                .swatch-element.color.den-icdn(class=`variant-${attribute.attribute_id} swatch-${entity.entity_id}` data-variant=`variant-${attribute.attribute_id}` data-id=`${entity.entity_id}`)
+                                                                    input(class=`variant-${attribute.attribute_id}` id=`swatch-${entity.entity_id}` type="radio" name=`option${attribute.attribute_id}` value=`${entity.entity_id}`)
+                                                                    label(class={ 'lbSwatch den-icdn': true, 'has-thumb': entity.avatar } for='swatch-0-den-icdn' style=`background: url(${ entity.avatar }) center left no-repeat`)
+                                                                        if entity.avatar
+                                                                            span #{ entity.entity_name }
+                                                                        else
+                                                                            p.text-entity-name #{ entity.entity_name }
+                                                                        img.crossed-out(alt='sold-out' src='//theme.hstatic.net/1000253775/1000529442/14/soldout.png?v=120')
+                                                                        img.img-check(alt='select-pro' src='//theme.hstatic.net/1000253775/1000529442/14/select-pro.png?v=120')
+                                        .hdchonsize.clearfix
+                                            svg.ruler-icon.base(aria-hidden='true')
+                                                use(xlink:href='#ruler-icon')
+                                                    svg#ruler-icon(viewbox='0 0 17 8' width='100%' height='100%')
+                                                        path(fill='#FFF' d='M1 5h15v2H1z')
+                                                        path(d='M17 4H0v4h17V4')
+                                                        path(fill='#FFF' d='M.5 2.5h4v1h-4z')
+                                                        path(d='M5 2H0v2h5V2')
+                                                        path(fill='#FFF' d='M12.5 2.5h4v1h-4z')
+                                                        path(d='M17 2h-5v2h5V2')
+                                                        path(fill='#FFF' d='M6.5 2.5h4v1h-4z')
+                                                        path(d='M11 2H6v2h5V2')
+                                                        path(fill='#FFF' d='M15.5.5h1v1h-1z')
+                                                        path(d='M17 0h-2v2h2V0')
+                                                        path(fill='#FFF' d='M12.5.5h1v1h-1z')
+                                                        path(d='M14 0h-2v2h2V0')
+                                                        path(fill='#FFF' d='M9.5.5h1v1h-1z')
+                                                        path(d='M11 0H9v2h2V0')
+                                                        path(fill='#FFF' d='M6.5.5h1v1h-1z')
+                                                        path(d='M8 0H6v2h2V0')
+                                                        g
+                                                            path(fill='#FFF' d='M3.5.5h1v1h-1z')
+                                                            path(d='M5 0H3v2h2V0')
+                                                        g
+                                                            path(fill='#FFF' d='M.5.5h1v1h-1z')
+                                                            path(d='M2 0H0v2h2V0')
+                                                    use(xlink:href='#ruler-icon')
+                                            a(href='#sizeModal' data-toggle='modal') Hướng dẫn chọn size
+                                input.inputAddCart(type='hidden' value=`${ product.id }`)
+                                .selector-actions
+                                    .quantity-area.clearfix
+                                        input.qty-btn.minus(type='button' value='-')
+                                        input#quantity.quantity-selector(type='text' name='quantity' value='1' min='1')
+                                        input.qty-btn.plus(type='button' value='+')
+                                    .wrap-addcart.clearfix
+                                        button#add-to-cart.btnAddToCart.add-to-cartProduct.button.dark.btn-addtocart.addtocart-modal(type='button' name='add')
+                                            | Đặt hàng
+                                        button#buy-now.active.add-to-cartProduct.button.dark.btn-addtocart(type='button')
+                                            img.availableIcon(src='//theme.hstatic.net/1000253775/1000529442/14/store.svg?v=120' alt='Available Store')
+                                            span Xem cửa hàng
+                                .product-action-bottom.visible-xs
+                                    .input-bottom
+                                        input#quan-input(type='number' value='1' min='1')
+                                    button#add-to-cartbottom.add-to-cartProduct.add-cart-bottom.button.dark.addtocart-modal(type='button' name='add')
+                                        | Đặt hàng
+                            .product-description
+                                .title-bl
+                                    h2 Mô tả
+                                .description-content
+                                    .description-productdetail
+                                        | #{product.description}
+                    .info-des-product
+                        .policy.clearfix
+                            .col-md-4.col-sm-4.col-xs-12
+                                .policy-item
+                                    h4
+                                        | CHÍNH SÁCH GIAO NHẬN - ĐỔI TRẢ HÀNG
+                                        span.icon-open.visible-xs
+                                    .content
+                                        | - Free ship cho đơn hàng trên 500,000đ. 
+                                        br
+                                        |                                         - Mức phí: 20,000đ cho đơn hàng dưới 500,000đ
+                                        br
+                                        |                                         - Được kiểm tra hàng trước khi nhận hàng
+                                        br
+                                        |                                         - Đổi / Trả trong vòng 7 ngày kể từ khi nhận hàng
+                                        br
+                                        |                                         - Không áp dụng đổi/trả sản phẩm trong CTKM
+                                        br
+                                        |                                         - Miễn phí đổi trả nếu lỗi sai sót từ phía 160store.com
+                                        br
+                                        |                                         - Địa chỉ gửi đổi hàng online:
+                                        br
+                                        | 55/32 Lê Ngã, P.Phú Trung, Q.Tân Phú, TP.Hồ Chí Minh
+                                        br
+                            .col-md-4.col-sm-4.col-xs-12
+                                .policy-item
+                                    h4
+                                        | ƯU ĐÃI MEMBER 
+                                        span.icon-open.visible-xs
+                                    .content
+                                        | - Thành viên Silver được giảm 5% khi tích đủ 4 triệu
+                                        br
+                                        |                                         - Thành viên VIP 1 được giảm 10% khi tích đủ 12 triệu
+                                        br
+                                        |                                         - Thành viên VIP 2 được giảm 15% khi tích đủ 30 triệu
+                                        br
+                            .col-md-4.col-sm-4.col-xs-12
+                                .policy-item
+                                    h4
+                                        | ĐỊA CHỈ CỬA HÀNG
+                                        span.icon-open.visible-xs
+                                    .content
+                                        | ■ Hà Nội: số 2 ngõ 232 Tôn Đức Thắng, P.Hàng Bột, Q.Đống Đa, Hà Nội - 096.8722.160
+                                        br
+                                        br
+                                        |                                         ■ Đà Nẵng: 144 Lý Tự Trọng, P.Thuận Phước, Q.Hải Châu, TP.Đà Nẵng
+                                        br
+                                        br
+                                        |                                         ■ TP.Hồ Chí Minh:
+                                        br
+                                        |                                         - 391/375 Trần Hưng Đạo, P.Cầu Kho, Q.1 - 0942.863.160
+                                        br
+                                        |                                         - 111 Khuông Việt, P.Phú Trung, Q.Tân Phú - 0966.422.160
+                                        br
+                                        |                                         - 297/3 Tô Hiến Thành, P.13, Q.10 - 093.8309.160
+                                        br
+                                        |                                         - 401 Phan Xích Long, P.3, Q.Phú Nhuận - 096.1787.160
+                                        br
+                                        |                                         - 94 Lê Văn Thọ, Q.Gò Vấp (gần chợ Hạnh Thông Tây)
+                                        br
+                                        br
+                                        |                                         ■ Biên Hòa: 157 Phan Trung (đường 5 cũ), P.Tân Mai, TP.Biên Hòa. 
+                                        br
+                                        br
+                                        |                                         ■ Cần Thơ: 35 Trần Phú, Q.Ninh Kiều, TP.Cần Thơ. (gần Vincom Hùng Vương)
+                                        br
+                                        br
+                                        |                                         Hotline: 028.7100.6789
+                    .info-bellow-product.box-icon.col-md-12.col-xs-12
+                        .col-md-4.col-sm-4.col-xs-12
+                            .banner-footer-item
+                                img(src='//theme.hstatic.net/1000253775/1000529442/14/info_img_1.png?v=120')
+                                .banner-footer-item-info
+                                    p.banner-footer-item-title FREE SHIP ĐƠN HÀNG TỪ 500.000Đ
+                                    p.banner-footer-item-des
+                        .col-md-4.col-sm-4.col-xs-12
+                            .banner-footer-item
+                                img(src='//theme.hstatic.net/1000253775/1000529442/14/info_img_2.png?v=120')
+                                .banner-footer-item-info
+                                    p.banner-footer-item-title ĐỔI TRẢ TRONG VÒNG 7 NGÀY
+                                    p.banner-footer-item-des
+                        .col-md-4.col-sm-4.col-xs-12
+                            .banner-footer-item
+                                img(src='//theme.hstatic.net/1000253775/1000529442/14/info_img_3.png?v=120')
+                                .banner-footer-item-info
+                                    p.banner-footer-item-title THANH TOÁN KHI NHẬN HÀNG
+                                    p.banner-footer-item-des
+                    .list-productRelated.clearfix
+                        if relatedProducts && relatedProducts.length > 0
+                            .heading-title.text-center
+                                h2 Bạn có thể thích
+                            .content-product-list.row
+                                each product, index in relatedProducts
+                                    .col-md-3.col-sm-6.col-xs-6.pro-loop
+                                        .product-block.product-resize.site-animation(data-anmation=index + 1)
+                                            .product-img
+                                                a.image-resize(href=product.slug title=product.name)
+                                                    picture
+                                                        source(media='(max-width: 767px)' srcset=product.avatar)
+                                                        source(media='(min-width: 768px)' srcset=product.avatar)
+                                                        img.img-loop(alt=product.name src=product.avatar)
+                                                    picture
+                                                        source(media='(max-width: 767px)' srcset=product.avatar)
+                                                        source(media='(min-width: 768px)' srcset=product.avatar)
+                                                        img.img-loop.img-hover(alt=product.name src=product.avatar)
+                                                .button-add.hidden
+                                                    button.action(type='submit' title='Mua ngay' onclick="buy_now(1)")
+                                                        | Mua ngay
+                                                        i.fa.fa-long-arrow-right
+                                            .product-detail.clearfix
+                                                .box-pro-detail
+                                                    h3.pro-name
+                                                        a(href=product.slug title=product.name)
+                                                            | #{ product.name }
+                                                    .box-pro-prices
+                                                        p.pro-price
+                                                            span.giaban #{ product.price }₫
+
+    #divzoom
+        if listSlides && listSlides.length > 0
+            .divzoom_main
+                each slide, index in listSlides
+                    .product-thumb.text-center
+                        img.product-image-feature(src=slide.image alt=product.name)
+            #positionButtonDiv.hidden
+                p
+                    span
+                        button.buttonZoomIn(type='button')
+                            i
+                        button.buttonZoomOut(type='button')
+                            i
+            button#closedivZoom
+                i
+    
+    script.
+        var entityAttribute = '!{entityAttribute}';
+        entityAttribute = JSON.parse(entityAttribute);
+
+        var productJson = {
+            "available":true,
+            "compare_at_price_max":0.0,
+            "compare_at_price_min":0.0,
+            "compare_at_price_varies":false,
+            "compare_at_price":0.0,
+            "content":null,
+            "description":"<p><span>Quá xịn sò ae ơi&nbsp;Từ thiết kế cho đến công nghệ in ko thể chê vào đâu được.<br>Hàng chính hãng, date 2020. Chất liệu cotton 100%</span></p><p><span>Size S(53-60kg)/ M(60-68kg)/ L(68-78kg)/ XL(78-85kg)</span></p>",
+            "featured_image":"https://product.hstatic.net/1000253775/product/a358b001935f6b01324e_1f689d0737a740c495becb19f42a186a.jpg",
+            "handle":"ao-thun-icon-denim-logo-icdn",
+            "id":1022723004,
+            "images":[
+                "https://product.hstatic.net/1000253775/product/a358b001935f6b01324e_1f689d0737a740c495becb19f42a186a.jpg",
+                "https://product.hstatic.net/1000253775/product/7ae162b841e6b9b8e0f7_bd49785ee5da4ef28fd5430bcaa32a0a.jpg",
+                "https://product.hstatic.net/1000253775/product/2a18149237cccf9296dd_d557eeca91c546b78da87059cba09804.jpg",
+                "https://product.hstatic.net/1000253775/product/86c628e20bbcf3e2aaad_7bd51e93bc4e46179184124a5fc11ab8.jpg",
+                "https://product.hstatic.net/1000253775/product/d891908eb3d04b8e12c1_0dabaa663a5944f49cb4047184220961.jpg",
+                "https://product.hstatic.net/1000253775/product/e83a2010034efb10a25f_04aca01b753d4f6aa221635e50f1e64a.jpg",
+                "https://product.hstatic.net/1000253775/product/ef05ce1eed40151e4c51_ab4b1866a46a485c81a0e1a3dac63da0.jpg",
+                "https://product.hstatic.net/1000253775/product/54159a9ab9c4419a18d5_ca78ae4081d241559d2371a66baf4957.jpg",
+                "https://product.hstatic.net/1000253775/product/b89482bea1e059be00f1_0d4543cb68d4444498dd387ea3717759.jpg"],
+            "options":["Màu sắc","SIZE"],
+            "price":27000000.0,
+            "price_max":27000000.0,
+            "price_min":27000000.0,
+            "price_varies":false,
+            "tags":["SPM (-50)","sale20","T1-2020"],
+            "template_suffix":null,
+            "title":"Áo thun ICON DENIM logo ICDN",
+            "type":"FORADV",
+            "url":"/products/ao-thun-icon-denim-logo-icdn",
+            "pagetitle":"Áo thun ICON DENIM logo ICDN",
+            "metadescription":"Size S(53-60kg)/ M(60-68kg)/ L(68-78kg)/ XL(78-85kg)",
+            "variants":[
+                {"id":1050675650,
+                "barcode":"0401600107401",
+                "available":true,
+                "price":27000000.0,
+                "sku":"ATID9022-01",
+                "option1":"Đen ICDN",
+                "option2":"S",
+                "option3":"",
+                "options":["Đen ICDN","S"],
+                "inventory_quantity":24,"old_inventory_quantity":24,"title":"Đen ICDN / S","weight":0.0,"compare_at_price":0.0,"inventory_management":"Nhathoang","inventory_policy":"deny","selected":false,"url":null,"featured_image":{"id":1134178648,"created_at":"0001-01-01T00:00:00","position":6,"product_id":1022723004,"updated_at":"0001-01-01T00:00:00","src":"https://product.hstatic.net/1000253775/product/e83a2010034efb10a25f_04aca01b753d4f6aa221635e50f1e64a.jpg","variant_ids":[1050675650,1050675651,1050675652,1050675653]}},{"id":1050675651,"barcode":"0401600107402","available":true,"price":27000000.0,"sku":"ATID9022-02","option1":"Đen ICDN","option2":"M","option3":"","options":["Đen ICDN","M"],"inventory_quantity":19,"old_inventory_quantity":19,"title":"Đen ICDN / M","weight":0.0,"compare_at_price":0.0,"inventory_management":"Nhathoang","inventory_policy":"deny","selected":false,"url":null,"featured_image":{"id":1134178648,"created_at":"0001-01-01T00:00:00","position":6,"product_id":1022723004,"updated_at":"0001-01-01T00:00:00",
+                "src":"https://product.hstatic.net/1000253775/product/e83a2010034efb10a25f_04aca01b753d4f6aa221635e50f1e64a.jpg","variant_ids":[1050675650,1050675651,1050675652,1050675653]}},{"id":1050675652,"barcode":"0401600107403","available":true,"price":27000000.0,"sku":"ATID9022-03","option1":"Đen ICDN","option2":"L","option3":"","options":["Đen ICDN","L"],"inventory_quantity":18,"old_inventory_quantity":18,"title":"Đen ICDN / L","weight":0.0,"compare_at_price":0.0,"inventory_management":"Nhathoang","inventory_policy":"deny","selected":false,"url":null,"featured_image":{"id":1134178648,"created_at":"0001-01-01T00:00:00","position":6,"product_id":1022723004,"updated_at":"0001-01-01T00:00:00","src":"https://product.hstatic.net/1000253775/product/e83a2010034efb10a25f_04aca01b753d4f6aa221635e50f1e64a.jpg","variant_ids":[1050675650,1050675651,1050675652,1050675653]}},{"id":1050675653,"barcode":"0401600107404","available":true,"price":27000000.0,"sku":"ATID9022-04","option1":"Đen ICDN","option2":"XL","option3":"","options":["Đen ICDN","XL"],"inventory_quantity":7,"old_inventory_quantity":7,"title":"Đen ICDN / XL","weight":0.0,"compare_at_price":0.0,"inventory_management":"Nhathoang","inventory_policy":"deny","selected":false,"url":null,"featured_image":{"id":1134178648,"created_at":"0001-01-01T00:00:00","position":6,"product_id":1022723004,"updated_at":"0001-01-01T00:00:00","src":"https://product.hstatic.net/1000253775/product/e83a2010034efb10a25f_04aca01b753d4f6aa221635e50f1e64a.jpg","variant_ids":[1050675650,1050675651,1050675652,1050675653]}},{"id":1050675654,"barcode":"0401600107405","available":true,"price":27000000.0,"sku":"ATID9022-05","option1":"Trắng ICDN","option2":"S","option3":"","options":["Trắng ICDN","S"],"inventory_quantity":27,"old_inventory_quantity":27,"title":"Trắng ICDN / S","weight":0.0,"compare_at_price":0.0,"inventory_management":"Nhathoang","inventory_policy":"deny","selected":false,"url":null,"featured_image":{"id":1134178649,"created_at":"0001-01-01T00:00:00","position":7,"product_id":1022723004,"updated_at":"0001-01-01T00:00:00","src":"https://product.hstatic.net/1000253775/product/ef05ce1eed40151e4c51_ab4b1866a46a485c81a0e1a3dac63da0.jpg","variant_ids":[1050675654,1050675655,1050675656,1050675657]}},{"id":1050675655,"barcode":"0401600107406","available":true,"price":27000000.0,"sku":"ATID9022-06","option1":"Trắng ICDN","option2":"M","option3":"","options":["Trắng ICDN","M"],"inventory_quantity":27,"old_inventory_quantity":27,"title":"Trắng ICDN / M","weight":0.0,"compare_at_price":0.0,"inventory_management":"Nhathoang","inventory_policy":"deny","selected":false,"url":null,"featured_image":{"id":1134178649,"created_at":"0001-01-01T00:00:00","position":7,"product_id":1022723004,"updated_at":"0001-01-01T00:00:00","src":"https://product.hstatic.net/1000253775/product/ef05ce1eed40151e4c51_ab4b1866a46a485c81a0e1a3dac63da0.jpg","variant_ids":[1050675654,1050675655,1050675656,1050675657]}},{"id":1050675656,"barcode":"0401600107407","available":true,"price":27000000.0,"sku":"ATID9022-07","option1":"Trắng ICDN","option2":"L","option3":"","options":["Trắng ICDN","L"],"inventory_quantity":34,"old_inventory_quantity":34,"title":"Trắng ICDN / L","weight":0.0,"compare_at_price":0.0,"inventory_management":"Nhathoang","inventory_policy":"deny","selected":false,"url":null,"featured_image":{"id":1134178649,"created_at":"0001-01-01T00:00:00","position":7,"product_id":1022723004,"updated_at":"0001-01-01T00:00:00","src":"https://product.hstatic.net/1000253775/product/ef05ce1eed40151e4c51_ab4b1866a46a485c81a0e1a3dac63da0.jpg","variant_ids":[1050675654,1050675655,1050675656,1050675657]}},{"id":1050675657,"barcode":"0401600107408","available":true,"price":27000000.0,"sku":"ATID9022-08","option1":"Trắng ICDN","option2":"XL","option3":"","options":["Trắng ICDN","XL"],"inventory_quantity":17,"old_inventory_quantity":17,"title":"Trắng ICDN / XL","weight":0.0,"compare_at_price":0.0,"inventory_management":"Nhathoang","inventory_policy":"deny","selected":false,"url":null,"featured_image":{"id":1134178649,"created_at":"0001-01-01T00:00:00","position":7,"product_id":1022723004,"updated_at":"0001-01-01T00:00:00","src":"https://product.hstatic.net/1000253775/product/ef05ce1eed40151e4c51_ab4b1866a46a485c81a0e1a3dac63da0.jpg","variant_ids":[1050675654,1050675655,1050675656,1050675657]}}],"vendor":"Khác","published_at":"2020-01-11T06:36:32.804Z","created_at":"2020-01-07T04:55:48.754Z","not_allow_promotion":false};
+        $(document).ready(function(){
+            function generateSizes(color) {
+                console.log(33);
+                var $pick_size = $('#pick-size');
+                $pick_size.html('');
+                for(var k = 0; k < productJson.variants.length; k++){
+                    if(productJson.variants[k].option1 == color && productJson.variants[k].available == true){
+                        $pick_size.append('<option value="' + productJson.variants[k].id + '">' + productJson.variants[k].option2 + '</option>')
+                    }
+                }
+                return $pick_size.val();
+            }
+            //https://stackoverflow.com/questions/1181575/determine-whether-an-array-contains-a-value
+            var containsArray = function(needle) {
+                // Per spec, the way to identify NaN is that it is not equal to itself
+                var findNaN = needle !== needle;
+                var indexOf;
+                if(!findNaN && typeof Array.prototype.indexOf === 'function') {
+                    indexOf = Array.prototype.indexOf;
+                } else {
+                    indexOf = function(needle) {
+                        var i = -1, index = -1;
+                        for(i = 0; i < this.length; i++) {
+                            var item = this[i];
+                            if((findNaN && item !== item) || item === needle) {
+                                index = i;
+                                break;
+                            }
+                        }
+                        return index;
+                    };
+                }
+                return indexOf.call(this, needle) > -1;
+            };
+            function generateCities(id) {
+                $('#pick-city').html('');
+                var tinhthanh = [];
+                var arrLocation = SW.buildEvents.settings.arrLocation;
+                $.getJSON('/inventory_location.js?variant_id=' + id + "&quantity=1", function (stock, textStatus) {
+                if(!stock.error){
+                    var $address = $('#stock-box');
+                    $address.html('');
+                    $.each(stock.inventory_locations,function(index,stockItem){
+                        if(containsArray.call(arrLocation, String(stockItem.location_id)) == true){
+                            var item_html = '';
+                            item_html += '<div class="stock">';
+                            item_html += '<span class="dist"><img src="//theme.hstatic.net/1000253775/1000529442/14/maps-and-flags.png?v=120" alt="icon store" />' + stockItem.province_name + ': </span>';
+                            item_html += '<span class="street">' + stockItem.location_address + '</span>';
+                            item_html += '<span class="timeStore">Mở cửa: 9 giờ 00 - 22 giờ (Các ngày trong tuần)</span>';
+                            $('#stock-box').append(item_html);
+                        }
+                    });
+                    setTimeout(function(){
+                        var size = $('#stock-box .stock').length;
+                        if(size > 0){
+                            $(".numberStore").html(size+" cửa hàng còn sản phẩm này");
+                        }else{$(".numberStore").html("Hết hàng");}
+                    },200);
+                }
+                else{
+                var $address = $('#stock-box');
+                $address.html('');
+                    $(".numberStore").html("Sản phẩm này đã hết hàng !!!");
+                }
+                });
+            }
+            function getVariants() {
+                var count_size = 0,
+                array_size = '',
+                bool_size = false,
+                array_color = '',
+                bool_color = false,
+                html_variant = '',
+                html = '';
+                for(var k = 0; k < productJson.variants.length; k++){
+                    var array_sizes = array_size.split('-');
+                    for(var c = 0; c < array_sizes.length - 1; c++){
+                        if(array_sizes[c] == productJson.variants[k].option2){
+                        bool_size = true;
+                        break;
+                        }
+                    }
+                    var array_colors = array_color.split('-');
+                    for(var c = 0; c < array_colors.length - 1; c++){
+                        if(array_colors[c] == productJson.variants[k].option1){
+                        bool_color = true;
+                        break;
+                        }
+                    }
+                    if(bool_size == false && productJson.variants[k].option2 != ''){
+                        $('#pick-size').append('<option value="'+productJson.variants[k].id+'">'+productJson.variants[k].option2+'</option>');
+                        count_size++;
+                    }
+                    if(bool_color == false){
+                        if(count_size > 0){
+                            $('#pick-color').append('<option value="'+productJson.variants[k].option1+'">'+productJson.variants[k].option1+'</option>');
+                        }else{
+                            $('#pick-color').append('<option value="'+productJson.variants[k].id+'">'+productJson.variants[k].option1+'</option>');
+                        }
+                    }
+                    if(productJson.variants[k].option1 != ''){
+                        bool_color = false;
+                        array_color = array_color + productJson.variants[k].option1 + '-';
+                    }
+                    if(productJson.variants[k].option2 != ''){
+                        bool_size = false;
+                        array_size = array_size + productJson.variants[k].option2 + '-';
+                    }
+                    if(count_size == 0){$('.form-size').hide();}
+                }
+            }
+            function slug(str) {
+                if (str) {
+                    str = str.toLowerCase();
+                    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+                    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+                    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+                    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+                    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+                    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+                    str = str.replace(/đ/g, "d");
+                    str = str.replace(/!|@|%|\\^|\*|\(|\)|\+|\=|\<|\>|\?|\/|,|\.|\:|\;|\'| |\"|\&|\#|\[|\]|~|$|_/g, "-");
+                    str = str.replace(/-+-/g, "-");
+                    str = str.replace(/^\\-+|\-+$/g, "");
+                    return str;
+                }
+            }
+            function getJson(variant_id){
+                var arrLocations = SW.buildEvents.settings.arrLocation;
+                $.getJSON('/inventory_location.js?variant_id='+variant_id+'&quantity=1', function (stock, textStatus) {
+                var numStore = 0;
+                $.each(stock.inventory_locations,function(index,stockItem){
+                if(containsArray.call(arrLocations, String(stockItem.location_id)) == true){
+                numStore++;
+                }
+                });
+                if (numStore == 0){
+                    $("#buy-now span").html("Không còn hàng");
+                    $("#buy-now").attr('disabled',"disabled");
+                }else{
+                    $("#buy-now").removeAttr('disabled');
+                    $("#buy-now span").html("Có tại <b>"+numStore+"</b> cửa hàng!");
+                }
+                });
+            }
+            var variant_id = $('#product-select').val();
+            $('#product-select').change(function(){
+                getJson($(this).val());
+            });
+            $('#pick-color').change(function (even) {
+            if($('#pick-size').children('option').length > 0){
+                generateCities(generateSizes($(this).val()));
+            }else{
+                generateCities(generateSizes($(this).find('option:selected').text()));
+            }
+            });
+            $('#pick-size').change(function (even) {
+                generateCities($(this).val());
+            });
+            $('#buy-now').click(function (e){
+            var variant_id_selected = $('#product-select').val();
+            var coloroption = $('#product-select option:selected').data('color');
+            $('#pick-size').html('');$('#pick-color').html('');
+            getVariants();debugger;
+            if(coloroption == undefined){
+                $('#pick-color').val(variant_id_selected);
+                generateCities($('#pick-color').val());
+            }else{
+                $('#pick-color').val(coloroption);
+                generateSizes(coloroption);
+                $('#pick-size').val(variant_id_selected);
+                    generateCities($('#pick-size').val());
+            }
+            $('#showStore').modal('show');
+                jQuery('.modal-backdrop').css({'height':jQuery(document).height(),'z-index':'99'});
+            });
+            $('.carousel-nav').flickity({
+                asNavFor: '#sliderproduct',
+                contain: true,
+                pageDots: false
+            });
+            /*$('#buy-now').click(function(e){
+            e.preventDefault();
+            Nhathoang.addItem($('.inputAddCart').val(), parseInt($('#quantity').val()), function(){
+            window.location = '/checkout';
+            })
+            });*/
+            $('#add-to-cart').click(function(e){
+                e.preventDefault();
+                let combinationId = '';
+                $(this).addClass('clicked_buy');
+
+                $('.swatch .select-swap').each(function(i){
+                    if(!$(this).find('.swatch-element input[type="radio"]:checked') || $(this).find('.swatch-element input[type="radio"]:checked').length < 1){
+                        combinationId = 'err';
+                        hasCheckedOpion = false;
+                        return false;
+                    }
+                    combinationId = combinationId + '_' + $(this).find('.swatch-element input[type="radio"]:checked').val( );
+                });
+
+                //if no attribute
+                if(!combinationId){
+                    add_item_show_modalCart($('.inputAddCart').val(), null);
+                    $('#quantity').val(1);
+                }else{
+                   
+                    if(!entityAttribute[combinationId]){
+                        $('#contentModal').modal('show');
+                        
+                        //$('#contentModal .modal-body p').text('Sản phẩm này hết hàng')
+                        return;
+                    }
+                    add_item_show_modalCart($('.inputAddCart').val(), entityAttribute[combinationId].combination_id);
+                    $('#quantity').val(1);
+                }
+            });
+            $('#add-to-cartbottom').click(function(){
+                $('#add-to-cart').trigger('click');
+            });
+
+            $('[name="quantity"]').on('keyup', function(e){
+                if( parseInt($(e.target).val()) > 0){
+            
+                }else{
+                    $(e.target).val(1)
+                }
+                $(e.target).val($(e.target).val());
+            })
+        });
+        $(document).on("click","#product-zoom-in",function(){
+        //	var indexThumb = $(this).index();
+            $("body").addClass("open_layer");
+            $("#divzoom").css({'opcaity':0,'visibility':'hidden'}).show();
+            $('.divzoom_main').flickity({
+            resize:true,
+            draggable: true,
+        });
+        if($(window).width() > 768){
+            var ncurrent = parseInt($(".gallery-index .current").html()) - 1;
+        }
+        else{
+            var ncurrent = parseInt($(".product-gallery-item.is-selected").index());
+        }
+        $('.divzoom_main').flickity('select',ncurrent);
+            setTimeout(function(){$("#divzoom").css({'opcaity': 1,'visibility':'visible'})},50);
+        });
+        $(document).on('click','#closedivZoom', function(event) {
+            $("#divzoom").hide();
+            $("body").removeClass("open_layer");
+            $('.divzoom_main').flickity('select',0);
+        //$('.divzoom_main').slick('unslick');
+        });
+    script.
+        $(".product-gallery__thumb img").click(function(){
+            $(".product-gallery__thumb").removeClass('active');
+            $(this).parents('.product-gallery__thumb').addClass('active');
+            var img_thumb = $(this).data('image');
+            $('html, body').animate({
+                scrollTop: $("#sliderproduct img[src='"+img_thumb+"']").offset().top
+            }, 1000);
+        });
+        $(".product-gallery__thumb").first().addClass('active');
+    script.
+        $(document).ready(function(){
+            var vl = $('#add-item-form .swatch .color input').val();
+                $('#add-item-form .swatch .color input').parents(".swatch").find(".header span").html(vl);
+                $("#add-item-form .select-swap .color" ).hover(function() {
+                    var value = $( this ).data("value");
+                    $(this).parents(".swatch").find(".header span").html( value );
+                },function(){
+                var value = $("#add-item-form .select-swap .color label.sd span").html();
+                $(this).parents(".swatch").find(".header span").html( value );
+            });
+        });
+    script.
+        $(document).ready(function(){
+            /*
+            $('#carousel').flexslider({
+            animation: "slide",
+            controlNav: false,
+            animationLoop: false,
+            slideshow: false,
+            itemWidth: 108,
+            itemMargin: 10,
+            });
+            */
+            $('#carousel .slides').owlCarousel({
+                nav: true,
+                loop: true,
+                margin:10,
+                dots:false,
+                navText: ['‹' , '›'],
+                responsive: {
+                    0: {
+                        items: 3,
+                        autoplay: false
+                    },
+                    600: {
+                        items: 3
+                    },
+                    1000: {
+                        items: 4
+                    }
+                }
+            })
+            $(".product-thumb a").click(function(e){
+                e.preventDefault();
+                $(".product-thumb").removeClass('checked');
+                $(this).parent().addClass('checked');
+                $(".product-image-feature").attr("src",$(this).attr("data-image"));
+            });
+            $(".policy-item h4").click(function(){
+                $(this).find(".icon-open").toggleClass("active");
+                $(this).next().slideToggle();
+            });
+            $(".select-swap .swatch-element").click(function (e) {
+                e.preventDefault();
+
+                if(
+                    $(this).find('input').attr('disabled') ||
+                    $(this).hasClass("checked")
+                ) return;
+                $(this).parent().children('.swatch-element').removeClass('checked');
+
+                $(`.swatch-element`).addClass('soldout');
+                $(`.swatch-element input`).prop({disabled: true});
+
+
+               
+                for(index in entityAttribute){
+                    if(entityAttribute[index].count <= 0) continue;
+                    const arrIndex = index.split("_");
+                    if(index.search($(this).data("id")) != -1){
+                        
+                        arrIndex.forEach(function(item){
+                            $(`.swatch-${item}`).removeClass('soldout');
+                            $(`.swatch-${item} input`).attr('disabled', false);
+                        })
+                    }
+                    
+                    
+                }
+                $(`.soldout`).removeClass('checked');
+                $(this).addClass('checked');
+                $(`.${$(this).data("variant")}`).removeClass('soldout');
+                $(`.${$(this).data("variant")} input`).attr('disabled', false);
+                $(`#swatch-${$(this).data("id")}`).prop('checked', true);
+                
+            });
+        });
+    style.
+        #carousel .owl-nav >.owl-prev{
+        left: 0;
+        }
+        #carousel .owl-nav > .owl-next{
+        right: 0;
+        }
+        #carousel .owl-nav >div {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: black;
+        font-size: 50px;
+        /* height: 34px; */
+        padding: 0px 14px -4px 14px;
+        color: white;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0px 15px 5px 18px;
+        }
+        @media only screen and (max-width: 767px) {
+        #carousel .owl-nav >div {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: black;
+        font-size: 31px;
+        height: 34px;
+        padding: 0px 14px -4px 14px;
+        color: white;
+        padding: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 7px 14px 9px;
+        }
+        }
+        #carousel{
+            margin-top:10px;
+        }
+        .text-entity-name{
+            margin: 0;
+            line-height: inherit;
+        }
+    #sizeModal.modal.fade.popupModal(tabindex='-1' role='dialog' aria-labelledby='myModalLabel')
+        .modal-dialog.modal-lg(role='document')
+            .modal-content
+                .modal-header
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') ×
+                    h4#myModalLabel.modal-title Hướng dẫn chọn size
+                .modal-body
+                    .contentSize
+                        .tab-content
+                            a(href='#####1')
+                                img.img-banerPopup(src='//theme.hstatic.net/1000253775/1000529442/14/chonsize_product.png?v=120')
+    #contentModal.modal.fade.popupModal(tabindex='-1' role='dialog' aria-labelledby='myModalLabel')
+        .modal-dialog(role='document')
+            .modal-content
+                .modal-header
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') ×
+                    h4#myModalLabel.modal-title Thông báo
+                .modal-body
+                    p(style='font-size: 16px;')
+                        | Vui lòng chọn size và số lượng
+    
+    style.
+        #detail-product .pro-sale{
+        display:none !important;
+        }
+    script.
+        if($('.select-swap .swatch-element.color').length == 1){
+            setTimeout(function(){
+                $('.select-swap .swatch-element.color input').trigger('click');
+            }, 1000)
+        }
+    
+        var spDataNew = []
+
+        var data = {
+            "variantID": "1050560315",
+            "variantSKU": "KTPT9001-01",
+            "variantTitle": "Xám",
+            "variantAvailable": "true",
+            "variantPrice": "4000000",
+            "variantCompare": "0",
+            "variantImage": "//product.hstatic.net/1000253775/product/9d195d44b901415f1810_6d3261e771d241a6bc7186e8c8c7aa70_master.jpg",
+            "variantLocations": [
+                {
+                    "LocationId": "421159",
+                    "LocationName": "Chi nhánh Trần Hưng Đạo",
+                    "LocationAddress": "391/375 Trần Hưng Đạo, P.Cầu Kho, Q.1, Phường Cầu Kho, Quận 1, Hồ Chí Minh",
+                    "Quantity": "26"
+                },
+                {
+                    "LocationId": "421804",
+                    "LocationName": "Chi nhánh Hà Nội",
+                    "LocationAddress": "Số 2 ngõ 232 Tôn Đức Thắng, P.Hàng Bột, Q.Đống Đa, Hà Nội, Phường Hàng Bột, Quận Đống Đa, Hà Nội",
+                    "Quantity": "39"
+                },
+                {
+                    "LocationId": "421810",
+                    "LocationName": "Chi nhánh Tô Hiến Thành",
+                    "LocationAddress": "297/3 Tô Hiến Thành, P.13, Q.10, Phường 13, Quận 10, Hồ Chí Minh",
+                    "Quantity": "4"
+                },
+                {
+                    "LocationId": "421816",
+                    "LocationName": "Chi nhánh Khuông Việt",
+                    "LocationAddress": "111 Khuông Việt, P.Phú Trung, Q.Tân Phú, Phường Phú Trung, Quận Tân Phú, Hồ Chí Minh",
+                    "Quantity": "16"
+                },
+                {
+                    "LocationId": "421819",
+                    "LocationName": "Chi nhánh Phan Xích Long",
+                    "LocationAddress": "401 Phan Xích Long, P.3, Q.Phú Nhuận, Phường 03, Quận Phú Nhuận, Hồ Chí Minh",
+                    "Quantity": "50"
+                },
+                {
+                    "LocationId": "518340",
+                    "LocationName": "Kho hàng Tân Phú",
+                    "LocationAddress": "Khuông Việt, Phường Phú Trung, Quận Tân Phú, Hồ Chí Minh",
+                    "Quantity": "0"
+                },
+                {
+                    "LocationId": "557522",
+                    "LocationName": "160 Store",
+                    "LocationAddress": "391/375 Trần Hưng Đạo, Phường Cầu Kho, Quận 1, Hồ Chí Minh",
+                    "Quantity": "-55"
+                },
+                {
+                    "LocationId": "571540",
+                    "LocationName": "",
+                    "LocationAddress": "",
+                    "Quantity": "20"
+                },
+                {
+                    "LocationId": "575274",
+                    "LocationName": "Chi nhánh Biên Hòa",
+                    "LocationAddress": "157 Phan Trung, P.Tân Mai, TP.Biên Hòa, Phường Tân Mai, Thành phố Biên Hòa, Đồng Nai",
+                    "Quantity": "27"
+                },
+                {
+                    "LocationId": "575278",
+                    "LocationName": "Chi nhánh Cần Thơ",
+                    "LocationAddress": "35 Trần Phú, P.Cái Khế, Q.Ninh Kiều, TP.Cần Thơ, Phường Cái Khế, Quận Ninh Kiều, Cần Thơ",
+                    "Quantity": "23"
+                },
+                {
+                    "LocationId": "608568",
+                    "LocationName": "Chi nhánh Đà Nẵng",
+                    "LocationAddress": "144 Lý Tự Trọng, P.Thuận Phước, Đà Nẵng, Phường Thuận Phước, Quận Hải Châu, Đà Nẵng",
+                    "Quantity": "7"
+                },
+                {
+                    "LocationId": "651102",
+                    "LocationName": "Chi nhánh Gò Vấp",
+                    "LocationAddress": "94 Lê Văn Thọ, P.11, Q.Gò Vấp, Phường 11, Quận Gò Vấp, Hồ Chí Minh",
+                    "Quantity": "27"
+                },
+                {
+                    "LocationId": "674216",
+                    "LocationName": "ONLINE WAREHOUSE",
+                    "LocationAddress": "Online, Phường Cầu Kho, Quận 1, Hồ Chí Minh",
+                    "Quantity": "23"
+                }
+            ]
+        }
+        spDataNew.push(data);
+    
+    script(src='/js/swatch-init.js')
+

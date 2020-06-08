@@ -1,0 +1,168 @@
+extends ../layout.pug 
+
+block content
+    #collection.collection-page.searchPage
+        .main-content.container-fluid
+            .row.breadcrumb-shop
+                .col-lg-12.col-md-12.col-sm-12.col-xs-12.pd5
+                    ol.breadcrumb.breadcrumb-arrows
+                        li
+                            a(href='/' target='_self') Trang chủ
+            .row
+                #collection-body.wrap-collection-body.clearfix
+                    .col-md-12.col-sm-12.col-xs-12
+                        .wrap-collection-title.row
+                            .heading-collection.row
+                                .col-md-12.col-sm-12.col-xs-12
+                                    .heading-page
+                                        h1=title
+                                        p.subtxt
+                                            | Có 
+                                            span #{count} sản phẩm
+                                    .clearfix.filter-box
+                                        .browse-tags.pull-left
+                                            span.hidden Sắp xếp theo:
+                                            span.custom-dropdown.custom-dropdown--white
+                                                select.sort-by.custom-dropdown__select.custom-dropdown__select--white.search-sort.select-sort
+                                                    option(class='default' value='default') Mới nhất
+                                                    option(class='created-ascending' value='created-ascending') Cũ nhất
+                                                    option(class='price-ascending' value='price-ascending') Giá: Tăng dần
+                                                    option(class='price-descending' value='price-descending') Giá: Giảm dần
+                                                    option(class='title-ascending' value='title-ascending') Tên: A-Z
+                                                    option(class='title-descending' value='title-descending') Tên: Z-A
+                                        .product-filter.pull-left
+                                            span.filter-title
+                                                | Lọc theo 
+                                                i.fa.fa-angle-down
+                                            .filter-container
+                                                .clearfix
+                                                    .filter-item.filter-price
+                                                        h4 Giá sản phẩm
+                                                        ul
+                                                            li(class=`price0_200000` data-filter='0_200000') Dưới 200,000₫
+                                                            li(class=`price200000_300000` data-filter='200000_300000') 200,000₫ - 300,000₫
+                                                            li(class=`price300000_400000` data-filter='300000_400000') 300,000₫ - 400,000₫
+                                                            li(class=`price400000_500000` data-filter='400000_500000') 400,000₫ - 500,000₫
+                                                            li(class=`price500000` data-filter='500000') Trên 500,000₫
+                                                    each attribute in attributes
+                                                        .filter-item.filter-attribute
+                                                            h4 #{attribute.attribute_name}
+                                                            ul(class=`entity-id${attribute.attribute_id}` data-id=attribute.attribute_id)
+                                                                each attrType in attribute.AttributeEntityType
+                                                                    li(class=`attribute-id${attrType.id_entity_type}` data-filter=attrType.id_entity_type) #{attrType.entity_name}
+                                                .filter-btn.text-right.filter-search
+                                                    a(href='#') Tìm kiếm
+                                    .alert-no-filter
+                        if products && products.length > 0
+                            .row.filter-here
+                                .content-product-list.product-list.filter.clearfix
+                                    each product, index in products
+                                        .col-md-3.col-sm-6.col-xs-6.pro-loop.col-5
+                                            .product-block.product-resize.site-animation(data-anmation=index + 1)
+                                                .product-img
+                                                    a.image-resize(href=product.slug title=product.name)
+                                                        if !product.avatar
+                                                            picture
+                                                                source(media='(max-width: 767px)' srcset="/images/default-image.png")
+                                                                source(media='(min-width: 768px)' srcset="/images/default-image.png")
+                                                                img.img-loop(alt=' Boxer ICON DENIM 3D logo ' src="/images/default-image.png")
+                                                            picture
+                                                                source(media='(max-width: 767px)' srcset="/images/default-image.png")
+                                                                source(media='(min-width: 768px)' srcset="/images/default-image.png")
+                                                                img.img-loop.img-hover(alt=product.name src="/images/default-image.png")
+                                                        else
+                                                            picture
+                                                                source(media='(max-width: 767px)' srcset=product.avatar)
+                                                                source(media='(min-width: 768px)' srcset=product.avatar)
+                                                                img.img-loop(alt=' Boxer ICON DENIM 3D logo ' src=product.avatar)
+                                                            picture
+                                                                source(media='(max-width: 767px)' srcset=product.avatar)
+                                                                source(media='(min-width: 768px)' srcset=product.avatar)
+                                                                img.img-loop.img-hover(alt=product.name src=product.avatar)
+                                                    .button-add.hidden
+                                                        //- button.action(type='submit' title='Buy now' onclick="buy_now(product.id)")
+                                                        //-     | Mua ngay
+                                                        //-     i.fa.fa-long-arrow-right
+                                                .product-detail.clearfix
+                                                    .box-pro-detail
+                                                        h3.pro-name
+                                                            a(href=product.slug title=product.name)
+                                                                | #{ product.name }
+                                                        .box-pro-prices
+                                                            p.pro-price.highlight
+                                                                span.giaban #{ product.price }
+                                                                if product.price < product.old_price
+                                                                    span.pro-price-del
+                                                                        del.compare-price #{ product.old_price }
+                            if pagination
+                                include ./../include/pagination.pug
+        script.
+            var params = new URLSearchParams(window.location.search);
+            jQuery(document).ready(function(){
+                
+                if(params.get('sort_by'))
+                    $(`.${params.get('sort_by')}`).prop('selected', true);
+
+                if(params.get('price')){
+                    $(`.price${params.get('price')}`).addClass('active');
+                    $(`.product-filter`).addClass('active');
+                    
+                }
+                if(params.get('attribute')){
+                    var attrSlug = params.get('attribute').split("_");
+                    $(`.product-filter`).removeClass('active');
+                    $(`.product-filter`).addClass('active');
+                    attrSlug.forEach(function(item){
+                        $('.attribute-id'+item).addClass('active');
+                    });
+                }
+                    $(`.price${params.get('price')}`).addClass('active');
+
+                $('.filter-item ul li').click(function(){
+                    if($(this).hasClass('active')){
+                        $(this).removeClass('active');
+                    }else{
+                        $(this).parent('ul').find('li').removeClass('active');
+                        $(this).addClass('active');
+                    }
+                });
+
+                $("body").on('click', function() {
+                    $(".product-filter").removeClass('active');
+                });
+                
+                $(".filter-search").on('click', function(e) {
+                    e.preventDefault();
+                    updateParam('price', $('.filter-price ul li.active').data('filter'));
+                   
+                    var attribute = '';
+                    $('.filter-attribute ul li.active').each(function(){
+                        attribute += '_' + $(this).data('filter');
+                    });
+                  
+                    window.location = updateParam('attribute', attribute.substring(1));
+                    
+                });
+                $(document).on('change', '.select-sort', function() {
+                    var encodeQuery = $(this).val();
+                    window.location = updateParam('sort_by', encodeQuery);
+                });
+              
+                
+            });
+
+            function updateParam(name, val){
+                if(!val){
+                    params.delete(name)
+                    return '/search?' + params.toString();
+                }
+                
+                if(!params.get(name))
+                    params.append(name, encodeURIComponent(val));
+                else
+                    params.set(name, encodeURIComponent(val))
+               
+                return '/search?' + params.toString();
+            }
+
+

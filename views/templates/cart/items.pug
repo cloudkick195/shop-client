@@ -1,0 +1,56 @@
+.col-md-12.col-xs-12.heading-page
+    .header-page
+        h1 Giỏ hàng của bạn
+        p.count-cart
+            | Có 
+            span #{cart.total_qty} sản phẩm
+            |  trong giỏ hàng
+    .col-md-12.col-xs-12.wrapbox-content-cart
+        .cart-container
+            .cart-col-left
+                .main-content-cart
+                    form#cartformpage(action='/checkout' method='get    ')
+                        .row
+                            .col-md-12.col-sm-12.col-xs-12
+                                table.table-cart
+                                    tbody
+                                        each val, index in cart.items
+                                            tr.line-item-container.itemCart(class=index data-price=val.price data-url=fn.linkId(val.slug) data-id=index)
+                                                td.image
+                                                    .product_image
+                                                        a(href=fn.linkId(val.slug))
+                                                            if !val.avatar
+                                                                img(src='/images/product-no-image.jpg' alt=val.name)
+                                                            else
+                                                                img(src=val.avatar alt=val.name)
+                                                td.item
+                                                    a(href=fn.linkId(val.slug))
+                                                        h3=val.name
+                                                    p.variant=val.options
+                                                    p
+                                                        span=formatWithCommas(val.price)
+                                                    .qty.quantity-partent.qty-click.clearfix
+                                                        button.qtyminus.qty-btn(type='button') -
+                                                        input.tc.line-item-qty.item-quantity(class=`cart-item-${index}` type='text' size='4' name='updates[]' min='1' combination-id=val.combinationId data-id=index value=val.qty)
+                                                        button.qtyplus.qty-btn(type='button') +
+                                                    p.price
+                                                        span.text Th&agrave;nh ti&#x1EC1;n:
+                                                        span.line-item-total=formatWithCommas(val.price * val.qty)
+                                                td.remove
+                                                    a.cart(href="javascript:void(0);" onclick=`removeCartItem('${index}', '${val.combinationId}')`)
+                                                        img(src='/images/ic_close.webp')
+                                .col-md-6.col-sm-12.col-xs-12
+                                    .checkout-note.clearfix
+                                        
+                                .col-md-6.col-sm-12.col-xs-12.text-right
+                                    p.order-infor
+                                        | T&#x1ED5;ng ti&#x1EC1;n:
+                                        span.total_price
+                                            b.total-cart=formatWithCommas(cart.total_price)
+                                    .cart-buttons
+                                        a.button.dark.link-continue(href='/collections/all' title='Tiếp tục mua hàng')
+                                            i.fa.fa-reply
+                                            | Ti&#x1EBF;p t&#x1EE5;c mua h&agrave;ng
+                                        button#update-cart.btn-update.button.dark(type='submit' name='update' value='') C&#x1EAD;p nh&#x1EAD;t
+                                        button#checkout.btn-checkout.button.dark(type='submit' name='checkout' value='') Thanh to&aacute;n
+                                

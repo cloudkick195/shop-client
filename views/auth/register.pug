@@ -1,0 +1,77 @@
+extends ../layout.pug
+
+block content
+    .layout-account
+        .container-fluid
+            .row
+                .col-md-6.col-xs-12.wrapbox-heading-account
+                    .header-page.clearfix
+                        h1 Tạo tài khoản
+                .col-md-6.col-xs-12.wrapbox-content-account
+                    .userbox(data-register='email')
+                        form#create_customer(accept-charset='UTF-8', action='/account/register', method='post')
+                            input(name='form_type', type='hidden', value='create_customer')
+                            input(name='utf8', type='hidden', value='✓')
+                            if message.error_default
+                                p.errors.field-message.field-message-error !{message.error_default}
+                            #last_name.clearfix.large_form
+                                label.label.icon-field(for='last_name')
+                                    i.icon-login.icon-user
+                                input#last_name.text( type='text', value='', name='last_name', placeholder='Họ và tên đệm', size='30' required='')
+                                if message.last_name
+                                    p.field-message.field-message-error #{message.last_name}
+                            #first_name.clearfix.large_form
+                                label.label.icon-field(for='first_name')
+                                    i.icon-login.icon-user
+                                input#first_name.text(type='text', value='', name='first_name', placeholder='Tên', size='30' required='')
+                                if message.first_name
+                                    p.field-message.field-message-error #{message.first_name}
+                            #gender.clearfix.large_form
+                                input#radio1(type='radio', value='F', checked='', name='gender', required='')
+                                label(for='radio1') Nữ
+                                input#radio2(type='radio', value='M', name='gender', required='')
+                                label(for='radio2') Nam
+                                input#radio3(type='radio', value='O', name='gender', required='')
+                                label(for='radio3') Khác
+                                if message.gender
+                                    p.field-message.field-message-error #{message.gender}
+                            #birthday.clearfix.large_form
+                                label.label.icon-field(for='birthday')
+                                    i.icon-login.icon-envelope
+                                input#datepicker.text(required='', autocomplete='false', type='text', placeholder='Ngày sinh', name='birthday', size='30')
+                                if message.birthday
+                                    p.field-message.field-message-error #{message.birthday}
+                            #phone.clearfix.large_form
+                                label.label.icon-field(for='phone')
+                                    i.icon-login.icon-envelope
+                                input#phone.text(type='tel', min='7', max='10', placeholder='Số điện thoại', pattern='/^\+?([0-9]{2})\)?[-. ]?([0-9]{4,5})[-. ]?([0-9]{4})$/', name='phone', size='20')
+                                if message.phone
+                                    p.field-message.field-message-error #{message.phone}
+                            #email.clearfix.large_form
+                                label.label.icon-field(for='email')
+                                    i.icon-login.icon-envelope
+                                input#email.text(required='', type='email', placeholder='Email', name='email', size='30')
+                                if message.email
+                                    p.field-message.field-message-error #{message.email}
+                            #password.clearfix.large_form
+                                label.label.icon-field(for='password')
+                                    i.icon-login.icon-shield
+                                input#password.password.text(required='', type='password', placeholder='Mật khẩu (Tối thiểu 5 ký tự)', name='password', minlength='5', size='30')
+                                if message.password
+                                    p.field-message.field-message-error #{message.password}
+                            .clearfix.action_account_custommer
+                                .action_bottom.button.dark
+                                    input.btn(type='submit', value='Đăng ký')
+                            .clearfix.req_pass
+                                a.come-back(href='/account/login')
+                                    i.fa.fa-long-arrow-left
+                                    |  Quay lại đăng nhập
+                // #register
+                // #customer-register
+                link(href='/libs/DatePicker/themes/jquery-ui.css' rel='stylesheet' type='text/css' media='all')
+                script(src='/libs/DatePicker/jquery-ui.js')
+                script(src='/libs/DatePicker/jquery.ui.datepicker-vi.js')
+                script.
+                    $( function() {
+                        $( "#datepicker" ).datepicker( $.datepicker.regional[ "vi" ] );
+                    } );

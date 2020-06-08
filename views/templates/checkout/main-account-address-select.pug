@@ -1,0 +1,36 @@
+.section-content
+    .fieldset
+        form#form_update_location.clearfix.order-checkout__loading(accept-charset="UTF-8" method="post")
+            input(name="selected_customer_shipping_province" type="hidden" value="")
+            input(name="selected_customer_shipping_district" type="hidden" value="")
+            input(name="selected_customer_shipping_ward" type="hidden" value="")
+            input(name="utf8" type="hidden" value="✓")
+            .order-checkout__loading--box
+                .order-checkout__loading--circle
+            .field.field-show-floating-label.field-required.field-third
+                .field-input-wrapper.field-input-wrapper-select.province_field
+                    label.field-label(for="customer_shipping_province")  Tỉnh / thành  
+                    select#customer_shipping_province.field-input(name="customer_shipping_province")
+                        option(data-code="null" value="null")   Chọn tỉnh / thành 
+                        each val in provinces
+                            option(value=val.provinceid) #{ val.name }
+
+            .field.field-show-floating-label.field-required.field-third
+                .field-input-wrapper.field-input-wrapper-select.district_field
+                    label.field-label(for="customer_shipping_district") Quận / huyện
+                    select#customer_shipping_district.field-input(name="customer_shipping_district")
+                        option(data-code="null" value="null") Chọn quận / huyện
+            .field.field-show-floating-label.field-required.field-third
+                .field-input-wrapper.field-input-wrapper-select.ward_field
+                    label.field-label(for="customer_shipping_ward") Phường / xã
+                    select#customer_shipping_ward.field-input(name="customer_shipping_ward")
+                        option(data-code="null" value="null") Chọn phường / xã
+    #div_country_not_vietnam.section-content.section-customer-information.fieldset
+        .field.field-two-thirds
+            .field-input-wrapper
+                label.field-label(for="billing_address_city") Thành phố
+                input#billing_address_city.field-input(placeholder="Thành phố" autocapitalize="off" spellcheck="false" size="30" type="text" name="billing_address[city]" value="")
+        .field.field-third
+            .field-input-wrapper
+                label.field-label(for="billing_address_zip") Mã bưu chính
+                input#billing_address_zip.field-input(placeholder="Mã bưu chính" autocapitalize="off" spellcheck="false" size="30" type="text" name="billing_address[zip]" value="")

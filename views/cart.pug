@@ -1,0 +1,19 @@
+extends layout
+
+block content
+    main
+        #layout-cart
+            .container-fluid
+                .row.breadcrumb-shop
+                    .col-lg-12.col-md-12.col-sm-12.col-xs-12.pd5
+                        ol.breadcrumb.breadcrumb-arrows
+                            li
+                                a(href='/', target='_self') Trang chủ
+                            li.active
+                                span Giỏ hàng
+                .row.pd-page
+                    if !cart
+                        include templates/cart/empty.pug
+                    else
+                        include templates/cart/items.pug
+                    // End cart

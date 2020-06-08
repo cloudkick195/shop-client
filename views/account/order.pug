@@ -1,0 +1,70 @@
+extends ../layout.pug
+
+block content
+    .layout-info-account
+        .title-infor-account.text-center
+            h1 T&agrave;i kho&#x1EA3;n c&#x1EE7;a b&#x1EA1;n 
+        .container
+            .row
+            .col-xs-12.col-sm-3.sidebar-account
+                .AccountSidebar
+                    h3.AccountTitle.titleSidebar T&agrave;i kho&#x1EA3;n
+                    .AccountContent
+                        .AccountList
+                            ul.list-unstyled
+                                li.current
+                                    a(href='/account') Th&ocirc;ng tin t&agrave;i kho&#x1EA3;n
+                                li
+                                    a(href='/account/orders') Danh s&aacute;ch đơn hàng;
+                                li.last
+                                    a(href='/account/logout') &Dstrok;&abreve;ng xu&#x1EA5;t
+            .col-xs-12.col-sm-9
+                .row
+                #customer_sidebar.col-xs-12
+                    .col-xs-12
+                        p.title-detail Th&ocirc;ng tin đơn hàng
+                    
+                    .clearfix
+                #customer_orders.col-xs-12
+                    each info in infos
+                        .customer-table-wrap
+                            .customer_order.customer-table-bg
+                                .row
+                                    .col-xs-12.col-sm-6
+                                        h3 Đơn hàng 000000#{info.order_id}
+                                        p 
+                                            i Ngày tạo: #{formatDate(info.order_date)}
+                                        br
+                                        p
+                                            | #{info.customer_name}
+                                            br
+                                            |  #{info.ship_address}
+                                            br
+                                            |  #{info.Ward.name}
+                                            br
+                                            |  #{info.Ward.District.name}
+                                            br
+                                            |   #{info.Ward.District.Province.name}
+                                            br
+                                            |  Vietnam
+                                            br
+                                            |  #{info.customer_phone}
+                                            br
+                                      
+                                    .col-xs-12.col-sm-6
+                                        h3 Trạng thái: #{info.status}
+                                        h3 Phương thức thanh toán
+                                        p
+                                            |  #{info.ShippingPayment.value}
+                                        h3 Ghi chú
+                                        p
+                                            |  #{info.order_description}
+                                        
+                                        br
+                                        a.btn.updateAccount.btn-small-yellow(href=`/account/orders/${info.order_id}`) Chi tiết
+                                        br
+                        br
+                    else
+                        .customer-table-wrap
+                            .customer_order.customer-table-bg
+                                p Bạn chưa đặt mua sản phẩm.

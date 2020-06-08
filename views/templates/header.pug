@@ -1,0 +1,88 @@
+header#site-header.main-header
+    .header-mid.wrap-flex-align
+        // <div class="visible-lg visible-md col-header-mid"></div>
+        .wrap-logo
+            a(href=infoPage.baseUrl)
+                img.img-responsive.logoimg(src=pageInfo.logo)
+        .menu-desktop.hidden-sm.hidden-xs
+            #nav
+                nav.main-nav.text-center
+                    ul.clearfix
+                        li
+                            a(href='/san-pham' title='Sản phẩm')
+                                | S&#x1EA3;n ph&#x1EA9;m
+                                if pageCategories && pageCategories.length > 0
+                                    i.fa.fa-chevron-down(aria-hidden='true')
+                            if pageCategories && pageCategories.length > 0
+                                ul.sub_menu
+                                    each category in pageCategories
+                                        li
+                                            a(href=fn.linkCategoryIdList(category.slug) title=category.name)
+                                                | #{ category.name }
+                                                if category && category.child && category.child.length > 0
+                                                    i.fa.fa-chevron-right(aria-hidden='true')
+                                            if category && category.child && category.child.length > 0
+                                                ul.sub_menu
+                                                    each child in category.child
+                                                        li
+                                                            a(href=fn.linkCategoryIdList(child.slug) title=child.name)
+                                                                | #{ child.name }
+                        li
+                            a(href=fn.linkSaleProduct() title='Khuyến mãi')
+                                | Khuyến mãi
+                        li
+                            a(href='javascript:void' title='Chính sách - Hướng dẫn')
+                                | Ch&iacute;nh s&aacute;ch - H&#x1B0;&#x1EDB;ng d&#x1EAB;n
+                                i.fa.fa-chevron-down(aria-hidden='true')
+                            if policies && policies.length > 0
+                                ul.sub_menu
+                                    each policy in policies
+                                        li
+                                            a(href=fn.linkIdPolicyAndReturn(policy.post_slug) title=policy.post_name)
+                                                | #{ policy.post_name }
+                        li
+                            a(href='/account/orders' title='Kiểm tra đơn hàng')
+                                | Ki&#x1EC3;m tra &dstrok;&#x1A1;n h&agrave;ng
+        .header-wrap-icon
+            span.icon-account(aria-label='Tài khoản' title='Tài khoản')
+                a(href='/account/login')
+                    span.account-menu(aria-hidden='true')
+                        svg.svg-account(version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' width='510px' height='510px' viewbox='0 0 510 510' style='enable-background:new 0 0 510 510;' xml:space='preserve')
+                            g
+                                g#account-circle
+                                    path(d='M255,0C114.75,0,0,114.75,0,255s114.75,255,255,255s255-114.75,255-255S395.25,0,255,0z M255,76.5\
+                                    c43.35,0,76.5,33.15,76.5,76.5s-33.15,76.5-76.5,76.5c-43.35,0-76.5-33.15-76.5-76.5S211.65,76.5,255,76.5z M255,438.6\
+                                    c-63.75,0-119.85-33.149-153-81.6c0-51,102-79.05,153-79.05S408,306,408,357C374.85,405.45,318.75,438.6,255,438.6z')
+            span#site-search-handle.icon-search(aria-label='Tìm kiếm' title='Tìm kiếm')
+                a(href='/search')
+                    span.search-menu(aria-hidden='true')
+                        svg.svg-search(version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewbox='0 0 24 27' style='enable-background:new 0 0 24 27;' xml:space='preserve')
+                            path(d='M10,2C4.5,2,0,6.5,0,12s4.5,10,10,10s10-4.5,10-10S15.5,2,10,2z M10,19c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7S13.9,19,10,19z')
+                            rect(x='17' y='17' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -9.2844 19.5856)' width='4' height='8')
+            span#site-cart-handle.icon-cart(aria-label='Open cart' title='Giỏ hàng')
+                a(href='/cart')
+                    span.cart-menu(aria-hidden='true')
+                        svg.svg-cart(version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewbox='0 0 24 27' style='enable-background:new 0 0 24 27;' xml:space='preserve')
+                            g
+                                path(d='M0,6v21h24V6H0z M22,25H2V8h20V25z')
+                            g
+                                path(d='M12,2c3,0,3,2.3,3,4h2c0-2.8-1-6-5-6S7,3.2,7,6h2C9,4.3,9,2,12,2z')
+                        span.count-holder
+                            if totalQty
+                                span.count= totalQty
+                            else
+                                span.count 0
+            span#site-menu-handle.hamburger-menu.visible-sm.visible-xs(aria-hidden='true')
+                span.bar
+.search-bar-mobile
+    .search-box.wpo-wrapper-search
+        form.searchform.searchform-categoris.ultimate-search(action='/search')
+            .wpo-search-inner
+                input(type='hidden' name='type' value='product')
+                input#inputSearchAuto-mb.searchinput.input-search.search-input(required='' name='q' maxlength='40' autocomplete='off' type='text' size='20' placeholder='Tìm kiếm sản phẩm...')
+            button#search-header-btn-mb.btn-search.btn(type='submit')
+                svg.svg.search(version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewbox='0 0 24 27' style='enable-background:new 0 0 24 27;' xml:space='preserve')
+                    path(d='M10,2C4.5,2,0,6.5,0,12s4.5,10,10,10s10-4.5,10-10S15.5,2,10,2z M10,19c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7S13.9,19,10,19z')
+                    rect(x='17' y='17' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -9.2844 19.5856)' width='4' height='8')
+        #ajaxSearchResults-mb.smart-search-wrapper.ajaxSearchResults(style='display: none')
+            .resultsContent            

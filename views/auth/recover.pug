@@ -1,0 +1,96 @@
+extends ../layout.pug
+
+block content
+    .layout-account
+    .container-fluid
+        .row
+        .col-md-6.col-xs-12.wrapbox-heading-account
+            .header-page.clearfix
+            h1 Phục hồi mật khẩu
+        .col-md-6.col-xs-12.wrapbox-content-account
+            #customer-login
+            #login.userbox
+                .accounttype
+                h2.title
+                if message.error_default
+                    p.field-message.field-message-error !{message.error_default}
+                form(accept-charset='UTF-8', id="reset_password", method='post')
+                    input(name='form_type', type='hidden', value='reset_customer_password')
+                    input(name='utf8', type='hidden', value='✓')
+                    .clearfix.large_form.password
+                        label.icon-field(for='customer_password')
+                        i.icon-login.icon-shield
+                        input#customer_password.text(type='password', value='', name='password', placeholder='Mật khẩu', size='16')
+                        if message.password
+                            p.field-message.field-message-error !{message.password}
+                    .clearfix.large_form.password_confirmation
+                        label.icon-field(for='customer_password')
+                        i.icon-login.icon-shield
+                        input#password_confirmation.text(type='password', value='', name='password_confirmation', placeholder='Xác nhận mật khẩu', size='16')
+                        if message.password_confirmation
+                            p.field-message.field-message-error !{message.password_confirmation}
+                    .action_bottom.button.dark
+                        input.btn(type='submit', value='Lưu')
+                    script(type="text/javascript").
+                        $("#reset_password").submit(function(e){
+                            e.preventDefault();
+                            try {
+                                var formData = '#reset_password';
+                                var listparameters = new URLSearchParams($(formData).serialize());
+                                inputurl = listparameters.toString();
+                            
+                            } catch (err) {
+
+                                // Older Browser URLSearchParams not support
+                                var listparameters = parseQueryString($(formData).serialize());
+
+                                var listObject = '';
+                                for (var key in listparameters) {
+                                    listObject += '&' + key + '=' + encodeURIComponent(listparameters[key]);
+                                };
+                                inputurl = listObject.substring(1);
+
+                            }
+                            var element = formData;
+
+                            $(element).find(".button").addClass('loader');
+                            
+                            $.ajax({
+                                type: 'POST',
+                                url: window.location.origin + window.location.pathname + '/save',
+                                data: inputurl,
+                                success: function(data) {
+                                    
+                                    if(data.url){
+                                        window.location = data.url;
+                                    }else{
+                                        location.reload();
+                                    }
+                                    $(element).find(".button").removeClass('loader');
+                                    
+                            
+                                }
+                            
+                            }).fail(function(err) {
+                                
+                                
+                                if(err.responseJSON.message)
+                                    alert(err.responseJSON.message)
+                                if(err.responseJSON.errors){
+                                    const message = err.responseJSON.errors;
+                                    if(message && Object.keys(message)[0]){
+                                        $('.field-message-error').remove();
+                                        $('.field-error').removeClass('field-error');
+                                        for (const property in message) {
+                                            console.log(property);
+                                            $(`.${property}`).append(`<p class="field-message field-message-error">${message[property]}</p>`);
+                                            $(`.${property}`).addClass('field-error')
+                                        }
+                                    }
+                                }
+                                if(err.responseJSON.url)  window.location = err.responseJSON.url;
+                                $(element).find(".button").removeClass('loader');
+                            });
+                            
+                        });
+                        

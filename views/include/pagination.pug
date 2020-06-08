@@ -1,0 +1,19 @@
+.sortpagibar.pagi.clearfix.text-center
+    if paginationData && paginationData.listPage && paginationData.listPage.length > 1
+        #pagination.clearfix
+            .col-lg-12.col-md-12.col-sm-12.col-xs-12
+                if paginationData.page > 1
+                    a.prev(href=fn.linkSearchList(paginationData.link, query, { page: parseInt(paginationData.page) - 1 }))
+                        svg(version='1.1', xmlns='http://www.w3.org/2000/svg', xmlns:xlink='http://www.w3.org/1999/xlink', x='0px', y='0px', viewbox='0 0 31 10', style='enable-background:new 0 0 31 10; width: 31px; height: 10px;', xml:space='preserve')
+                            polygon(points='31,5 25,0 25,4 0,4 0,6 25,6 25,10 ')
+                each pg, index in paginationData.listPage
+                    if index + 1 == paginationData.page
+                        span.page-node.current #{ index + 1 }
+                    else
+                        a.page-node(href=fn.linkSearchList(paginationData.link, query, { page: index + 1 })) #{ index + 1 }
+                    
+                if paginationData.page < paginationData.listPage.length
+                    a.next(href=fn.linkSearchList(paginationData.link, query, { page: parseInt(paginationData.page) + 1 }))
+                        svg(version='1.1' xmlns='http://www.w3.org/2000/svg', xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewbox='0 0 31 10' style='enable-background:new 0 0 31 10; width: 31px; height: 10px;', xml:space='preserve')
+                            polygon(points='31,5 25,0 25,4 0,4 0,6 25,6 25,10 ')
+                    //- span.page-node …

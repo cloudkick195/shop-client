@@ -1,0 +1,24 @@
+extends ../layout.pug 
+
+block content
+    .pageAbout-us.page-layout
+        .container-fluid
+            .row.breadcrumb-shop
+                .col-lg-12.col-md-12.col-sm-12.col-xs-12.pd5
+                    ol.breadcrumb.breadcrumb-arrows
+                        li
+                            a(href='/', target='_self') Trang chủ
+                        li.active
+                            span=title
+            .row.wrapper-row.pd-page
+                .col-md-12.col-sm-12.col-xs-12
+                    .page-wrapper
+                        .heading-page
+                            h1=title
+                        .wrapbox-content-page
+                            .content-page
+                                | !{content}
+    style.
+        .g-recaptcha {
+        transform: scale(0.8);
+        }

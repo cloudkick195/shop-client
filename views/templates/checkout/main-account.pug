@@ -1,0 +1,49 @@
+.section-header
+    h2.section-title Thông tin giao hàng
+.section-content.section-customer-information.no-mb
+    if !user
+        p.section-content-text
+            | Bạn đã có tài khoản?
+            a(href="/account/login") Đăng nhập
+        .fieldset
+            .field.field-required
+                    .field-input-wrapper.full-name_field
+                        label.field-label(for="billing_address_full_name") Họ và tên
+                        input#billing_address_full_name.field-input(placeholder="Họ và tên" autocapitalize="off" spellcheck="false" size="30" type="text" name="billing_address[full_name]" value="")
+            .field.field-required
+                .field-input-wrapper.phone_field
+                    label.field-label(for="billing_address_phone") Số điện thoại
+                    input#billing_address_phone.field-input(placeholder="Số điện thoại" autocapitalize="off" spellcheck="false" size="30" maxlength="11" type="tel" name="billing_address[phone]" value="")
+            .field.field-required
+                .field-input-wrapper.address1_field
+                    label.field-label(for="billing_address_address1") Địa chỉ
+                    input#billing_address_address1.field-input(placeholder="Địa chỉ" autocapitalize="off" spellcheck="false" size="30" type="text" name="billing_address[address1]" value="")
+            .field.checkout-note.clearfix
+                .field-input-wrapper
+                    textarea#note.field-input(name='note' rows='8' cols='50' placeholder='Ghi chú đơn hàng')
+    else
+        .logged-in-customer-information
+            .logged-in-customer-information-avatar-wrapper
+                .logged-in-customer-information-avatar.gravatar(style="background-image: url(//www.gravatar.com/avatar/.jpg?s=100&d=blank);filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='//www.gravatar.com/avatar/.jpg?s=100&d=blank', sizingMethod='scale')")
+            p.logged-in-customer-information-paragraph
+                | #{user.name}
+                br
+                a(href='/account/logout') &Dstrok;&abreve;ng xu&#x1EA5;t
+
+        .fieldset
+            .field.field-required
+                .field-input-wrapper.full-name_field
+                    label.field-label(for="billing_address_full_name") Họ và tên
+                    input#billing_address_full_name.field-input(placeholder="Họ và tên" autocapitalize="off" spellcheck="false" size="30" type="text" name="billing_address[full_name]" value=user.name)
+            .field.field-required
+                .field-input-wrapper.phone_field
+                    label.field-label(for="billing_address_phone") Số điện thoại
+                    input#billing_address_phone.field-input(placeholder="Số điện thoại" autocapitalize="off" spellcheck="false" size="30" maxlength="11" type="tel" name="billing_address[phone]" value=user.phone)
+            .field.field-required
+                .field-input-wrapper.address1_field
+                    label.field-label(for="billing_address_address1") Địa chỉ
+                    input#billing_address_address1.field-input(placeholder="Địa chỉ" autocapitalize="off" spellcheck="false" size="30" type="text" name="billing_address[address1]" value=user.address)
+            .field.checkout-note.clearfix
+                .field-input-wrapper
+                    textarea#note.field-input(name='note' rows='8' cols='50' placeholder='Ghi chú đơn hàng')
+include main-account-address-select

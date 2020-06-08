@@ -1,0 +1,31 @@
+.order-summary-section.order-summary-section-product-list(data-order-summary-section="line-items")
+    table.product-table
+        thead
+            tr
+                th(scope="col")
+                    span.visually-hidden Hình ảnh
+                th(scope="col")
+                    span.visually-hidden Mô tả
+                th(scope="col")
+                    span.visually-hidden Số lượng
+                th(scope="col")
+                    span.visually-hidden Giá
+        tbody
+            each val, index in cart.items
+                tr.product(data-product-id=index combination-id=val.combinationId)
+                    td.product-image
+                        .product-thumbnail
+                            .product-thumbnail-wrapper
+                                if !val.avatar
+                                    img(src='/images/product-no-image.jpg' alt=val.name)
+                                else
+                                    img(src=val.avatar alt=val.name)
+                            span.product-thumbnail-quantity(aria-hidden="true")=val.qty
+                    td.product-description
+                        span.product-description-name.order-summary-emphasis
+                            b=val.name
+                        span.product-description-variant.order-summary-small-text=val.options
+                        span.description-price=formatWithCommas(val.price)
+                    td.product-quantity.visually-hidden=val.qty
+                    td.product-price
+                        span.order-summary-emphasis=formatWithCommas(val.price * val.qty)

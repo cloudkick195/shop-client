@@ -1,0 +1,1283 @@
+doctype html
+html.flexbox(xmlns='http://www.w3.org/1999/xhtml', xml:lang='en', lang='en')
+    head
+        link(rel="shortcut icon" href="//theme.hstatic.net/1000253775/1000529442/14/favicon.png?v=141" type="image/png")
+        title
+            | 160STORE - Thanh toán đơn hàng
+        meta(name="description" content="160STORE - Thanh toán đơn hàng")
+        link(href="/stylesheets/checkout.css" rel="stylesheet" type="text/css" media="all")
+        script(src="/js/jquery.min.js" type="text/javascript")
+        script(src="/js/jquery.validate.js" type="text/javascript")
+        style.
+            .mainbar-qr h2 {
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 30px;
+            font-weight: 500;
+            color: #212121;
+            }
+            .mainbar-info .mainbar-qr_section {
+            text-align: center;
+            }
+            .mainbar-info .mainbar-qr_section .count_time {
+            margin-bottom: 10px;
+            margin-top: 30px;
+            }
+            .mainbar-info .mainbar-qr_section .count_time .time-out {
+            color: #008fe5;
+            }
+            .mainbar-info .mainbar-qr_section .count_time .count_text {
+            margin-bottom: 10px;
+            }
+            .mainbar-info .mainbar-qr_section .count_time .time {
+            display: inline-block;
+            position: relative;
+            font-style: italic;
+            font-size:12px;
+            }
+            .mainbar-info .mainbar-qr_section .count_time .time i {
+            width: 10px;
+            height: 10px;
+            border: 1px solid #333;
+            border-bottom-color: transparent;
+            border-radius: 100%;
+            position: absolute;
+            top: 50%;
+            left: -14px;
+            margin-top: -6px;
+            margin-left: -6px;
+            opacity: 1;
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=" 0 ")";
+            filter: alpha(opacity=0);
+            -webkit-animation: rotate 0.5s linear infinite;
+            animation: rotate 0.5s linear infinite;
+            opacity: 1;
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=" 100 ")";
+            filter: alpha(opacity=100);
+            }
+            .mainbar-info .mainbar-qr_instruction {
+            max-width: 300px;
+            margin: auto;
+            text-align: center;
+            color: #212121;
+            line-height: 24px;
+            }
+            form#form_update_shipping_method {
+            position: relative;
+            }
+            .order-checkout__loading { position: static; }
+            .order-checkout__loading--box{
+            position: absolute;
+            left: 0;
+            top: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            display: -webkit-flex;
+            display: flex;
+            opacity: 0;
+            visibility: hidden;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            }
+            .order-checkout__loading--box.show {
+            z-index: 2;
+            visibility: visible;
+            opacity: 1;
+            }
+            .order-checkout__loading--circle {
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #5cabe0;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            margin: 0;
+            -webkit-transform-origin: 50%;
+            -o-transform-origin: 50%;
+            -ms-transform-origin: 50%;
+            transform-origin: 50%;
+            -moz-animation: spin 700ms infinite linear;
+            -ms-animation: spin 1.5s infinite linear;
+            -webkit-animation: spin 700ms infinite linear;
+            -o-animation: spin 700ms infinite linear;
+            animation: spin 700ms infinite linear;
+            z-index: 1;
+            }
+            .order-checkout__loading--box.show:after {
+            content: "";
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            z-index: 3;
+            }
+            .step-sections { position: relative; z-index: 3; }
+            @media (max-width: 767px){
+            .order-checkout__loading--box{ position: fixed; }
+            .order-checkout__loading--box.show:after { display: none; }
+            }
+            .order-checkout__loading--show .order-checkout__loading--box {
+            display:block;
+            }
+            @-moz-keyframes spin {
+            100% {
+            -moz-transform: rotate(360deg);
+            }
+            }
+            @-webkit-keyframes spin {
+            100% {
+            -webkit-transform: rotate(360deg);
+            }
+            }
+            @keyframes spin {
+            100% {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+            }
+            }
+            .redeem-login {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            }
+            .redeem-login-title {
+            position: relative;
+            display: flex;
+            flex-wrap: wrap;
+            }
+            .redeem-login-title h2 {
+            color: #333;
+            margin-right: 5px;
+            }
+            .redeem-login-btn a {
+            display: inline-block;
+            border-radius: 4px;
+            font-weight: 500;
+            padding: 13px 10px;
+            background: #338dbc;
+            color: #fff;
+            width: 82px;
+            text-align: center;
+            }
+            .redeem-form-used
+            {
+            padding-top : 10px;
+            }
+            .btn-redeem-loading .btn-redeem-spinner {
+            -webkit-animation: rotate 0.5s linear infinite;
+            animation: rotate 0.5s linear infinite;
+            opacity: 1;
+            -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=" 100 ")";
+            filter: alpha(opacity=100);
+            }
+            .icon-redeem-button-spinner {
+            position: absolute;
+            top: 0;
+            opacity: 0;
+            right: -25px;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #999999;
+            border-bottom-color: transparent;
+            border-radius: 100%;
+            }
+            .total-line-table-footer {
+            white-space: nowrap;
+            }
+            .row-align-top {
+            vertical-align: top;
+            }
+        meta(name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2, user-scalable=no")
+        script(type="text/javascript").
+            var parseQueryString = function(url) {
+                    var str = url;
+                    var objURL = {};
+                    str.replace(
+                    new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+                    function($0, $1, $2, $3) {
+                    if($3 != undefined && $3 != null)
+                    objURL[$1] = decodeURIComponent($3);
+                    else
+                    objURL[$1] = $3;
+                    });
+                    return objURL;
+                    };
+        script(type="text/javascript").
+            window.onpageshow = function(event) {
+                if (event.persisted) {
+                    var currentUrl = '';
+
+                    currentUrl = '/checkouts/72587dc705494cf98a8660d70ed3e6160S652435c2?step=1';
+
+
+                    if (currentUrl)
+                        window.location = currentUrl;
+                }
+            };
+
+
+            function funcChangeCustomerAddress() {
+                var selected = $(this).find(':selected');
+                if (selected && selected.length > 0) {
+                    var data = $(selected).attr('data-properties');
+                    if (data) {
+                        try {
+                            var obj = $.parseJSON(data);
+
+                            var elementFullName = $('body').find('input#billing_address_full_name');
+                            if (elementFullName && elementFullName.length > 0)
+                                $(elementFullName).val((obj.last_name ? (obj.last_name + (obj.first_name ? ' ' : '')) : '') + (obj.first_name ? obj.first_name : ''));
+
+                            var elementPhone = $('body').find('input#billing_address_phone');
+                            if (elementPhone && elementPhone.length > 0)
+                                $(elementPhone).val(obj.phone ? obj.phone : '');
+
+                            var elementAddress1 = $('body').find('input#billing_address_address1');
+                            if (elementAddress1 && elementAddress1.length > 0)
+                                $(elementAddress1).val(obj.address1 ? obj.address1 : '');
+
+                            var elementCity = $('body').find('input#billing_address_city');
+                            if (elementCity && elementCity.length > 0)
+                                $(elementCity).val(obj.city ? obj.city : '');
+
+                            var elementZip = $('body').find('input#billing_address_zip');
+                            if (elementZip && elementZip.length > 0)
+                                $(elementZip).val(obj.zip ? obj.zip : '');
+
+                            $('.section-customer-information .field input').blur();
+
+                            var elementCountry = $('body').find('select#customer_shipping_country');
+                            if (elementCountry && elementCountry.length > 0) {
+                                if (!obj.country_id)
+                                    obj.country_id = null;
+
+                                var option = $(elementCountry).find('option[value=' + obj.country_id + ']');
+
+                                if (option && option.length > 0 &&
+                                    $(elementCountry).val() != option.val()) {
+                                    $(elementCountry).val(option.val());
+                                    $(elementCountry).blur();
+                                    $(elementCountry).change();
+                                }
+                            }
+                            var province_selected = $('body').find('input[name=selected_customer_shipping_province]');
+                            if (province_selected && province_selected.length > 0) {
+                                $(province_selected).val(obj.province_id ? obj.province_id : '');
+                            }
+
+                            var elementDistrict = $('body').find('input[name=customer_shipping_district]');
+                            if (elementDistrict && elementDistrict.length > 0) {
+                                $(elementDistrict).val(obj.district_id ? obj.district_id : '');
+                            }
+
+                            var district_selected = $('body').find('input[name=selected_customer_shipping_district]');
+                            if (district_selected && district_selected.length > 0) {
+                                $(district_selected).val(obj.district_id ? obj.district_id : '');
+                            }
+
+                            var elementWard = $('body').find('input[name=customer_shipping_ward]');
+                            if (elementWard && elementWard.length > 0) {
+                                $(elementWard).val(obj.wardid ? obj.wardid : '');
+
+                            }
+
+                            var ward_selected = $('body').find('input[name=selected_customer_shipping_ward]');
+                            if (ward_selected && ward_selected.length > 0) {
+                                $(ward_selected).val(obj.wardid ? obj.wardid : '');
+                            }
+
+                            var hasChangeProvince = false;
+                            var elementProvince = $('body').find('select#customer_shipping_province');
+                            if (elementProvince && elementProvince.length > 0) {
+                                if (!obj.province_id)
+                                    obj.province_id = null;
+
+                                var option = $(elementProvince).find('option[value=' + obj.province_id + ']');
+
+                                if (option && option.length > 0 &&
+                                    $(elementProvince).val() != option.val()) {
+                                    $(elementProvince).val(option.val());
+                                    $(elementProvince).blur();
+                                    $(elementProvince).change();
+                                    hasChangeProvince = true;
+                                }
+
+                                if (!hasChangeProvince) {
+                                    var hasChangeDistrict = false;
+                                    var elementDistrict = $('body').find('select#customer_shipping_district');
+                                    if (elementDistrict && elementDistrict.length > 0) {
+                                        if (!obj.district_id)
+                                            obj.district_id = null;
+
+                                        var option = $(elementDistrict).find('option[value=' + obj.district_id + ']');
+
+                                        if (option && option.length > 0 &&
+                                            $(elementDistrict).val() != option.val()) {
+                                            $(elementDistrict).val(option.val());
+                                            $(elementDistrict).blur();
+                                            $(elementDistrict).change();
+                                            hasChangeDistrict = true;
+                                        }
+                                    }
+
+                                    if (!hasChangeDistrict) {
+                                        var elementWard = $('body').find('select#customer_shipping_ward');
+                                        if (elementWard && elementWard.length > 0) {
+                                            if (!obj.wardid)
+                                                obj.wardid = null;
+
+                                            var option = $(elementWard).find('option[value=' + obj.wardid + ']');
+
+                                            if (option && option.length > 0 &&
+                                                $(elementWard).val() != option.val()) {
+                                                $(elementWard).val(option.val());
+                                                $(elementWard).blur();
+                                                $(elementWard).change();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        } catch (e) {}
+                    }
+                }
+            };
+
+            var isInit = false;
+
+            function funcFormOnSubmit_old(e) {
+                if (!isInit) {
+                    isInit = true;
+
+                    $.fn.tagName = function() {
+                        return this.prop("tagName").toLowerCase();
+                    };
+                }
+
+                if (typeof(e) == 'string') {
+                    var element = $(e);
+                    var formData = e;
+                } else {
+                    var element = this;
+                    var formData = this;
+                    e.preventDefault();
+                }
+
+                $(element).find('button:submit').addClass('btn-loading');
+
+                var formId = $(element).attr('id'),
+                    replaceElement = [],
+                    funcCallback;
+
+                if (formId == undefined || formId == null || formId == '')
+                    return;
+                if (formId == 'form_update_location_customer_shipping' || formId == 'form_update_location' || formId == 'form_update_shipping_method') {
+                    if ($('.order-checkout__loading--box').length > 0) {
+                        $('.order-checkout__loading--box').addClass('show');
+                    }
+                }
+
+
+                if (formId == 'form_next_step') {
+                    formData = '.step-sections';
+                    replaceElement.push('.step-sections');
+                } else if (
+                    formId == 'form_redeem_add' ||
+                    formId == 'form_redeem_remove' ||
+                    formId == 'form_discount_add' ||
+                    formId == 'form_discount_remove' ||
+                    formId == 'form_update_location'
+
+
+                    ||
+                    formId == 'section-shipping-rate'
+
+                ) {
+                    replaceElement.push('#form_update_location');
+                    replaceElement.push('#change_pick_location_or_shipping');
+                    replaceElement.push('.inventory_location_data');
+                    replaceElement.push('.order-summary-toggle-inner .order-summary-toggle-total-recap');
+                    replaceElement.push('.order-summary-sections');
+                    replaceElement.push('.order-summary-section.order-summary-section-total-lines.total-line-table.total-line-table-footer');
+                    replaceElement.push('.order-summary-section.order-summary-section-total-lines.total-line-table.total-line.total-line-redeem');
+                    replaceElement.push('.order-summary-section.order-summary-section-redeem.redeem-login-section');
+
+                    replaceElement.push('#section-shipping-rate');
+
+                }
+
+
+                if (!$(formData) || $(formData).length == 0) {
+                    window.location.reload();
+                    return false;
+                }
+
+                var inputurl = '';
+
+                if (($(formData).tagName() != 'form' && $(formData).tagName() != 'input' && $(formData).tagName() != 'div') ||
+                    ($(formData).tagName() == 'input' || $(formData).tagName() == 'div')) {
+
+                    formData += ' :input';
+                }
+                try {
+                    var listparameters = new URLSearchParams($(formData).serialize());
+                    var provincetmp = $('body').find('input[name$="selected_customer_shipping_province"]').val();
+                    if (provincetmp != '') listparameters.set('customer_shipping_province', provincetmp);
+
+                    var districttmp = $('body').find('input[name$="selected_customer_shipping_district"]').val();
+                    if (districttmp != '') listparameters.set('customer_shipping_district', districttmp);
+
+                    var wardtmp = $('body').find('input[name$="selected_customer_shipping_ward"]').val();
+                    if (wardtmp != '') listparameters.set('customer_shipping_ward', wardtmp);
+                    listparameters.delete('selected_customer_shipping_province');
+                    listparameters.delete('selected_customer_shipping_district');
+                    listparameters.delete('selected_customer_shipping_ward');
+                    inputurl = listparameters.toString();
+                
+                } catch (err) {
+
+                    // Older Browser URLSearchParams not support
+                    var listparameters = parseQueryString($(formData).serialize());
+                    var provincetmp = $('body').find('input[name$="selected_customer_shipping_province"]').val();
+                    if (provincetmp != '' && listparameters.customer_shipping_province) listparameters.customer_shipping_province = provincetmp;
+
+                    var districttmp = $('body').find('input[name$="selected_customer_shipping_district"]').val();
+                    if (districttmp != '' && listparameters.customer_shipping_district) listparameters.customer_shipping_district = districttmp;
+
+                    var wardtmp = $('body').find('input[name$="selected_customer_shipping_ward"]').val();
+                    if (wardtmp != '' && listparameters.customer_shipping_ward) listparameters.customer_shipping_ward = wardtmp;
+                
+                    delete listparameters.selected_customer_shipping_province;
+                    delete listparameters.selected_customer_shipping_district;
+                    delete listparameters.selected_customer_shipping_ward;
+
+                    var listObject = '';
+                    for (var key in listparameters) {
+                        listObject += '&' + key + '=' + encodeURIComponent(listparameters[key]);
+                    };
+                    inputurl = listObject.substring(1);
+
+                }
+
+                $.ajax({
+                    type: 'GET',
+                    url: window.location.origin + window.location.pathname + '/' + inputurl + encodeURI('&form_name=' + formId),
+                    success: function(html) {
+                        if ($(html).attr('id') == 'redirect-url') {
+                            window.location = $(html).val();
+                        } else {
+                            if (replaceElement.length > 0) {
+                                for (var i = 0; i < replaceElement.length; i++) {
+                                    var tempElement = replaceElement[i];
+                                    var newElement = $(html).find(tempElement);
+
+                                    if (newElement.length > 0) {
+                                        if (tempElement == '.step-sections')
+                                            $(tempElement).attr('step', $(newElement).attr('step'));
+
+                                        var listTempElement = $(tempElement);
+
+                                        for (var j = 0; j < newElement.length; j++)
+                                            if (j < listTempElement.length)
+                                                $(listTempElement[j]).html($(newElement[j]).html());
+                                    }
+                                }
+                            }
+
+
+                            $("#div_location_country_not_vietnam").hide();
+                            var is_vietnam = $("#is_vietnam").val();
+                            if (is_vietnam && is_vietnam == "true") {
+                                $("#div_country_not_vietnam").hide();
+                            } else {
+                                $("#div_country_not_vietnam").show();
+                            }
+
+
+
+                            $('body').attr('src', $(html).attr('src'));
+                            $(element).find('button:submit').removeClass('btn-loading');
+
+                            if (($('body').find('.field-error') && $('body').find('.field-error').length > 0) ||
+                                ($('body').find('.has-error') && $('body').find('.has-error').length > 0)) {
+                                $("html, body").animate({
+                                    scrollTop: 0
+                                }, "slow");
+                            }
+                            if (formId == 'form_update_location_customer_shipping' || formId == 'form_update_location' || formId == 'form_update_shipping_method') {
+                                if ($('.order-checkout__loading--box').length > 0) {
+                                    $('.order-checkout__loading--box').removeClass('show');
+                                }
+                            }
+                            if (funcCallback)
+                                funcCallback();
+                        }
+                    }
+                }).fail(function() {
+                    $(element).find('button:submit').removeClass('btn-loading');
+                    if (formId == 'form_update_location_customer_shipping' || formId == 'form_update_location' || formId == 'form_update_shipping_method') {
+                        if ($('.order-checkout__loading--box').length > 0) {
+                            $('.order-checkout__loading--box').removeClass('show');
+                        }
+                    }
+                });
+
+                return false;
+            };
+
+        
+            const requestValidate = (validation, data)=> {
+                try {
+                    const result = {};
+                    Object.keys(validation).map((key) => {
+                        const vl = typeof data[key] == 'number' ? data[key] : (data[key] || null);
+                
+                        const validateResults = validateWithKey(key, validation[key], vl).filter((item) => item);
+                        if (validateResults && validateResults.length > 0) {
+                            result[key] = validateResults;
+                        }
+                    });
+                    return {
+                        errors: result,
+                        success: !Object.keys(result)[0]
+                    };
+                }
+                catch (err) {
+                    console.log(err.message);
+                }
+            }
+
+            const validateWithKey = (name, validations, data) => {
+                if (validations) {
+                    return validations.map((item) => {    
+                        const keySplitted = item.split(":");
+                        const keyName = keySplitted.length > 1 ? keySplitted[0].toString() : item;
+                        const length = keySplitted.length > 1 ? parseInt(keySplitted[1].toString()) : 0;
+                        name = keySplitted.length > 1 &&  keySplitted[0] == 'required' ? keySplitted[1] : `${ name } là bắt buộc`;
+                        if (handleFunction[keyName]) {
+                            return handleFunction[keyName](name, data, length); 
+                        }
+                        else {
+                            throw new Error("Không xác minh được " + item);
+                        }
+                    });
+                }
+            }
+
+            const message = {
+                required: (name) => `${ name }`,
+                minLength: (name, length) => `${ name } có độ dài hơn ${ length } kí tự`,
+                maxLength: (name, length) => `${ name } có độ dài dưới ${ length } kí tự`,
+                email: (value) => `Vui lòng nhập đúng định dạng Email`,
+                phone: (value) => `Vui lòng nhập đúng định dạng số điện thoại`,
+            }
+
+            const handleFunction = {
+                required: (key, value, length) => value && value != 'null' ? null : message.required(key),
+                minLength: (key, value, minLength) => value && value.length >= minLength ? null : message.minLength(key, minLength),
+                maxLength: (key, value, length) => value && value.length <= length ? null : message.minLength(key, length),
+                email: (key, value, length) => value && validateEmail(value) ? null : message.email(value),
+                phone: (key, value, length) => !value || validatePhone(value) ? null : message.phone(value)
+            }
+
+            const validateEmail = (email) => {
+                var reGex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return reGex.test(email);
+            }
+
+            const validatePhone = (phone) => {
+                var reGex = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4,5})[-. ]?([0-9]{4})$/;
+                return reGex.test(phone);
+            }
+
+            const formatWithCommas = (number) => {
+                return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + "đ";
+            }
+            function handlingShoppping(data){
+                const shippings = data.shippings
+                if(shippings){
+                    const desShipping = {
+                        normal: 'Giao hàng tận nơi',
+                        fast: 'Giao hàng tận nơi nhanh chóng'
+                    }
+                    let shippingSection = `<div class="content-box"><div class="content-box-row">`;
+                    for(sh in shippings){
+                        shippingSection +=  `
+                        <div class="radio-wrapper shipping_field">
+                            <label class="radio-label" for="shipping_rate_id_${sh}">
+                                <div class="radio-input">
+                                    <input class="input-radio" id="shipping_rate_id_${sh}" type="radio" data-price = "${shippings[sh]}" name="shipping_rate_id" value="${sh}">
+                                </div>
+                                <span class="radio-label-primary">${desShipping[sh]}</span><span class="radio-accessory content-box-emphasis">${formatWithCommas(shippings[sh])}</span>
+                            </label>
+                        </div>
+                        `
+                    }
+                        shippingSection += `</div></div>` 
+                    
+                    
+                    $('#section-shipping-rate .section-content').html(shippingSection);
+                    $("input[name='shipping_rate_id']").first().prop('checked', true);
+                    const shippingPrice = $("input[name='shipping_rate_id']:checked").attr('data-price');
+                    $('.total-line-shipping .total-line-price .order-summary-emphasis').text(formatWithCommas(shippingPrice));
+                    $('.payment-due-price').text(formatWithCommas(parseInt(shippingPrice) + data.cartTotal));
+                    
+                }
+            }
+
+            function updatePriceCheckoutFront(){
+                const subtotalSidebar = $('.total-line-subtotal .order-summary-emphasis').attr('data-checkout-subtotal-price-target')
+                const shippingSidebar =  $('.total-line-shipping .order-summary-emphasis').attr('data-checkout-total-shipping-target');
+
+                $('.total-line-shipping .total-line-price .order-summary-emphasis').text(formatWithCommas(shippingSidebar));
+                $('.payment-due-price').text(formatWithCommas(parseInt(shippingSidebar) + parseInt(subtotalSidebar)));
+            }
+
+            function funcFormOnSubmit(e) {
+                if (!isInit) {
+                    isInit = true;
+
+                    $.fn.tagName = function() {
+                        return this.prop("tagName").toLowerCase();
+                    };
+                }
+
+                if (typeof(e) == 'string') {
+                    var element = $(e);
+                    var formData = e;
+                } else {
+                    var element = this;
+                    var formData = this;
+                    e.preventDefault();
+                }
+
+                $(element).find('button:submit').addClass('btn-loading');
+
+                var formId = $(element).attr('id'),
+                    replaceElement = [],
+                    funcCallback;
+
+                if (formId == undefined || formId == null || formId == '')
+                    return;
+                if (formId == 'form_update_location_customer_shipping' || formId == 'form_update_location' || formId == 'form_update_shipping_method') {
+                    if ($('.order-checkout__loading--box').length > 0) {
+                        $('.order-checkout__loading--box').addClass('show');
+                    }
+                }
+
+
+                if (formId == 'form_next_step') {
+                    formData = '.step-sections';
+                    replaceElement.push('.step-sections');
+                } else if (
+                    formId == 'form_redeem_add' ||
+                    formId == 'form_redeem_remove' ||
+                    formId == 'form_discount_add' ||
+                    formId == 'form_discount_remove' ||
+                    formId == 'form_update_location'
+
+
+                    ||
+                    formId == 'section-shipping-rate'
+
+                ) {
+                    replaceElement.push('#form_update_location');
+                    replaceElement.push('#change_pick_location_or_shipping');
+                    replaceElement.push('.inventory_location_data');
+                    replaceElement.push('.order-summary-toggle-inner .order-summary-toggle-total-recap');
+                    replaceElement.push('.order-summary-sections');
+                    replaceElement.push('.order-summary-section.order-summary-section-total-lines.total-line-table.total-line-table-footer');
+                    replaceElement.push('.order-summary-section.order-summary-section-total-lines.total-line-table.total-line.total-line-redeem');
+                    replaceElement.push('.order-summary-section.order-summary-section-redeem.redeem-login-section');
+
+                    replaceElement.push('#section-shipping-rate');
+
+                }
+
+
+                if (!$(formData) || $(formData).length == 0) {
+                    window.location.reload();
+                    return false;
+                }
+
+                var inputurl = '';
+
+                if (($(formData).tagName() != 'form' && $(formData).tagName() != 'input' && $(formData).tagName() != 'div') ||
+                    ($(formData).tagName() == 'input' || $(formData).tagName() == 'div')) {
+
+                    formData += ' :input';
+                }
+                
+                try {
+                    var listparameters = new URLSearchParams($(formData).serialize());
+                    
+                    var provincetmp = $('body').find('input[name$="selected_customer_shipping_province"]').val();
+                    if (provincetmp != '') listparameters.set('customer_shipping_province', provincetmp);
+
+                    var districttmp = $('body').find('input[name$="selected_customer_shipping_district"]').val();
+                    if (districttmp != '') listparameters.set('customer_shipping_district', districttmp);
+
+                    var wardtmp = $('body').find('input[name$="selected_customer_shipping_ward"]').val();
+                    if (wardtmp != '') listparameters.set('customer_shipping_ward', wardtmp);
+            
+                    listparameters.delete('selected_customer_shipping_province');
+                    listparameters.delete('selected_customer_shipping_district');
+                    listparameters.delete('selected_customer_shipping_ward');
+                    inputurl = listparameters.toString();
+
+                    if(formId == 'form_next_step'){
+                        var checkFields = {
+                            'full-name_field':listparameters.get('billing_address[full_name]'),
+                            'phone_field': listparameters.get('billing_address[phone]').trim(),
+                            'address1_field': listparameters.get('billing_address[address1]').trim(),
+                            'province_field': listparameters.get('customer_shipping_province'),
+                            'district_field': listparameters.get('customer_shipping_district'),
+                            'ward_field': listparameters.get('customer_shipping_ward'),
+                            'shipping_field': listparameters.get('shipping_rate_id'),
+                            'payment_field': listparameters.get('payment_method_id')
+                        }
+                    
+                    }
+                
+                } catch (err) {
+
+                    // Older Browser URLSearchParams not support
+                    var listparameters = parseQueryString($(formData).serialize());
+                
+                    var provincetmp = $('body').find('input[name$="selected_customer_shipping_province"]').val();
+                    if (provincetmp != '' && listparameters.customer_shipping_province) listparameters.customer_shipping_province = provincetmp;
+
+                    var districttmp = $('body').find('input[name$="selected_customer_shipping_district"]').val();
+                    if (districttmp != '' && listparameters.customer_shipping_district) listparameters.customer_shipping_district = districttmp;
+
+                    delete listparameters.selected_customer_shipping_province;
+                    delete listparameters.selected_customer_shipping_district;
+                    delete listparameters.selected_customer_shipping_ward;
+
+                    var listObject = '';
+                    
+                    for (var key in listparameters) {
+                        listObject += '&' + key + '=' + encodeURIComponent(listparameters[key]);
+                    };
+                    inputurl = listObject.substring(1);
+            
+                    if(formId == 'form_next_step'){
+                        var checkFields = {
+                            'full-name_field':listparameters.get('billing_address[full_name]'),
+                            'phone_field': listparameters.get('billing_address[phone]').trim(),
+                            'address1_field': listparameters.get('billing_address[address1]').trim(),
+                            'province_field': listparameters.get('customer_shipping_province'),
+                            'district_field': listparameters.get('customer_shipping_district'),
+                            'ward_field': listparameters.get('customer_shipping_ward'),
+                            'shipping_field': listparameters.get('shipping_rate_id'),
+                            'payment_field': listparameters.get('payment_method_id')
+                        }
+                        
+                    }
+
+                }
+                
+                if(formId == 'form_update_location'){
+                    updatePriceCheckoutFront();
+
+                    $.ajax({
+                        type: 'GET',
+                        url: window.location.origin + window.location.pathname + '/' + encodeURI(formId) + '?' + inputurl,
+                        success: function(data) {
+                            let listOptionDistrict = '<option data-code="null" value="null">Chọn quận / huyện</option>';
+                            let listOptionWard = '<option data-code="null" value="null">Chọn phường / xã</option>';
+                            
+
+                            if(data.ward){
+                                handlingShoppping(data);
+                            }else if(data.wards && data.wards[0]){
+                                const wards = data.wards;
+                                wards.forEach(ward => {
+                                    listOptionWard +=  `<option data-code="${ward.wardid}" value="${ward.wardid}">${ward.name}</option>`
+                                });
+                            
+                                $('#customer_shipping_ward').html(listOptionWard);
+                                
+                                handlingShoppping(data);
+                                
+                            }else if(data.districts && data.districts[0]){
+                                const districts = data.districts;
+        
+                                districts.forEach(district => {
+                                    listOptionDistrict +=  `<option data-code="${district.districtid}" value="${district.districtid}">${district.name}</option>`
+                                });
+                            
+                                $('#customer_shipping_district').html(listOptionDistrict);
+                                $('#customer_shipping_ward').html(listOptionWard);
+                                $('#section-shipping-rate .section-content ').html(`<div class="content-box  blank-slate">
+                                                                                <i class="blank-slate-icon icon icon-closed-box "></i>
+                                                                                <p>Vui lòng chọn quận / huyện để có danh sách phương thức vận chuyển.</p>
+                                                                            </div>`);
+
+                            }else{
+                            
+                                $('#customer_shipping_district').html(listOptionDistrict);
+                                $('#customer_shipping_ward').html(listOptionWard);
+                                $('#section-shipping-rate .section-content').html(`<div class="content-box  blank-slate">
+                                                                                <i class="blank-slate-icon icon icon-closed-box "></i>
+                                                                                <p>Vui lòng chọn tỉnh / thành để có danh sách phương thức vận chuyển.</p>
+                                                                            </div>`);
+                                
+                            }
+
+                            if ($('.order-checkout__loading--box').length > 0) {
+                                $('.order-checkout__loading--box').removeClass('show');
+                            }
+                            //- if ($(html).attr('id') == 'redirect-url') {
+                            //-     window.location = $(html).val();
+                            //- } else {
+                            //-     if (replaceElement.length > 0) {
+                            //-         for (var i = 0; i < replaceElement.length; i++) {
+                            //-             var tempElement = replaceElement[i];
+                            //-             var newElement = $(html).find(tempElement);
+
+                            //-             if (newElement.length > 0) {
+                            //-                 if (tempElement == '.step-sections')
+                            //-                     $(tempElement).attr('step', $(newElement).attr('step'));
+
+                            //-                 var listTempElement = $(tempElement);
+
+                            //-                 for (var j = 0; j < newElement.length; j++)
+                            //-                     if (j < listTempElement.length)
+                            //-                         $(listTempElement[j]).html($(newElement[j]).html());
+                            //-             }
+                            //-         }
+                            //-     }
+
+
+                            //-     $("#div_location_country_not_vietnam").hide();
+                            //-     var is_vietnam = $("#is_vietnam").val();
+                            //-     if (is_vietnam && is_vietnam == "true") {
+                            //-         $("#div_country_not_vietnam").hide();
+                            //-     } else {
+                            //-         $("#div_country_not_vietnam").show();
+                            //-     }
+
+
+
+                            //-     $('body').attr('src', $(html).attr('src'));
+                            //-     $(element).find('button:submit').removeClass('btn-loading');
+
+                            //-     if (($('body').find('.field-error') && $('body').find('.field-error').length > 0) ||
+                            //-         ($('body').find('.has-error') && $('body').find('.has-error').length > 0)) {
+                            //-         $("html, body").animate({
+                            //-             scrollTop: 0
+                            //-         }, "slow");
+                            //-     }
+                            //-     if (formId == 'form_update_location_customer_shipping' || formId == 'form_update_location' || formId == 'form_update_shipping_method') {
+                            //-         if ($('.order-checkout__loading--box').length > 0) {
+                            //-             $('.order-checkout__loading--box').removeClass('show');
+                            //-         }
+                            //-     }
+                            //-     if (funcCallback)
+                            //-         funcCallback();
+                            //- }
+                        }
+                    }).fail(function() {
+                        $(element).find('button:submit').removeClass('btn-loading');
+                        if ($('.order-checkout__loading--box').length > 0) {
+                                $('.order-checkout__loading--box').removeClass('show');
+                            }
+                    });
+                }else if(formId == 'form_discount_add'){
+
+                }else if(formId == 'section-shipping-rate'){
+                    updatePriceCheckoutFront();
+                    const shippingPrice = $("input[name='shipping_rate_id']:checked").attr('data-price');
+                    $('.total-line-shipping .total-line-price .order-summary-emphasis').text(formatWithCommas(shippingPrice));
+                    const subtotalSidebar = $('.total-line-subtotal .order-summary-emphasis').attr('data-checkout-subtotal-price-target')
+                    $('.payment-due-price').text(formatWithCommas(parseInt(shippingPrice) + parseInt(subtotalSidebar)));
+
+                }else if(formId == 'form_next_step'){
+                    
+                    const validation = {
+                        'full-name_field': ['required: Vui lòng nhập họ tên'],
+                        'phone_field': ['required: Số điện thoại không được trống', 'phone'],
+                        'address1_field': ['required: Địa chỉ không được trống'],
+                        'province_field': ['required: Vui lòng chọn tỉnh thành'],
+                        'district_field': ['required: Vui lòng chọn quận huyện'],
+                        'ward_field': ['required: Vui lòng chọn phường xã'],
+                        'shipping_field': ['required'],
+                        'payment_field': ['required']     
+                    }
+                    const checkAction = requestValidate(validation, checkFields );
+                    if (!checkAction.success) {
+                        const message = checkAction.errors;
+                            if(message && Object.keys(message)[0]){
+                                $('.field-message-error').remove();
+                                $('.field-error').removeClass('field-error');
+                                for (const property in message) {
+                                    message[property].forEach(function(mess){
+                                        $(`.${property}`).append(`<p class="field-message field-message-error">${mess}</p>`);
+                                        $(`.${property}`).addClass('field-error')
+                                    })
+                                }
+                        }
+                        $(element).find('button:submit').removeClass('btn-loading');
+                        if ($('.order-checkout__loading--box').length > 0) {
+                            $('.order-checkout__loading--box').removeClass('show');
+                        }
+                        return ;
+                    }
+                    $.ajax({
+                        type: 'POST',
+                        url: window.location.origin + window.location.pathname + '/payment',
+                        data: inputurl,
+                        success: function(data) {
+                            
+                            if(data.url){
+                                window.location = data.url;
+                            }else{
+                                location.reload();
+                            }
+                            $(element).find('button:submit').removeClass('btn-loading');
+                            if ($('.order-checkout__loading--box').length > 0) {
+                                $('.order-checkout__loading--box').removeClass('show');
+                            }
+                    
+                        }
+                    
+                    }).fail(function(err) {
+                        $(element).find('button:submit').removeClass('btn-loading');
+                        if ($('.order-checkout__loading--box').length > 0) {
+                            $('.order-checkout__loading--box').removeClass('show');
+                        }
+                        if(err.responseJSON.message)
+                            alert(err.responseJSON.message)
+                        if(err.responseJSON.errors){
+                            const message = err.responseJSON.errors;
+                            if(message && Object.keys(message)[0]){
+                                $('.field-message-error').remove();
+                                $('.field-error').removeClass('field-error');
+                                for (const property in message) {
+                                    message[property].forEach(function(mess){
+                                        $(`.${property}`).append(`<p class="field-message field-message-error">${mess}</p>`);
+                                        $(`.${property}`).addClass('field-error')
+                                    })
+                                }
+                            }
+                        }
+                        if(err.responseJSON.url)  window.location = err.responseJSON.url;
+                    });
+                }
+                
+
+                return false;
+            };
+
+            function funcSetEvent() {
+                var effectControlFieldClass = '.field input, .field select, .field textarea';
+
+                $('body')
+                    .on('focus', effectControlFieldClass, function() {
+                        funcFieldFocus($(this), true);
+                    })
+                    .on('blur', effectControlFieldClass, function() {
+                        funcFieldFocus($(this), false);
+                        funcFieldHasValue($(this), true);
+                    })
+                    .on('keyup input paste', effectControlFieldClass, function() {
+                        funcFieldHasValue($(this), false);
+                    })
+                    .on('submit', 'form', funcFormOnSubmit);
+
+
+
+
+                $("#div_location_country_not_vietnam").hide();
+                $("#is_vietnam").val("true");
+                $("#div_country_not_vietnam").hide();
+
+
+
+
+                $('body')
+                    .on('change', 'select#stored_addresses', funcChangeCustomerAddress);
+
+
+
+                $('body')
+                    .on('change', '#form_update_location', function() {
+                        $(this).submit();
+                    });
+
+
+                $('body')
+
+                    .on('change', '#form_update_location select[name=customer_shipping_country]', function() {
+                        var currentCountry = $(this).val();
+                        if (currentCountry && currentCountry != "null" && currentCountry != 241) {
+                            $("#is_vietnam").val("false");
+                            $("#div_country_not_vietnam").show();
+                        } else {
+                            $("#is_vietnam").val("true");
+                            $("#div_country_not_vietnam").hide();
+                        }
+                    })
+
+                    .on('change', '#form_update_location select[name=customer_shipping_district]', function() {
+                        $('.section-customer-information input:hidden[name=customer_shipping_district]').val($(this).val());
+                    })
+                    .on('change', '#form_update_location select[name=customer_shipping_ward]', function() {
+                        $('.section-customer-information input:hidden[name=customer_shipping_ward]').val($(this).val());
+                    });
+
+
+
+                $('body')
+                    .on('change', '#form_update_shipping_method input:radio', function() {
+                        $('#form_update_shipping_method .content-box-row.content-box-row-secondary').addClass('hidden');
+
+                        var id = $(this).attr('id');
+
+                        if (id) {
+                            var sub = $('body').find('.content-box-row.content-box-row-secondary[for=' + id + ']')
+
+                            if (sub && sub.length > 0) {
+                                $(sub).removeClass('hidden');
+                            }
+                        }
+                    });
+
+
+
+                $('body')
+                    .on('change', '#section-payment-method input:radio', function() {
+                        $('#section-payment-method .content-box-row.content-box-row-secondary').addClass('hidden');
+
+                        var id = $(this).attr('id');
+
+                        if (id) {
+                            var sub = $('body').find('.content-box-row.content-box-row-secondary[for=' + id + ']')
+
+                            if (sub && sub.length > 0) {
+                                $(sub).removeClass('hidden');
+                            }
+                        }
+                    });
+
+
+
+                $('body')
+                    .on('change', '#section-shipping-rate input:radio[name=shipping_rate_id]', function() {
+                        funcFormOnSubmit('#section-shipping-rate');
+                    });
+
+
+
+
+            };
+
+            function funcFieldFocus(fieldInputElement, isFocus) {
+                if (fieldInputElement == undefined)
+                    return;
+
+                var fieldElement = $(fieldInputElement).closest('.field');
+
+                if (fieldElement == undefined)
+                    return;
+
+                if (isFocus)
+                    $(fieldElement).addClass('field-active');
+                else
+                    $(fieldElement).removeClass('field-active');
+            };
+
+            function funcFieldHasValue(fieldInputElement, isCheckRemove) {
+                if (fieldInputElement == undefined)
+                    return;
+
+                var fieldElement = $(fieldInputElement).closest('.field');
+
+                if (fieldElement == undefined)
+                    return;
+
+                if ($(fieldElement).find('.field-input-wrapper-select').length > 0) {
+                    var value = $(fieldInputElement).find(':selected').val();
+
+                    if (value == 'null')
+                        value = undefined;
+                } else {
+                    var value = $(fieldInputElement).val();
+                }
+
+                if (!isCheckRemove) {
+                    if (value != $(fieldInputElement).attr('value'))
+                        $(fieldElement).removeClass('field-error');
+                }
+
+                var fieldInputBtnWrapperElement = $(fieldInputElement).closest('.field-input-btn-wrapper');
+
+                if (value && value.trim() != '') {
+                    $(fieldElement).addClass('field-show-floating-label');
+                    $(fieldElement).children('.field-input-wrapper').removeClass('field-error');
+                    $(fieldInputBtnWrapperElement).find('button:submit').removeClass('btn-disabled');
+                } else if (isCheckRemove) {
+                    $(fieldElement).removeClass('field-show-floating-label');
+                    $(fieldElement).children('.field-input-wrapper').addClass('field-error');
+                    $(fieldInputBtnWrapperElement).find('button:submit').addClass('btn-disabled');
+                } else {
+                    $(fieldInputBtnWrapperElement).find('button:submit').addClass('btn-disabled');
+                }
+            };
+
+            function funcInit() {
+                funcSetEvent();
+
+
+
+                $('select#stored_addresses').change();
+
+
+            }
+
+            function funcReplaceMembershipInfo(html, replaceElement) {
+                var tempElement = $(replaceElement);
+                var newElement = $(html).find(replaceElement);
+                tempElement.html(newElement.html());
+            }
+
+            function funcMembershipInfo() {
+
+                if ($('.redeem-login-title').length > 0) {
+                    $('.redeem-login-title').addClass('btn-redeem-loading');
+                    $.ajax({
+                        type: 'GET',
+                        url: window.location.origin + window.location.pathname + '/membership',
+                        success: function(html) {
+                            funcReplaceMembershipInfo(html, '.order-summary-section.order-summary-section-redeem.redeem-login-section');
+                            funcReplaceMembershipInfo(html, '.order-summary-section.order-summary-section-total-lines.payment-lines');
+                            $('.redeem-login-title').removeClass('btn-redeem-loading');
+                        }
+                    }).fail(function() {
+                        $('.redeem-login-title').removeClass('btn-redeem-loading');
+                    });
+                    return false;
+                }
+
+            }
+            $(document).ready(function() {
+
+                funcInit();
+                funcMembershipInfo();
+
+            });    
+        script(type="text/javascript").
+            var toggleShowOrderSummary = false;
+            $(document).ready(function() {
+            var currentUrl = '';
+            currentUrl = '/checkouts/8f54b6bebe214af3b622d7cb5db6dd0f?step=1';
+            if ($('#reloadValue').val().length == 0)
+            {
+            $('#reloadValue').val(currentUrl);
+            $('body').show();
+            }
+            else
+            {
+            window.location = $('#reloadValue').val();
+            $('#reloadValue').val('');
+            }
+            $('body')
+            .on('click', '.order-summary-toggle', function() {
+            toggleShowOrderSummary = !toggleShowOrderSummary;
+            if(toggleShowOrderSummary) {
+            $('.order-summary-toggle')
+            .removeClass('order-summary-toggle-hide')
+            .addClass('order-summary-toggle-show');
+            $('.sidebar:not(".sidebar-second") .sidebar-content .order-summary')
+            .removeClass('order-summary-is-collapsed')
+            .addClass('order-summary-is-expanded');
+            $('.sidebar.sidebar-second .sidebar-content .order-summary')
+            .removeClass('order-summary-is-expanded')
+            .addClass('order-summary-is-collapsed');
+            } else {
+            $('.order-summary-toggle')
+            .removeClass('order-summary-toggle-show')
+            .addClass('order-summary-toggle-hide');
+            $('.sidebar:not(".sidebar-second") .sidebar-content .order-summary')
+            .removeClass('order-summary-is-expanded')
+            .addClass('order-summary-is-collapsed');
+            $('.sidebar.sidebar-second .sidebar-content .order-summary')
+            .removeClass('order-summary-is-collapsed')
+            .addClass('order-summary-is-expanded');
+            }
+            });
+            });
+    body
+        if cart
+            include templates/checkout/header-mobile.pug
+            .content
+                .wrap 
+                    .sidebar
+                        .sidebar-content
+                            .order-summary.order-summary-is-collapsed
+                                h2.visually-hidden Thông tin đơn hàng
+                                .order-summary-sections
+                                    include templates/checkout/sidebar-items.pug
+                                    include templates/checkout/sidebar-action.pug
+                                    include templates/checkout/sidebar-total.pug
+                    .main
+                        .main-header
+                            a.logo(href="/")
+                                h1.logo-text 160STORE
+                            ul.breadcrumb
+                                li.breadcrumb-item
+                                    a(href="/cart") Giỏ hàng
+                                li.breadcrumb-item.breadcrumb-item-current
+                                    | Thông tin giao hàng
+                        .main-content
+                            .step
+                                .step-sections.steps-onepage(step="1")
+                                    .section
+                                        include templates/checkout/main-account
+                                        #change_pick_location_or_shipping
+                                            #section-shipping-rate
+                                                .section-header
+                                                    h2.section-title Phương thức vận chuyển
+                                                .section-content
+                                                    .content-box.blank-slate
+                                                        i.blank-slate-icon.icon.icon-closed-box
+                                                        p Vui lòng chọn tỉnh / thành để có danh sách phương thức vận chuyển.
+                                            #section-payment-method.section
+                                                .section-header
+                                                    h2.section-title Phương thức thanh toán
+                                                .section-content
+                                                    .content-box.payment_field
+                                                        each val, index in payments
+                                                            if index == 0 
+                                                                .radio-wrapper.content-box-row
+                                                                    label.radio-label(for="payment_method_id_"+val.key)
+                                                                        .radio-input
+                                                                            input.input-radio(id="payment_method_id_"+ val.key name="payment_method_id" type="radio" value=val.key checked)
+                                                                        span.radio-label-primary=val.value
+                                                                .radio-wrapper.content-box-row.content-box-row-secondary(for="payment_method_id_" + val.key)
+                                                                    .blank-slate=val.description
+                                                            else
+                                                                .radio-wrapper.content-box-row
+                                                                    label.radio-label(for="payment_method_id_"+val.key)
+                                                                        .radio-input
+                                                                            input.input-radio(id="payment_method_id_"+ val.key name="payment_method_id" type="radio" value=val.key )
+                                                                        span.radio-label-primary=val.value
+                                                                .radio-wrapper.content-box-row.content-box-row-secondary.hidden(for="payment_method_id_" + val.key)
+                                                                    .blank-slate=val.description
+                                                            
+                                                        
+                                .step-footer
+                                    form#form_next_step(accept-charset="UTF-8" method="post")
+                                        input(name="utf8" type="hidden" value="✓")
+                                        button.step-footer-continue-btn.btn(type="submit")
+                                            span.btn-content Hoàn tất đơn hàng
+                                            i.btn-spinner.icon.icon-button-spinner
+                                    a.step-footer-previous-link(href="/cart")
+                                        svg.previous-link-icon.icon-chevron.icon(xmlns="http://www.w3.org/2000/svg" width="6.7" height="11.3" viewbox="0 0 6.7 11.3")
+                                            path(d="M6.7 1.1l-1-1.1-4.6 4.6-1.1 1.1 1.1 1 4.6 4.6 1-1-4.6-4.6z")
+                                        |                                     Giỏ hàng
+                        .main-footer

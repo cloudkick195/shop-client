@@ -1,0 +1,25 @@
+.order-summary-section.order-summary-section-total-lines(data-order-summary-section="payment-lines")
+    table.total-line-table
+        thead
+            tr
+                th(scope="col")
+                    span.visually-hidden Mô tả
+                th(scope="col")
+                    span.visually-hidden Giá
+        tbody
+            tr.total-line.total-line-subtotal
+                td.total-line-name Tạm tính
+                td.total-line-price
+                    span.order-summary-emphasis(data-checkout-subtotal-price-target=cart.total_price)= formatWithCommas(cart.total_price)
+            tr.total-line.total-line-shipping
+                td.total-line-name Phí vận chuyển
+                td.total-line-price
+                    span.order-summary-emphasis(data-checkout-total-shipping-target="0")
+                        | #{formatWithCommas(shipping_price)}
+        tfoot.total-line-table-footer
+            tr.total-line
+                td.total-line-name.payment-due-label
+                    span.payment-due-label-total Tổng cộng
+                td.total-line-name.payment-due
+                    span.payment-due-currency VND
+                    span.payment-due-price(data-checkout-payment-due-target=cart.total_price)=formatWithCommas(cart.total_price + shipping_price)

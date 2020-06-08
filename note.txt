@@ -1,0 +1,24 @@
+BUGS:
+1. bang product co field count la varchar e đổi lại thành int
+2. bảo mật lại cookie, không cho phép lấy cookie bằng js, sử dụng pakage cookie-session - DONE
+3. Nếu product có attribute mà không truyền attribute thì báo lỗi - DONE
+4. Trang giỏ hàng sửa link tiếp tục mua hàng
+5. trang checkout khi bấm payment, nếu không tìm thấy location dòng nào thì báo lỗi - DONE
+6. Sửa lại js , khi chọn attribute hết thì đánh dấu x - DONE
+7. update lại order thành cancel thì trigger trả lại count cho bảng product field count - DONE
+8. thiếu order description và code giảm giá
+10. khi có người dùng đăng nhập là vip thì mua số lượng sẽ giảm giá, kiểm tra checkout, cart, payment... những thứ liên quan đến tiền
+11. xóa create hoặc alter shop160_db trong file .sql
+12. Lỗi khi chọn giao_hang ở payment - DONE
+13. Xử lí order descript khỏi hacker
+14. cart total bằng 0 khi mới load trang - DONE\
+15. When registering a user, if user already exists, the user notice already exist and the user can rest the password for an existing email 
+16. When the user login
+17. Timestamp true trong sequlize để tạo 2 field là create_at và update_at
+vd: thông báo user thay đổi mật khẩu cách đây bao lâu, hoặc tạo khi nào
+18. passport cần html field input name là email và password, nếu là array customer[name]... thì ko gọi được vào LocalStrategy
+19,. đổi lại logo cho email
+20. phân trang
+21. tìm tất cả 160 hoặc 160store, icon, css, image, có link cũ dow về
+22. Add ckeditor vào product description
+http://localhost:3000/checkout/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYXJ0IjpbIl8xXzIiXSwiaWF0IjoxNTg3MjY3Njg3LCJleHAiOjE1ODc0NDA0ODd9.wsyLIrKwuPGXiuPURcbpkORzAa5YqrGwlRZbMzYJIRM/thank_you

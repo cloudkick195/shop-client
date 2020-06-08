@@ -1,0 +1,166 @@
+extends ../layout.pug
+
+block content
+    .layout-info-account
+        .title-infor-account.text-center
+            h1 T&agrave;i kho&#x1EA3;n c&#x1EE7;a b&#x1EA1;n 
+        .container
+            .row
+            .col-xs-12.col-sm-3.sidebar-account
+                .AccountSidebar
+                    h3.AccountTitle.titleSidebar T&agrave;i kho&#x1EA3;n
+                    .AccountContent
+                        .AccountList
+                            ul.list-unstyled
+                                li.current
+                                    a(href='/account') Th&ocirc;ng tin t&agrave;i kho&#x1EA3;n
+                                li
+                                    a(href='/account/orders') Danh s&aacute;ch đơn hàng;
+                                li.last
+                                    a(href='/account/logout') &Dstrok;&abreve;ng xu&#x1EA5;t
+            .col-xs-12.col-sm-9
+                .row
+                #customer_sidebar.col-xs-12
+                    .col-xs-12
+                    if message.success_default
+                        p.field-message.field-message-success.title-detail #{message.success_default}
+                    p.title-detail Th&ocirc;ng tin t&agrave;i kho&#x1EA3;n
+                    
+                    form#update_customer(accept-charset='UTF-8' action='/account/update' method='post')
+                        input(name='form_type' type='hidden' value='update_customer')
+                        input(name='utf8' type='hidden' value='✓')
+                        .phone.clearfix.large_form
+                            label.label.email Email
+                            input.text.email(autocomplete='false' type='text' value=user.email name='email' disabled='' size='30')
+                        #last_name.clearfix.large_form
+                            label.label(for='name') Họ và tên
+                            input#last_name.text(type='text' value=user.name name='name' placeholder=user.name size='30')
+                            if message.name
+                                p.field-message.field-message-error #{message.name}
+                        #gender
+                            label.label(for='gender') Gi&#x1EDB;i t&iacute;nh
+                            ul
+                                if user.gender == 'F'
+                                    li
+                                        input#radio0(type='radio' value='F' name='gender' checked)
+                                        label(for='radio0') N&#x1EEF;
+                                    li
+                                        input#radio1(type='radio' value='M' name='gender')
+                                        label(for='radio1') Nam
+                                    li
+                                        input#radio2(type='radio' value='O' name='gender')
+                                        label(for='radio2') Khác
+                                else if user.gender == 'M'
+                                    li
+                                        input#radio0(type='radio' value='F' name='gender')
+                                        label(for='radio0') N&#x1EEF;
+                                    li
+                                        input#radio1(type='radio' value='M' name='gender' checked)
+                                        label(for='radio1') Nam
+                                    li
+                                        input#radio2(type='radio' value='O' name='gender')
+                                        label(for='radio2') Khác
+                                else if user.gender == 'O'
+                                    li
+                                        input#radio0(type='radio' value='F' name='gender')
+                                        label(for='radio0') N&#x1EEF; 
+                                    li
+                                        input#radio1(type='radio' value='M' name='gender')
+                                        label(for='radio1') Nam
+                                    li
+                                        input#radio2(type='radio' value='O' name='gender' checked)
+                                        label(for='radio2') Khác
+                                else
+                                    li
+                                        input#radio0(type='radio' value='F' name='gender')
+                                        label(for='radio0') N&#x1EEF;
+                                    li
+                                        input#radio1(type='radio' value='M' name='gender')
+                                        label(for='radio1') Nam
+                                    li
+                                        input#radio2(type='radio' value='O' name='gender')
+                                        label(for='radio2') Khác
+                                if message.gender
+                                    p.field-message.field-message-error #{message.gender}
+                        #birthday.clearfix.large_form
+                            label.label(for='birthday') Ng&agrave;y sinh
+                            input#datepicker(autocomplete='off' type='text' value=user.birth_day placeholder=user.birth_day name='birthday' size='30')
+                            if message.birthday
+                                p.field-message.field-message-error #{message.birthday}
+                        #address.clearfix.large_form
+                            label.label(for='address') Địa chỉ
+                            input#last_name.text(type='text' value=user.address name='address' placeholder=user.address)
+                        #phone.clearfix.large_form
+                            label.label(for='phone') Điện thoại
+                            input#last_name.text(type='text' value=user.phone name='phone' placeholder=user.phone size='30')
+                            if message.phone
+                                p.field-message.field-message-error #{message.phone}
+                        #password.clearfix.large_form
+                            label.label(for='password') Mật khẩu
+                            input#last_name.text(type='password' name='password' placeholder='Mật khẩu (Tối thiểu 5 ký tự)', minlength='5', size='30')
+                            if message.password
+                                p.field-message.field-message-error #{message.password}
+                        
+                        #password_comfirm.clearfix.large_form
+                            label.label(for='password_comfirm') Nhập lại mật khẩu
+                            input#last_name.text(type='password' name='password_comfirm' placeholder='Nhập lại đúng mật khẩu', minlength='5', size='30')
+                            if message.password_comfirm
+                                p.field-message.field-message-error #{message.password_comfirm}
+                        .action_bottom
+                            input.btn.updateAccount(type='submit' value='Cập nhật')
+                    .clearfix
+                style.
+                    p.title-detail {
+                    margin-bottom: 20px !important;
+                    }
+                    form#update_customer input[type="text"], form#update_customer input[type="password"]{
+                    width: 40%;
+                    height: 45px;
+                    border: 1px solid transparent;
+                    background: #ededed;
+                    color: #221e20;
+                    padding: 0 20px;
+                    font-weight: 500;
+                    -webkit-appearance: none;
+                    }
+                    form#update_customer .large_form {
+                    margin-bottom: 18px;
+                    }
+                    form#update_customer #gender ul li {
+                    display: inline;
+                    margin-right: 20px;
+                    }
+                    #customer_sidebar form#update_customer label.label {
+                    display: block;
+                    color: #000 !important;
+                    text-align: left;
+                    font-size: 14px;
+                    padding-left: 0px !important;
+                    margin-bottom: 0px !important;
+                    font-weight: initial;
+                    width: 120px;
+                    float: left;
+                    line-height: 38px;
+                    }
+                    form#update_customer #gender ul li label{
+                    font-weight: initial;
+                    }
+                    form#update_customer div {
+                    display: block !important;
+                    width: 100%;
+                    clear: both;
+                    }
+                    form#update_customer  #gender ul {
+                    margin: 10px 0px 20px;
+                    float: left;
+                    }
+                    form#update_customer .phone {
+                    margin-bottom: 10px;
+                    }
+                link(href='/libs/DatePicker/themes/jquery-ui.css' rel='stylesheet' type='text/css' media='all')
+                script(src='/libs/DatePicker/jquery-ui.js')
+                script(src='/libs/DatePicker/jquery.ui.datepicker-vi.js')
+                script.
+                    $( function() {
+                         $( "#datepicker" ).datepicker( $.datepicker.regional[ "vi" ] );
+                    });

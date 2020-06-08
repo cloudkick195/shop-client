@@ -1,0 +1,596 @@
+doctype html
+html.flexbox(xmlns='http://www.w3.org/1999/xhtml', xml:lang='en', lang='en')
+  head
+    link(rel='shortcut icon', href='//theme.hstatic.net/1000253775/1000557631/14/favicon.png?v=194', type='image/png')
+    title
+      | 160STORE - Đơn hàng 160S652435
+    link(href="/stylesheets/checkout.css" rel="stylesheet" type="text/css" media="all")
+    script(src="/js/jquery.min.js" type="text/javascript")
+    script(src="/js/jquery.validate.js" type="text/javascript")
+    style.
+      .mainbar-qr h2 {
+      text-align: center;
+      font-size: 16px;
+      margin-bottom: 30px;
+      font-weight: 500;
+      color: #212121;
+      }
+      .mainbar-info .mainbar-qr_section {
+      text-align: center;
+      }
+      .mainbar-info .mainbar-qr_section .count_time {
+      margin-bottom: 10px;
+      margin-top: 30px;
+      }
+      .mainbar-info .mainbar-qr_section .count_time .time-out {
+      color: #008fe5;
+      }
+      .mainbar-info .mainbar-qr_section .count_time .count_text {
+      margin-bottom: 10px;
+      }
+      .mainbar-info .mainbar-qr_section .count_time .time {
+      display: inline-block;
+      position: relative;
+      font-style: italic;
+      font-size: 12px;
+      }
+      .mainbar-info .mainbar-qr_section .count_time .time i {
+      width: 10px;
+      height: 10px;
+      border: 1px solid #333;
+      border-bottom-color: transparent;
+      border-radius: 100%;
+      position: absolute;
+      top: 50%;
+      left: -14px;
+      margin-top: -6px;
+      margin-left: -6px;
+      opacity: 1;
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=" 0 ")";
+      filter: alpha(opacity=0);
+      -webkit-animation: rotate 0.5s linear infinite;
+      animation: rotate 0.5s linear infinite;
+      opacity: 1;
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=" 100 ")";
+      filter: alpha(opacity=100);
+      }
+      .mainbar-info .mainbar-qr_instruction {
+      max-width: 300px;
+      margin: auto;
+      text-align: center;
+      color: #212121;
+      line-height: 24px;
+      }
+      form#form_update_shipping_method {
+      position: relative;
+      }
+      .order-checkout__loading {
+      position: static;
+      }
+      .order-checkout__loading--box {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: -1;
+      width: 100%;
+      height: 100%;
+      display: -webkit-flex;
+      display: flex;
+      opacity: 0;
+      visibility: hidden;
+      justify-content: center;
+      align-items: center;
+      padding: 0;
+      }
+      .order-checkout__loading--box.show {
+      z-index: 2;
+      visibility: visible;
+      opacity: 1;
+      }
+      .order-checkout__loading--circle {
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid #5cabe0;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      margin: 0;
+      -webkit-transform-origin: 50%;
+      -o-transform-origin: 50%;
+      -ms-transform-origin: 50%;
+      transform-origin: 50%;
+      -moz-animation: spin 700ms infinite linear;
+      -ms-animation: spin 1.5s infinite linear;
+      -webkit-animation: spin 700ms infinite linear;
+      -o-animation: spin 700ms infinite linear;
+      animation: spin 700ms infinite linear;
+      z-index: 1;
+      }
+      .order-checkout__loading--box.show:after {
+      content: "";
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      left: 0;
+      top: 0;
+      z-index: 3;
+      }
+      .step-sections {
+      position: relative;
+      z-index: 3;
+      }
+      @media (max-width: 767px) {
+      .order-checkout__loading--box {
+      position: fixed;
+      }
+      .order-checkout__loading--box.show:after {
+      display: none;
+      }
+      }
+      .order-checkout__loading--show .order-checkout__loading--box {
+      display: block;
+      }
+      @-moz-keyframes spin {
+      100% {
+      -moz-transform: rotate(360deg);
+      }
+      }
+      @-webkit-keyframes spin {
+      100% {
+      -webkit-transform: rotate(360deg);
+      }
+      }
+      @keyframes spin {
+      100% {
+      -webkit-transform: rotate(360deg);
+      transform: rotate(360deg);
+      }
+      }
+      .redeem-login {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      }
+      .redeem-login-title {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      }
+      .redeem-login-title h2 {
+      color: #333;
+      margin-right: 5px;
+      }
+      .redeem-login-btn a {
+      display: inline-block;
+      border-radius: 4px;
+      font-weight: 500;
+      padding: 13px 10px;
+      background: #338dbc;
+      color: #fff;
+      width: 82px;
+      text-align: center;
+      }
+      .redeem-form-used {
+      padding-top: 10px;
+      }
+      .btn-redeem-loading .btn-redeem-spinner {
+      -webkit-animation: rotate 0.5s linear infinite;
+      animation: rotate 0.5s linear infinite;
+      opacity: 1;
+      -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=" 100 ")";
+      filter: alpha(opacity=100);
+      }
+      .icon-redeem-button-spinner {
+      position: absolute;
+      top: 0;
+      opacity: 0;
+      right: -25px;
+      width: 12px;
+      height: 12px;
+      border: 2px solid #999999;
+      border-bottom-color: transparent;
+      border-radius: 100%;
+      }
+      .total-line-table-footer {
+      white-space: nowrap;
+      }
+      .row-align-top {
+      vertical-align: top;
+      }
+    meta(name='viewport', content='width=device-width, initial-scale=1, maximum-scale=2, user-scalable=no')
+    script(type='text/javascript').
+      var parseQueryString = function(url) {
+      var str = url;
+      var objURL = {};
+      str.replace(
+      new RegExp("([^?=&]+)(=([^&]*))?", "g"),
+      function($0, $1, $2, $3) {
+      if ($3 != undefined && $3 != null)
+      objURL[$1] = decodeURIComponent($3);
+      else
+      objURL[$1] = $3;
+      });
+      return objURL;
+      };
+    script(type='text/javascript').
+      var toggleShowOrderSummary = false;
+      $(document).ready(function() {
+      var currentUrl = '';
+      if ($('#reloadValue').val().length == 0) {
+      $('#reloadValue').val(currentUrl);
+      $('body').show();
+      } else {
+      window.location = $('#reloadValue').val();
+      $('#reloadValue').val('');
+      }
+      $('body')
+      .on('click', '.order-summary-toggle', function() {
+      toggleShowOrderSummary = !toggleShowOrderSummary;
+      if (toggleShowOrderSummary) {
+      $('.order-summary-toggle')
+      .removeClass('order-summary-toggle-hide')
+      .addClass('order-summary-toggle-show');
+      $('.sidebar:not(".sidebar-second") .sidebar-content .order-summary')
+      .removeClass('order-summary-is-collapsed')
+      .addClass('order-summary-is-expanded');
+      $('.sidebar.sidebar-second .sidebar-content .order-summary')
+      .removeClass('order-summary-is-expanded')
+      .addClass('order-summary-is-collapsed');
+      } else {
+      $('.order-summary-toggle')
+      .removeClass('order-summary-toggle-show')
+      .addClass('order-summary-toggle-hide');
+      $('.sidebar:not(".sidebar-second") .sidebar-content .order-summary')
+      .removeClass('order-summary-is-expanded')
+      .addClass('order-summary-is-collapsed');
+      $('.sidebar.sidebar-second .sidebar-content .order-summary')
+      .removeClass('order-summary-is-collapsed')
+      .addClass('order-summary-is-expanded');
+      }
+      });
+      });
+    script(type='text/javascript').
+      //<![CDATA[
+      if ((typeof Nhathoang) === 'undefined') {
+      Nhathoang = {};
+      }
+      Nhathoang.culture = 'vi-VN';
+      Nhathoang.shop = 'storehanghieu160.myNhathoang.com';
+      Nhathoang.theme = {
+      "name": "Update new 07/04/2020",
+      "id": 1000557631,
+      "role": "main"
+      };
+      Nhathoang.domain = 'www.160store.com';
+      //]]>
+      // Global site tag (gtag.js) - Google Ads: 758684278
+      script(async='', src='https://www.googletagmanager.com/gtag/js?id=AW-758684278')
+      script.
+        window.dataLayer = window.dataLayer || [];
+        function gtag() {
+        dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+        gtag('config', 'AW-758684278');
+      meta(name='google-site-verification', content='WmX4Cmqydo2rog4hIjtpqDJiY6S3XqUU662UeVWGhe0')
+      script.
+        //<![CDATA[
+        (function() {
+        function asyncLoad() {
+        var urls = ["https://buyxgety.Nhathoang.com/js/script_tag_production.js", "https://onapp.Nhathoang.com/promotionbar/embed/asset/frontend/promotionbar.js?shop=storehanghieu160.myNhathoang.com&ver=1586591566290", "https://onapp.Nhathoang.com/windowpopup/embed/asset/frontend/windowpopup.js?shop=storehanghieu160.myNhathoang.com&ver=1586902914723", "https://buyxgety-omni.Nhathoang.com/js/script_tag_production.js?v=1576487994026", "https://combo-omni.Nhathoang.com/js/script_tag_production.js?v=1576487994026", "https://onapp.Nhathoang.com/loyalty/assets/widgets.js?shop=storehanghieu160.myNhathoang.com", "https://app.hstatic.net/socialloginplus/1000253775/script-tag.js?v=1583836154326", "//hstatic.net/775/1000253775/20/2020/4-14/noname_4dd5fd39fd8a4b1e8a81091fa70ef49d.js"];
+        for (var i = 0; i < urls.length; i++) {
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = urls[i];
+        var x = document.getElementsByTagName('script')[0];
+        x.parentNode.insertBefore(s, x);
+        }
+        }
+        window.attachEvent ? window.attachEvent('onload', asyncLoad) : window.addEventListener('load', asyncLoad, false);
+        })();
+        //]]>
+      script(type='text/javascript').
+        ! function() {
+        var hrv_analytics = window.hrv_analytics = window.hrv_analytics || [];
+        if (!hrv_analytics.initialize)
+        if (hrv_analytics.invoked) window.console && console.error && console.error("Segment snippet included twice.");
+        else {
+        hrv_analytics.invoked = !0;
+        hrv_analytics.methods = ["start", "trackSubmit", "trackClick", "trackLink", "trackForm", "pageview", "identify", "reset", "group", "track", "ready", "alias", "debug", "page", "once", "off", "on"];
+        hrv_analytics.factory = function(t) {
+        return function() {
+        var e = Array.prototype.slice.call(arguments);
+        e.unshift(t);
+        hrv_analytics.push(e);
+        return hrv_analytics
+        }
+        };
+        for (var t = 0; t < hrv_analytics.methods.length; t++) {
+        var e = hrv_analytics.methods[t];
+        hrv_analytics[e] = hrv_analytics.factory(e)
+        }
+        hrv_analytics.load = function(t, e) {
+        var n = document.createElement("script");
+        n.type = "text/javascript";
+        n.async = !0;
+        n.src = "https://stats.hstatic.net/analyticsv2.min.js";
+        var a = document.getElementsByTagName("script")[0];
+        a.parentNode.insertBefore(n, a);
+        hrv_analytics._loadOptions = e
+        };
+        hrv_analytics.SNIPPET_VERSION = "4.1.0";
+        hrv_analytics.start('pro:web:1000253775');
+        hrv_analytics.page();
+        hrv_analytics.load();
+        }
+        }();
+      script(src='https://browser.sentry-cdn.com/5.7.1/bundle.min.js', integrity='sha384-KMv6bBTABABhv0NI+rVWly6PIRvdippFEgjpKyxUcpEmDWZTkDOiueL5xW+cztZZ', crossorigin='anonymous')
+      script.
+        Sentry.init({
+        dsn: 'https://4fd33061e48b4851b35a0a0b07d1dae0@sentry.io/1801451'
+        });
+      script(type='text/javascript').
+        //<![CDATA[
+        Nhathoang.checkout = {
+        "created_at": "2020-02-20T01:45:46.054Z",
+        "currency": "VND",
+        "customer_id": 1030108039,
+        "email": null,
+        "location_id": null,
+        "order_id": 1103959097,
+        "order_number": "160S652435",
+        "requires_shipping": true,
+        "reservation_time": null,
+        "source_name": "web",
+        "source_identifier": null,
+        "source_url": null,
+        "taxes_included": false,
+        "tax_exempt": false,
+        "tax_lines": null,
+        "token": "8f54b6bebe214af3b622d7cb5db6dd0f",
+        "updated_at": "0001-01-01T00:00:00",
+        "payment_due": null,
+        "payment_url": null,
+        "reservation_time_left": 0,
+        "subtotal_price": 500000.0,
+        "total_price": 500000.0,
+        "total_tax": 0.0,
+        "line_items": [{
+        "id": 0,
+        "key": "0",
+        "product_id": 1022631737,
+        "variant_id": 1050377135,
+        "sku": "QJID9010-03",
+        "vendor": "Khác",
+        "type": "FORADV",
+        "title": "Quần jeans ICON DENIM black slim fit - Đen-9010 / 31",
+        "variant_title": "Đen-9010 / 31",
+        "taxable": false,
+        "requires_shipping": true,
+        "price": 500000.0,
+        "compare_at_price": 0.0,
+        "line_price": 500000.0,
+        "quantity": 1,
+        "grams": 0.0,
+        "price_original": 500000.0,
+        "line_price_orginal": 500000.0
+        }],
+        "shipping_rate": {
+        "id": 0,
+        "barcode": null,
+        "title": "Giao hàng miễn phí",
+        "price": 0.0,
+        "handle": "giao-hang-mien-phi-0"
+        },
+        "shipping_address": {
+        "name": "Đinh Nhật Hoàng",
+        "full_name": null,
+        "first_name": "Hoàng",
+        "last_name": "Đinh Nhật",
+        "company": null,
+        "address1": "314/19/112 khuông việt",
+        "address2": null,
+        "zip": null,
+        "country": "Vietnam",
+        "province": "Hồ Chí Minh",
+        "country_id": 241,
+        "province_id": 50,
+        "district_id": 680,
+        "ward_id": 27031,
+        "phone": "0382565892",
+        "province_code": "HC",
+        "country_code": "VN"
+        },
+        "billing_address": {
+        "name": "Đinh Nhật Hoàng",
+        "full_name": "Đinh Nhật Hoàng",
+        "first_name": "Hoàng",
+        "last_name": "Đinh Nhật",
+        "company": null,
+        "address1": "314/19/112 khuông việt",
+        "address2": null,
+        "zip": "",
+        "country": "Vietnam",
+        "province": "Hồ Chí Minh",
+        "country_id": 241,
+        "province_id": 50,
+        "district_id": null,
+        "phone": "1682565892",
+        "billing_is_shipping": false,
+        "note": null,
+        "customeradd": 0,
+        "province_code": "HC",
+        "country_code": "VN"
+        },
+        "discount": {
+        "amount": 0.0,
+        "code": null
+        }
+        };
+        //]]>
+        // Event snippet for PURCHASE-1000253775-05/04/2019 18:44:50 conversion page
+        script.
+          gtag('event', 'conversion', {
+          'send_to': 'AW-758684278/MFgYCMDWoJ0BEPa04ukC',
+          'currency': 'VND',
+          'transaction_id': '160S652435',
+          'value': 500000
+          });
+        script(type='text/javascript').
+          window.NhathoangAnalytics = window.NhathoangAnalytics || {};
+          window.NhathoangAnalytics.meta = window.NhathoangAnalytics.meta || {};
+          window.NhathoangAnalytics.meta.currency = 'VND';
+          var meta = {
+          "page": {
+          "pageType": "thankyou"
+          }
+          };
+          for (var attr in meta) {
+          window.NhathoangAnalytics.meta[attr] = meta[attr];
+          }
+          window.NhathoangAnalytics.AutoTrack = true;
+        script.
+          //<![CDATA[
+          window.NhathoangAnalytics.ga = "UA-113376140-1";
+          window.NhathoangAnalytics.enhancedEcommerce = false;
+          (function(i, s, o, g, r, a, m) {
+          i['GoogleAnalyticsObject'] = r;
+          i[r] = i[r] || function() {
+          (i[r].q = i[r].q || []).push(arguments)
+          }, i[r].l = 1 * new Date();
+          a = s.createElement(o),
+          m = s.getElementsByTagName(o)[0];
+          a.async = 1;
+          a.src = g;
+          m.parentNode.insertBefore(a, m)
+          })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+          ga('create', window.NhathoangAnalytics.ga, 'auto', {
+          allowLinker: true
+          });
+          ga('send', 'pageview');
+          ga('require', 'linker');
+          //]]>
+        script.
+          window.NhathoangAnalytics.fb = "498778034242936";
+          //<![CDATA[
+          ! function(f, b, e, v, n, t, s) {
+          if (f.fbq) return;
+          n = f.fbq = function() {
+          n.callMethod ?
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+          };
+          if (!f._fbq) f._fbq = n;
+          n.push = n;
+          n.loaded = !0;
+          n.version = '2.0';
+          n.queue = [];
+          t = b.createElement(e);
+          t.async = !0;
+          t.src = v;
+          s = b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t, s)
+          }(window,
+          document, 'script', '//connect.facebook.net/en_US/fbevents.js');
+          // Insert Your Facebook Pixel ID below.
+          fbq('init', window.NhathoangAnalytics.fb, {}, {
+          'agent': 'plNhathoang'
+          });
+          fbq('track', 'PageView');
+          //]]>
+        noscript
+  body
+    .banner
+      .wrap
+        a.logo(href='/')
+          h1.logo-text 160STORE
+    button.order-summary-toggle.order-summary-toggle-hide
+      .wrap
+        .order-summary-toggle-inner
+          .order-summary-toggle-icon-wrapper
+            svg.order-summary-toggle-icon(width='20', height='19', xmlns='http://www.w3.org/2000/svg')
+              path(d='M17.178 13.088H5.453c-.454 0-.91-.364-.91-.818L3.727 1.818H0V0h4.544c.455 0 .91.364.91.818l.09 1.272h13.45c.274 0 .547.09.73.364.18.182.27.454.18.727l-1.817 9.18c-.09.455-.455.728-.91.728zM6.27 11.27h10.09l1.454-7.362H5.634l.637 7.362zm.092 7.715c1.004 0 1.818-.813 1.818-1.817s-.814-1.818-1.818-1.818-1.818.814-1.818 1.818.814 1.817 1.818 1.817zm9.18 0c1.004 0 1.817-.813 1.817-1.817s-.814-1.818-1.818-1.818-1.818.814-1.818 1.818.814 1.817 1.818 1.817z')
+          .order-summary-toggle-text.order-summary-toggle-text-show
+            span Hiển thị thông tin đơn hàng
+            svg.order-summary-toggle-dropdown(width='11', height='6', xmlns='http://www.w3.org/2000/svg', fill='#000')
+              path(d='M.504 1.813l4.358 3.845.496.438.496-.438 4.642-4.096L9.504.438 4.862 4.534h.992L1.496.69.504 1.812z')
+          .order-summary-toggle-text.order-summary-toggle-text-hide
+            span Ẩn thông tin đơn hàng
+            svg.order-summary-toggle-dropdown(width='11', height='7', xmlns='http://www.w3.org/2000/svg', fill='#000')
+              path(d='M6.138.876L5.642.438l-.496.438L.504 4.972l.992 1.124L6.138 2l-.496.436 3.862 3.408.992-1.122L6.138.876z')
+            .order-summary-toggle-total-recap(data-checkout-payment-due-target=cart.total_price)
+                span.total-recap-final-price=formatWithCommas(cart.total_price)
+    .content.content-second
+      .wrap
+        .sidebar.sidebar-second
+          .sidebar-content
+            .order-summary
+              .order-summary-sections
+    .content
+      .wrap
+        .sidebar
+          .sidebar-content
+              .order-summary.order-summary-is-collapsed
+                  h2.visually-hidden Thông tin đơn hàng
+                  .order-summary-sections
+                      include templates/checkout/sidebar-items.pug
+                      include templates/checkout/sidebar-total.pug
+        .main
+          .main-header
+            a.logo(href='/')
+              h1.logo-text 160STORE
+          .main-content
+            div
+              .section
+                .section-header.os-header
+                  svg.hanging-icon.checkmark(width='50', height='50', xmlns='http://www.w3.org/2000/svg', fill='none', stroke='#000', stroke-width='2')
+                    path.checkmark_circle(d='M25 49c13.255 0 24-10.745 24-24S38.255 1 25 1 1 11.745 1 25s10.745 24 24 24z')
+                    path.checkmark_check(d='M15 24.51l7.307 7.308L35.125 19')
+                  .os-header-heading
+                    h2.os-header-title
+                      | Đặt hàng thành công
+                    span.os-order-number
+                      | Mã đơn hàng 160S652435
+                    span.os-description
+                      | Cám ơn bạn đã mua hàng!
+              .thank-you-additional-content
+                | Cám ơn bạn đã đặt hàng! Nhân viên 160STORE sẽ gọi điện thoại xác nhận. Vui lòng đợi chúng tôi nhé ! #{info.ShippingPayment.description}
+                
+              .section.thank-you-checkout-info
+                .section-content
+                  .content-box
+                    .content-box-row.content-box-row-padding.content-box-row-no-border
+                      h2 Thông tin đơn hàng
+                    .content-box-row.content-box-row-padding
+                      .section-content
+                        .section-content-column
+                          h3 Thông tin giao hàng
+                          p
+                            | #{info.customer_name}
+                            br
+                            |  #{info.ship_address}
+                            br
+                            |  #{info.Ward.name}
+                            br
+                            |  #{info.Ward.District.name}
+                            br
+                            |   #{info.Ward.District.Province.name}
+                            br
+                            |  Vietnam
+                            br
+                            |  #{info.customer_phone}
+                            br
+                          h3 Phương thức thanh toán
+                          p
+                            |  #{info.ShippingPayment.value}
+                          h3 Ghi chú
+                          p
+                            |  #{info.order_description}
+              .step-footer
+                a.step-footer-continue-btn.btn(href='/')
+                  span.btn-content Tiếp tục mua hàng
+                p.step-footer-info
+                  i.icon.icon-os-question
+                  span
+                    | Cần hỗ trợ? 
+                    a(href='mailto:cod@160store.com') Liên hệ chúng tôi
+          .main-footer

@@ -1,0 +1,22 @@
+.order-summary-section.order-summary-section-discount(data-order-summary-section="discount")
+    form#form_discount_add(accept-charset="UTF-8" method="post")
+        input(name="utf8" type="hidden" value="✓")
+        .fieldset
+            .field
+                .field-input-btn-wrapper
+                    .field-input-wrapper
+                        label.field-label(for="discount.code") Mã giảm giá
+                        input.field-input(placeholder="Mã giảm giá" data-discount-field="true" autocomplete="off" autocapitalize="off" spellcheck="false" size="30" type="text" id="discount.code" name="discount.code" value="")
+                    button.field-input-btn.btn.btn-default.btn-disabled(type="submit")
+                        span.btn-content Sử dụng
+                        i.btn-spinner.icon.icon-button-spinner
+.order-summary-section.order-summary-section-redeem.redeem-login-section(data-order-summary-section="discount")
+    .redeem-login
+        .redeem-login-title
+            h2 Khách hàng thân thiết
+            i.btn-redeem-spinner.icon-redeem-button-spinner
+        .redeem-login-btn
+            if !user
+                a(href="/account/login") Đăng nhập
+            else
+                a(href="/account/logout") Đăng xuất
