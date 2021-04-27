@@ -2,36 +2,55 @@ header#site-header.main-header
     .header-mid.wrap-flex-align
         // <div class="visible-lg visible-md col-header-mid"></div>
         .wrap-logo
-            a(href=infoPage.baseUrl)
+            a(href="/")
                 img.img-responsive.logoimg(src=pageInfo.logo)
         .menu-desktop.hidden-sm.hidden-xs
             #nav
                 nav.main-nav.text-center
                     ul.clearfix
                         li
-                            a(href='/san-pham' title='Sản phẩm')
-                                | S&#x1EA3;n ph&#x1EA9;m
-                                if pageCategories && pageCategories.length > 0
-                                    i.fa.fa-chevron-down(aria-hidden='true')
-                            if pageCategories && pageCategories.length > 0
-                                ul.sub_menu
-                                    each category in pageCategories
-                                        li
-                                            a(href=fn.linkCategoryIdList(category.slug) title=category.name)
-                                                | #{ category.name }
-                                                if category && category.child && category.child.length > 0
-                                                    i.fa.fa-chevron-right(aria-hidden='true')
-                                            if category && category.child && category.child.length > 0
-                                                ul.sub_menu
+                            a(href='/' title='Trang chủ')
+                                | Trang chủ
+
+                        //li
+                        //    a.menu-sanpham(href='/san-pham' title='Sản phẩm')
+                        //        | Sản phẩm
+                        if pageCategories && pageCategories.length > 0
+                            each category in pageCategories
+                                li
+                                    a(href=fn.linkCategoryIdList(category.slug) title=category.name)
+                                        | #{ category.name }
+                                        if category && category.child && category.child.length > 0
+                                            i.fa.fa-angle-down(aria-hidden='true')
+                                    if category && category.child && category.child.length > 0
+                                        ul.submenu.clearfix
+                                            .col-xs-12.col-sm-3.item-submenu.title-collections
+                                                // Level 1
+                                                ul
                                                     each child in category.child
                                                         li
                                                             a(href=fn.linkCategoryIdList(child.slug) title=child.name)
                                                                 | #{ child.name }
+
+                                            .col-xs-12.col-sm-9
+                                                each child in category.child
+                                                    .col-sm-4
+                                                        .box-des
+                                                            .box-des-img
+                                                                a(href=fn.linkCategoryIdList(child.slug) title=child.name)
+                                                                    img(src=child.avatar alt=child.name)
+                                                            .box-des-title
+                                                                a(href=fn.linkCategoryIdList(child.slug) title=child.name)
+                                                                    | #{ child.name }
+
                         li
-                            a(href=fn.linkSaleProduct() title='Khuyến mãi')
-                                | Khuyến mãi
+                            a.menu-menu(href=fn.linkSaleProduct() title='Khuyến mãi')
+                                | Sale
                         li
-                            a(href='javascript:void' title='Chính sách - Hướng dẫn')
+                            a(href=fn.linkSaleProduct() title='Blog')
+                                | Blog
+                        li
+                            a.menu-cshd(href='javascript:void' title='Chính sách - Hướng dẫn')
                                 | Ch&iacute;nh s&aacute;ch - H&#x1B0;&#x1EDB;ng d&#x1EAB;n
                                 i.fa.fa-chevron-down(aria-hidden='true')
                             if policies && policies.length > 0
@@ -40,9 +59,13 @@ header#site-header.main-header
                                         li
                                             a(href=fn.linkIdPolicyAndReturn(policy.post_slug) title=policy.post_name)
                                                 | #{ policy.post_name }
+
                         li
-                            a(href='/account/orders' title='Kiểm tra đơn hàng')
-                                | Ki&#x1EC3;m tra &dstrok;&#x1A1;n h&agrave;ng
+                            a(href='/gioi-thieu' title='Giới thiệu')
+                                | Giới thiệu
+                        //li
+                        //    a(href='/account/orders' title='Kiểm tra đơn hàng')
+                        //        | Ki&#x1EC3;m tra &dstrok;&#x1A1;n h&agrave;ng
         .header-wrap-icon
             span.icon-account(aria-label='Tài khoản' title='Tài khoản')
                 a(href='/account/login')
@@ -74,15 +97,3 @@ header#site-header.main-header
                                 span.count 0
             span#site-menu-handle.hamburger-menu.visible-sm.visible-xs(aria-hidden='true')
                 span.bar
-.search-bar-mobile
-    .search-box.wpo-wrapper-search
-        form.searchform.searchform-categoris.ultimate-search(action='/search')
-            .wpo-search-inner
-                input(type='hidden' name='type' value='product')
-                input#inputSearchAuto-mb.searchinput.input-search.search-input(required='' name='q' maxlength='40' autocomplete='off' type='text' size='20' placeholder='Tìm kiếm sản phẩm...')
-            button#search-header-btn-mb.btn-search.btn(type='submit')
-                svg.svg.search(version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' x='0px' y='0px' viewbox='0 0 24 27' style='enable-background:new 0 0 24 27;' xml:space='preserve')
-                    path(d='M10,2C4.5,2,0,6.5,0,12s4.5,10,10,10s10-4.5,10-10S15.5,2,10,2z M10,19c-3.9,0-7-3.1-7-7s3.1-7,7-7s7,3.1,7,7S13.9,19,10,19z')
-                    rect(x='17' y='17' transform='matrix(0.7071 -0.7071 0.7071 0.7071 -9.2844 19.5856)' width='4' height='8')
-        #ajaxSearchResults-mb.smart-search-wrapper.ajaxSearchResults(style='display: none')
-            .resultsContent            

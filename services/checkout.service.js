@@ -11,10 +11,11 @@ const {
 
 const {  
     findUserByEmail } = require('./../repositories/customer.repo');
-    
-
+const nodemailerConfig = require('./../configs/nodemailer.config');
+const Email = require('email-templates');
 const { createImagePath } = require('./../helpers/file.helper');
 const { formatWithCommas } = require('./../helpers/currency.helper');
+const { sendEmail,sendTransporter } = require('./../helpers/nodemailer.helper');
 
 const { getAllProvince, getDistricts, getWards, getLocation } = require('./../repositories/location.repo');
 const { getAllShipping, getAllPayment, getShipping } = require('./../repositories/config-shipping.repo');
@@ -269,7 +270,7 @@ const checkDataInCart = async (preqCookiesCart, res) => {
                 slug: objProducts[keyCookieItem].slug,
                 combinationId: objProducts[keyCookieItem].combination_id,
                 price: objProducts[keyCookieItem].price_sale ? 
-                    objProducts[keyCookieItem].price - (objProducts[keyCookieItem].price * objProducts[keyCookieItem].price_sale / 100) : 
+                    objProducts[keyCookieItem].price_sale :
                     objProducts[keyCookieItem].price,
                 qty: reqCookiesCarts.items[keyCookieItem].qty,
                 oldPrice: objProducts[keyCookieItem].price,
@@ -492,15 +493,52 @@ const payment = async (req, res) => {
         
         const transac = await db.sequelize.transaction({autocommit: false});
         try {
-           
-            const order = await createOrder(data, transac);
-            
-            await createOrdersDetail(order.order_id, getCookiesCart.items, transac);
-            
+            const newOrder = await createOrder(data, transac);
+
+            const createOrderDetail = await createOrdersDetail(newOrder.order_id, getCookiesCart.items, transac);
             await transac.commit();
             
             res.clearCookie('cart');
-            
+
+            const order = await getOrderByToken(token.split('.')[2]);
+
+            if(!order)
+                return res.redirect('/');
+
+
+            const orderCart = {
+                items: [],
+                total_qty: 0,
+                total_price: 0,
+            }
+
+            for (let val of order.OrderDetail) {
+                orderCart.items.push(val.dataValues);
+                orderCart.total_qty += val.dataValues.qty;
+                orderCart.total_price += val.dataValues.price * val.dataValues.qty;
+            }
+
+
+            const email = new Email({
+                preview: false,
+                send: true,
+                transport: sendTransporter()
+            });
+
+            email.send({
+                template: 'order-success',
+                message: {
+                    from: `PAPAZI <${nodemailerConfig().gmail.emailAddress}>`,
+                    to: `${nodemailerConfig().gmail.emailAddress}, ${nodemailerConfig().gmail.emailMoreAddress}`
+                },
+                locals: {
+                    title: 'Cart',
+                    cart: orderCart,
+                    info: order,
+                    shipping_price: order.ship_price,
+                    formatWithCommas: formatWithCommas
+                }
+            });
             return res.status(200).json({ message: 'Đặt hàng thành công', url: `/checkout/${token}/thank_you`});
         } catch (error) {
             await transac.rollback();
@@ -519,36 +557,68 @@ const thankYou = async (req, res) => {
         // if there is no items in the cart then render a failure
 
         const order = await getOrderByToken(req.params.token.split('.')[2]);
-        
+
         if(!order)
             return res.redirect('/');
- 
+
         const cart = {
             items: [],
             total_qty: 0,
             total_price: 0,
         }
-        
+
         for (let val of order.OrderDetail) {
             cart.items.push(val.dataValues);
             cart.total_qty += val.dataValues.qty;
             cart.total_price += val.dataValues.price * val.dataValues.qty;
         }
-        
-        
-        return res.cRender('thankyou.pug', { 
-            title: 'Cart', 
+
+        return res.cRender('thankyou.pug', {
+            title: 'Cart',
             cart: cart,
             info: order,
-            shipping_price: order.ship_price, 
-            formatWithCommas: formatWithCommas 
+            shipping_price: order.ship_price,
+            formatWithCommas: formatWithCommas
         });
     } catch (error) {
         logger.error(error);
         return res.status(400).json({ message: 'Vui lòng load lại trang và thực hiện lại'});
     }
 }
-
+// const thankYou = async (req, res) => {
+//     try {
+//         // if there is no items in the cart then render a failure
+//
+//         const order = await getOrderByToken(req.params.token.split('.')[2]);
+//
+//         if(!order)
+//             return res.redirect('/');
+//
+//         const cart = {
+//             items: [],
+//             total_qty: 0,
+//             total_price: 0,
+//         }
+//
+//         for (let val of order.OrderDetail) {
+//             cart.items.push(val.dataValues);
+//             cart.total_qty += val.dataValues.qty;
+//             cart.total_price += val.dataValues.price * val.dataValues.qty;
+//         }
+//
+//         return res.render('home/html.pug', {
+//             title: 'Cart',
+//             cart: cart,
+//             info: order,
+//             shipping_price: order.ship_price,
+//             formatWithCommas: formatWithCommas,
+//
+//         });
+//     } catch (error) {
+//         logger.error(error);
+//         return res.status(400).json({ message: 'Vui lòng load lại trang và thực hiện lại'});
+//     }
+// }
 
 module.exports = { redirectCart, checkout, postCheckout, payment,
     checkoutLocation,

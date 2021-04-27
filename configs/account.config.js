@@ -5,6 +5,6 @@ module.exports = () => {
         login: '/account/login',
         loginRecover: '/account/login#recover',
         logout: '/account/logout',
-        reset: 'account/reset/',
+        reset: '/account/reset/',
     }
 }

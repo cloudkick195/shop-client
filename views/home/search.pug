@@ -1,4 +1,4 @@
-extends ../layout.pug 
+extends ../layout.pug
 
 block content
     #collection.collection-page.searchPage
@@ -11,49 +11,70 @@ block content
             .row
                 #collection-body.wrap-collection-body.clearfix
                     .col-md-12.col-sm-12.col-xs-12
+
                         .wrap-collection-title.row
                             .heading-collection.row
                                 .col-md-12.col-sm-12.col-xs-12
                                     .heading-page
                                         h1=title
-                                        p.subtxt
-                                            | Có 
-                                            span #{count} sản phẩm
-                                    .clearfix.filter-box
-                                        .browse-tags.pull-left
-                                            span.hidden Sắp xếp theo:
-                                            span.custom-dropdown.custom-dropdown--white
-                                                select.sort-by.custom-dropdown__select.custom-dropdown__select--white.search-sort.select-sort
-                                                    option(class='default' value='default') Mới nhất
-                                                    option(class='created-ascending' value='created-ascending') Cũ nhất
-                                                    option(class='price-ascending' value='price-ascending') Giá: Tăng dần
-                                                    option(class='price-descending' value='price-descending') Giá: Giảm dần
-                                                    option(class='title-ascending' value='title-ascending') Tên: A-Z
-                                                    option(class='title-descending' value='title-descending') Tên: Z-A
-                                        .product-filter.pull-left
-                                            span.filter-title
-                                                | Lọc theo 
-                                                i.fa.fa-angle-down
-                                            .filter-container
-                                                .clearfix
-                                                    .filter-item.filter-price
-                                                        h4 Giá sản phẩm
-                                                        ul
-                                                            li(class=`price0_200000` data-filter='0_200000') Dưới 200,000₫
-                                                            li(class=`price200000_300000` data-filter='200000_300000') 200,000₫ - 300,000₫
-                                                            li(class=`price300000_400000` data-filter='300000_400000') 300,000₫ - 400,000₫
-                                                            li(class=`price400000_500000` data-filter='400000_500000') 400,000₫ - 500,000₫
-                                                            li(class=`price500000` data-filter='500000') Trên 500,000₫
-                                                    each attribute in attributes
-                                                        .filter-item.filter-attribute
-                                                            h4 #{attribute.attribute_name}
-                                                            ul(class=`entity-id${attribute.attribute_id}` data-id=attribute.attribute_id)
-                                                                each attrType in attribute.AttributeEntityType
-                                                                    li(class=`attribute-id${attrType.id_entity_type}` data-filter=attrType.id_entity_type) #{attrType.entity_name}
-                                                .filter-btn.text-right.filter-search
-                                                    a(href='#') Tìm kiếm
-                                    .alert-no-filter
-                        if products && products.length > 0
+                                        if dataQuery.s && products && products.length > 0
+                                            p.subtxt
+                                                | Có
+                                                span  #{count} sản phẩm
+                                if !dataQuery.s || !products || products.length < 1
+                                    .wrapbox-content-page
+                                        #search.content-page.clearfix
+                                            .expanded-message
+                                                .search-field
+                                                    form.search-page(action='/search')
+                                                        input#go(type='submit' alt='Go')
+                                                        input.search_box(type='text' name='s' placeholder='Tìm kiếm' value=dataQuery.s)
+                                                .message-txt.clearfix
+                                                    p R&#x1EA5;t ti&#x1EBF;c, ch&uacute;ng t&ocirc;i kh&ocirc;ng t&igrave;m th&#x1EA5;y k&#x1EBF;t qu&#x1EA3; cho t&#x1EEB; kh&oacute;a c&#x1EE7;a b&#x1EA1;n
+                                                    p Vui l&ograve;ng ki&#x1EC3;m tra ch&iacute;nh t&#x1EA3;, s&#x1EED; d&#x1EE5;ng c&aacute;c t&#x1EEB; t&#x1ED5;ng qu&aacute;t h&#x1A1;n v&agrave; th&#x1EED; l&#x1EA1;i!
+
+                                                //.message-txt.clearfix
+                                                //    p R&#x1EA5;t ti&#x1EBF;c, ch&uacute;ng t&ocirc;i kh&ocirc;ng t&igrave;m th&#x1EA5;y k&#x1EBF;t qu&#x1EA3; cho t&#x1EEB; kh&oacute;a c&#x1EE7;a b&#x1EA1;n
+                                                //    p Vui l&ograve;ng ki&#x1EC3;m tra ch&iacute;nh t&#x1EA3;, s&#x1EED; d&#x1EE5;ng c&aacute;c t&#x1EEB; t&#x1ED5;ng qu&aacute;t h&#x1A1;n v&agrave; th&#x1EED; l&#x1EA1;i!
+                                    //.clearfix.filter-box
+                                    //    .browse-tags.pull-left
+                                    //        span.hidden Sắp xếp theo:
+                                    //        span.custom-dropdown.custom-dropdown--white
+                                    //            select.sort-by.custom-dropdown__select.custom-dropdown__select--white.search-sort.select-sort
+                                    //                option(class='default' value='default') Mới nhất
+                                    //                option(class='created-ascending' value='created-ascending') Cũ nhất
+                                    //                option(class='price-ascending' value='price-ascending') Giá: Tăng dần
+                                    //                option(class='price-descending' value='price-descending') Giá: Giảm dần
+                                    //                option(class='title-ascending' value='title-ascending') Tên: A-Z
+                                    //                option(class='title-descending' value='title-descending') Tên: Z-A
+                                    //    .product-filter.pull-left
+                                    //        span.filter-title
+                                    //            | Lọc theo
+                                    //            i.fa.fa-angle-down
+                                    //        .filter-container
+                                    //            .clearfix
+                                    //                .filter-item.filter-price
+                                    //                    h4 Giá sản phẩm
+                                    //                    ul
+                                    //                        li(class=`price0_200000` data-filter='0_200000') Dưới 200,000₫
+                                    //                        li(class=`price200000_300000` data-filter='200000_300000') 200,000₫ - 300,000₫
+                                    //                        li(class=`price300000_400000` data-filter='300000_400000') 300,000₫ - 400,000₫
+                                    //                        li(class=`price400000_500000` data-filter='400000_500000') 400,000₫ - 500,000₫
+                                    //                        li(class=`price500000` data-filter='500000') Trên 500,000₫
+                                    //                each attribute in attributes
+                                    //                    .filter-item.filter-attribute
+                                    //                        h4 #{attribute.attribute_name}
+                                    //                        ul(class=`entity-id${attribute.attribute_id}` data-id=attribute.attribute_id)
+                                    //                            each attrType in attribute.AttributeEntityType
+                                    //                                li(class=`attribute-id${attrType.id_entity_type}` data-filter=attrType.id_entity_type) #{attrType.entity_name}
+                                    //            .filter-btn.text-right.filter-search
+                                    //                a(href='#') Tìm kiếm
+                                    //.alert-no-filter
+                        if dataQuery.s && products && products.length > 0
+                            p.subtext-result
+                                | K&#x1EBF;t qu&#x1EA3; t&igrave;m ki&#x1EBF;m cho
+                                strong &quot;#{dataQuery.s}&quot;
+                                | .
                             .row.filter-here
                                 .content-product-list.product-list.filter.clearfix
                                     each product, index in products
@@ -99,14 +120,14 @@ block content
         script.
             var params = new URLSearchParams(window.location.search);
             jQuery(document).ready(function(){
-                
+
                 if(params.get('sort_by'))
                     $(`.${params.get('sort_by')}`).prop('selected', true);
 
                 if(params.get('price')){
                     $(`.price${params.get('price')}`).addClass('active');
                     $(`.product-filter`).addClass('active');
-                    
+
                 }
                 if(params.get('attribute')){
                     var attrSlug = params.get('attribute').split("_");
@@ -130,25 +151,25 @@ block content
                 $("body").on('click', function() {
                     $(".product-filter").removeClass('active');
                 });
-                
+
                 $(".filter-search").on('click', function(e) {
                     e.preventDefault();
                     updateParam('price', $('.filter-price ul li.active').data('filter'));
-                   
+
                     var attribute = '';
                     $('.filter-attribute ul li.active').each(function(){
                         attribute += '_' + $(this).data('filter');
                     });
-                  
+
                     window.location = updateParam('attribute', attribute.substring(1));
-                    
+
                 });
                 $(document).on('change', '.select-sort', function() {
                     var encodeQuery = $(this).val();
                     window.location = updateParam('sort_by', encodeQuery);
                 });
-              
-                
+
+
             });
 
             function updateParam(name, val){
@@ -156,12 +177,12 @@ block content
                     params.delete(name)
                     return '/search?' + params.toString();
                 }
-                
+
                 if(!params.get(name))
                     params.append(name, encodeURIComponent(val));
                 else
                     params.set(name, encodeURIComponent(val))
-               
+
                 return '/search?' + params.toString();
             }
 

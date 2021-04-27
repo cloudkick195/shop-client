@@ -151,7 +151,7 @@ const updateCart = async (req, res) => {
         res.clearCookie('cart');
         
         // Update the cart
-        const productPrice = product.price_sale ? product.price - (product.price * product.price_sale / 100) : product.price;
+        const productPrice = product.price_sale ? product.price_sale : product.price;
         
         cartCookie.total_qty = (cartCookie.total_qty - cartCookie.items[cartItemId].qty) + productQuantity;
 
@@ -199,7 +199,7 @@ const removeCartItem = async (req, res) => {
             product = product[0];
         }
         
-        const productPrice = product.price_sale ? product.price - (product.price * product.price_sale / 100) : product.price;
+        const productPrice = product.price_sale ? product.price_sale : product.price;
         cartCookie.total_qty = cartCookie.total_qty - cartItem.qty;
         cartCookie.total_price = cartCookie.total_price - (cartItem.qty * productPrice); 
 
@@ -272,7 +272,7 @@ const mapDataProductInCart= (preqCookiesCart, productQuantity, product) => {
                 name: product.name,
                 slug: product.slug,
                 combinationId: product.combination_id,
-                price: product.price_sale ? product.price - (product.price * product.price_sale / 100) : product.price,
+                price: product.price_sale ? product.price_sale : product.price,
                 qty: productQuantity,
                 oldPrice: product.price,
                 avatar: createImagePath({

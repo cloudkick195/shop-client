@@ -52,12 +52,12 @@ app.use(flash());
 const db = databaseConnect();
 global.db = db;
 db.sequelize.authenticate()
-.then(() => {
-  console.log('Connection has been established successfully.');
-})
-.catch(err => {
-  console.error('Unable to connect to the database:', err);
-});
+    .then(() => {
+        console.log('Connection has been established successfully.');
+    })
+    .catch(err => {
+        console.error('Unable to connect to the database:', err);
+    });
 
 global.infoPage = pageConfig();
 
@@ -98,8 +98,8 @@ app.use(function (err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    
-    res.cRender('error.pug', { 
+
+    res.cRender('error.pug', {
         title: '404'
     });
 });

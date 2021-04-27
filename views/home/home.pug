@@ -1,202 +1,91 @@
 extends ../layout.pug
 
 block content
-    h1.hidden 160STORE
-    #home-slider
-        #homepage_slider.owl-carousel.owl-theme
-            .item
-                a(href="san-pham/quan-tay" target="_blank")
-                    img(title='' alt='' src="https://res.cloudinary.com/tacado//image/upload/v1590636349/qlog0k2ahitwsf4hxv8t.jpg")
-                .view-more-slider
-                    a(href="san-pham/quan-tay") Xem ngay  
-            .item
-                a(href="san-pham/quan-short" target="_blank")
-                    img(title='' alt='' src="https://res.cloudinary.com/tacado//image/upload/v1590636449/kr4tet3182xlaytdcwes.jpg")
-                .view-more-slider
-                    a(href="san-pham/quan-short") Xem ngay
-    // Nhóm danh mục
-    // Support hỗ trợ
-    section.section-support
-        .flex-container
-            .column-wrap
-                .support-inner
-                    .inner-icon
-                        img(src='//theme.hstatic.net/1000253775/1000529442/14/support_1_ic.png?v=97' alt='Giao hàng miễn phí')
-                    .inner-content
-                        h3
-                            span Giao h&agrave;ng mi&#x1EC5;n ph&iacute;
-                        p Cho &dstrok;&#x1A1;n h&agrave;ng tr&ecirc;n 500k
-            .column-wrap
-                .support-inner
-                    .inner-icon
-                        img(src='//theme.hstatic.net/1000253775/1000529442/14/support_2_ic.png?v=97' alt='Đổi trả')
-                    .inner-content
-                        h3
-                            span &Dstrok;&#x1ED5;i tr&#x1EA3;
-                        p Trong v&ograve;ng 7 ng&agrave;y
-            .column-wrap
-                .support-inner
-                    .inner-icon
-                        img(src='//theme.hstatic.net/1000253775/1000529442/14/support_3_ic.png?v=97' alt='COD toàn quốc')
-                    .inner-content
-                        h3
-                            span COD to&agrave;n qu&#x1ED1;c
-                        p Thanh to&aacute;n nh&#x1EAD;n h&agrave;ng
-            .column-wrap
-                .support-inner
-                    .inner-icon
-                        img(src='//theme.hstatic.net/1000253775/1000529442/14/support_4_ic.png?v=97' alt='Hotline')
-                    .inner-content
-                        h3
-                            span Hotline
-                        p 028.7100.6789
-            // Sản phẩm nổi bật
-        // Nhóm banner
-        // Nhóm sản phẩm 2
+    h1.hidden PAPAZI
+    if result && result[3] && result[3].length > 0
+
+        //.layer-slider.text-center
+        //    img(src=pageInfo['layer-slider'])
+        .wrap-banner
+            img.hidden-lg(src=`${pageInfo['after-slider']}`)
+            img.desktop-only(src=`${pageInfo['after-slider-desktop']}`)
+        .category-carousel
+            //.view-more-slider
+            //    a(href="/san-pham/") Xem thêm
+            .owl-carousel.owl-theme
+                each category, index in result[3]
+                    .item
+                        a.cat-box(href=fn.linkCategoryIdList(category.slug) target="_blank")
+                            img(title='' alt='' src=category.avatar)
+                            span #{category.name}
+            .text-center
+                a.btn-style1(href="/san-pham/") Xem thêm
+
+        //.home-banner
+        //    img(title='' alt='' src=pageInfo['home-slider'])
+
+    //.container
+    //    .row
+    //    each category, index in result[3]
+    //        .col-md-4.col-xs-12
+    //            a.cat-box(href=fn.linkCategoryIdList(category.slug) target="_blank")
+    //                img(title='' alt='' src=category.avatar)
+    //                span #{category.name}
+            // Nhóm banner
+            // Nhóm sản phẩm 2
     .wrapper-collection-sale
+        //Nhóm sản phẩm 1
         section.section.section-collection
-            .wrapper-heading-home.animation-tran.text-center
+            .new-product-home.animation-tran.text-center
                 .container-fluid
                     .site-animation
-                        h2
-                            a(href=fn.linkCategoryIdList('ao'))
-                                | ÁO
-                    <br/>
+                        h2.sp-moititle
+                            a(href=fn.linkProduct())
+                                | New Arrivals
+            .wrapper-collection-1
                 .container-fluid
                     .row
-                        .clearfix.content-product-list.content-hasbanner
-                            if result && result[3] && result[3].length > 0
-                                each category, index in result[3]
-                                    .col-md-4.col-sm-6.pro-loop.pro-loop-banner
-                                        .proloop-banner.box-title
-                                            a.banner-hover(href=fn.linkCategoryIdList(category.slug))
-                                                img(src=category.avatar alt=category.name)
-                                                span #{ category.name }
-        section.section.section-collection
-            .wrapper-heading-home.animation-tran.text-center
-                .container-fluid
-                    .site-animation
-                        h2
-                            a(href=fn.linkCategoryIdList('quan'))
-                                | QUẦN
-                    <br/>
-                .container-fluid
-                    .row
-                        .clearfix.content-product-list.content-hasbanner
-                            if result && result[4] && result[4].length > 0
-                                each category, index in result[4]
-                                    .col-md-4.col-sm-6.pro-loop.pro-loop-banner
-                                        .proloop-banner.box-title
-                                            a.banner-hover(href=fn.linkCategoryIdList(category.slug))
-                                                img(src=category.avatar alt=category.name)
-                                                span #{ category.name }
-    // Nhóm sản phẩm 1
-    section.section.section-collection
-        .wrapper-heading-home.animation-tran.text-center
-            .container-fluid
-                .site-animation
-                    h2.sp-moititle
-                        a(href=fn.linkProduct())
-                            | New Arrivals
-        .wrapper-collection-1
-            .container-fluid
-                .row
-                    .clearfix.content-product-list
-                        if result && result[1] && result[1].length > 0
-                            each product, index in result[1]
-                                .col-md-3.col-sm-6.col-xs-6.pro-loop.index-loop-mb.animation-tran
-                                    .product-block.product-resize.site-animation(data-anmation='1')
-                                        .product-img
-                                            a.image-resize(href=fn.linkId(product.slug) title=product.name)
-                                                if !product.avatar
-                                                    picture
-                                                        source(media='(max-width: 767px)' srcset="/images/default-image.png")
-                                                        source(media='(min-width: 768px)' srcset="/images/default-image.png")
-                                                        img.img-loop(alt=' Boxer ICON DENIM 3D logo ' src="/images/default-image.png")
-                                                    picture
-                                                        source(media='(max-width: 767px)' srcset="/images/default-image.png")
-                                                        source(media='(min-width: 768px)' srcset="/images/default-image.png")
-                                                        img.img-loop.img-hover(alt=product.name src="/images/default-image.png")
-                                                else
-                                                    picture
-                                                        source(media='(max-width: 767px)' srcset=product.avatar)
-                                                        source(media='(min-width: 768px)' srcset=product.avatar)
-                                                        img.img-loop(alt=' Boxer ICON DENIM 3D logo ' src=product.avatar)
-                                                    picture
-                                                        source(media='(max-width: 767px)' srcset=product.avatar)
-                                                        source(media='(min-width: 768px)' srcset=product.avatar)
-                                                        img.img-loop.img-hover(alt=product.name src=product.avatar)
-                                                
-                                            .button-add.hidden
-                                                //- button.action(type='submit' title='Buy now' onclick="buy_now(product.id)")
-                                                //-     | Mua ngay
-                                                //-     i.fa.fa-long-arrow-right
-                                        .product-detail.clearfix
-                                            .box-pro-detail
-                                                h3.pro-name
-                                                    a(href=fn.linkId(product.slug) title=product.name)
-                                                        | #{ product.name }
-                                                .box-pro-prices
-                                                    p.pro-price
-                                                        span.giaban #{ product.price }
-                                                        if product.price < product.old_price
-                                                            span.pro-price-del
-                                                                del.compare-price #{ product.old_price }
-                    .button-showmore
-                        a.moreproduct.button(href=fn.linkProduct()) Xem th&ecirc;m
-        if result && result[2] && result[2].length > 0
-            section.section.section-collection
-                .wrapper-heading-home.animation-tran.text-center
-                    .container-fluid
-                        .site-animation
-                            h2
-                                a(href=fn.linkSaleProduct())
-                                    | Sale off
-                                .button-showmore.button-showmore-sale
-                                    a.moreproduct_sale(href=fn.linkSaleProduct()) Xem t&#x1EA5;t c&#x1EA3;
-                .wrapper-collection-sale
-                    .container-fluid
-                        .row
-                            .clearfix.content-product-list
-                                .owl-sale-product.owl-carousel
-                                    each product, index in result[2]
-                                        .pro-loop.index-loop-mb
-                                            .product-block.product-resize.site-animation(data-anmation=index+1)
-                                                .product-img
-                                                    a.image-resize(href=fn.linkId(product.slug) title=product.name)
-                                                        if !product.avatar
-                                                            picture
-                                                                source(media='(max-width: 767px)' srcset="/images/default-image.png")
-                                                                source(media='(min-width: 768px)' srcset="/images/default-image.png")
-                                                                img.img-loop(alt=' Boxer ICON DENIM 3D logo ' src="/images/default-image.png")
-                                                            picture
-                                                                source(media='(max-width: 767px)' srcset="/images/default-image.png")
-                                                                source(media='(min-width: 768px)' srcset="/images/default-image.png")
-                                                                img.img-loop.img-hover(alt=product.name src="/images/default-image.png")
-                                                        else
-                                                            picture
-                                                                source(media='(max-width: 767px)' srcset=product.avatar)
-                                                                source(media='(min-width: 768px)' srcset=product.avatar)
-                                                                img.img-loop(alt=' Boxer ICON DENIM 3D logo ' src=product.avatar)
-                                                            picture
-                                                                source(media='(max-width: 767px)' srcset=product.avatar)
-                                                                source(media='(min-width: 768px)' srcset=product.avatar)
-                                                                img.img-loop.img-hover(alt=product.name src=product.avatar)
-                                                    .button-add.hidden
-                                                        button.action(type='submit' title='Buy now' onclick="buy_now(product.id)")
-                                                            | Mua ngay
-                                                            i.fa.fa-long-arrow-right
-                                                .product-detail.clearfix
-                                                    .box-pro-detail
-                                                        h3.pro-name
-                                                            a(href=fn.linkId(product.slug) title=product.name)
-                                                                | #{ product.name }
-                                                        .box-pro-prices
-                                                            p.pro-price.highlight
-                                                                span.giaban #{ product.price }
-                                                                if product.price < product.old_price
-                                                                    span.pro-price-del
-                                                                        del.compare-price #{ product.old_price }
+                        .clearfix.content-product-list
+                            if result && result[1] && result[1].length > 0
+                                each product, index in result[1]
+                                    .col-md-3.col-sm-6.col-xs-6.pro-loop.index-loop-mb.animation-tran
+                                        .product-block.product-resize.site-animation(data-anmation='1')
+                                            .product-img
+                                                a.image-resize(href=fn.linkId(product.slug) title=product.name)
+                                                    if !product.avatar
+                                                        picture
+                                                            source(media='(max-width: 767px)' srcset="/images/default-image.png")
+                                                            source(media='(min-width: 768px)' srcset="/images/default-image.png")
+                                                            img.img-loop(alt=' Boxer ICON DENIM 3D logo ' src="/images/default-image.png")
+                                                        picture
+                                                            source(media='(max-width: 767px)' srcset="/images/default-image.png")
+                                                            source(media='(min-width: 768px)' srcset="/images/default-image.png")
+                                                            img.img-loop.img-hover(alt=product.name src="/images/default-image.png")
+                                                    else
+                                                        picture
+                                                            source(media='(max-width: 767px)' srcset=product.avatar)
+                                                            source(media='(min-width: 768px)' srcset=product.avatar)
+                                                            img.img-loop(alt=' Boxer ICON DENIM 3D logo ' src=product.avatar)
+                                                        picture
+                                                            source(media='(max-width: 767px)' srcset=product.avatar)
+                                                            source(media='(min-width: 768px)' srcset=product.avatar)
+                                                            img.img-loop.img-hover(alt=product.name src=product.avatar)
+
+                                                .button-add.hidden
+                                                    //- button.action(type='submit' title='Buy now' onclick="buy_now(product.id)")
+                                                    //-     | Mua ngay
+                                                    //-     i.fa.fa-long-arrow-right
+                                            .product-detail.clearfix
+                                                .box-pro-detail
+                                                    h3.pro-name
+                                                        a(href=fn.linkId(product.slug) title=product.name)
+                                                            | #{ product.name }
+                                                    .box-pro-prices
+                                                        p.pro-price
+                                                            span.giaban #{ product.price }
+                                                            if product.price < product.old_price
+                                                                span.pro-price-del
+                                                                    del.compare-price #{ product.old_price }
 
         // Về chúng tôi
         section.wrapper-home-information.animation-tran
@@ -206,54 +95,83 @@ block content
                         .site-animation.homeStore
                             .contentHomeStore
                                 .textStore
-                                    a(href='' title='Hệ thống cửa hàng') H&#x1EC7; th&#x1ED1;ng c&#x1EED;a h&agrave;ng
-        // instagram
-        section.section-instagram
-            .container-fluid(style='padding:0')
-                .wrapper-heading-home.site-animation(style='background-color: #ffffff !important;')
-                    h2 FEEDBACK
-                .row
-                    .col-xs-12
-                            .owl-gallery.owl-carousel
-                                .gallery_item
-                                    picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg")
-                                        source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg")
-                                        source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg")
-                                        source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg")
-                                        img(src="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg" alt='feedback 1')
-                                .gallery_item
-                                    picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg")
-                                        source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg")
-                                        source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg")
-                                        source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg")
-                                        img(src="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg" alt='feedback 2')
-                                .gallery_item
-                                    picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg")
-                                        source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg")
-                                        source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg")
-                                        source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg")
-                                        img(src="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg" alt='feedback 3')
-                                .gallery_item
-                                    picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg")
-                                        source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg")
-                                        source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg")
-                                        source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg")
-                                        img(src="https://res.cloudinary.com/tacado/image/upload/v1591069846/oja6q1dazcnk505tjcro.jpg" alt='feedback 1')
-                                .gallery_item
-                                    picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg")
-                                        source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg")
-                                        source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg")
-                                        source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg")
-                                        img(src="https://res.cloudinary.com/tacado/image/upload/v1591069846/tukrxlaitr84bvznzuti.jpg" alt='feedback 2')
-                                .gallery_item
-                                    picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg")
-                                        source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg")
-                                        source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg")
-                                        source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg")
-                                        img(src="https://res.cloudinary.com/tacado/image/upload/v1591069846/dnulj7sfua1jhvciysd1.jpg" alt='feedback 3')
-                                //- .gallery_item
-                                //-     picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_large.jpg?v=97')
-                                //-         source(media='(max-width:991px)' srcset='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_medium.jpg?v=97')
-                                //-         source(media='(min-width: 992px' srcset='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_medium.jpg?v=97')
-                                //-         source(media='(min-width: 1440px)' srcset='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_large.jpg?v=97')
-                                //-         img(src='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_large.jpg?v=97' alt='feedback 12')
+                                    a(href='' title='Xem tất cả') XEM TẤT CẢ
+    // instagram
+    section.section-instagram
+        .container-fluid(style='padding:0')
+            .wrapper-heading-home.site-animation
+                h2 FEEDBACK
+            .row
+                .col-xs-12
+                    .owl-gallery.owl-carousel
+
+                        .gallery_item
+                            picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback_oatp9s.jpg")
+                                source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback_oatp9s.jpg")
+                                source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback_oatp9s.jpg")
+                                source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback_oatp9s.jpg")
+                                img(src="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback_oatp9s.jpg" alt='feedback 1')
+                        .gallery_item
+                            picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback5_jtnkim.jpg")
+                                source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback5_jtnkim.jpg")
+                                source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback5_jtnkim.jpg")
+                                source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback5_jtnkim.jpg")
+                                img(src="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback5_jtnkim.jpg" alt='feedback 1')
+                        .gallery_item
+                            picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback3_mkfa4w.jpg")
+                                source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback3_mkfa4w.jpg")
+                                source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback3_mkfa4w.jpg")
+                                source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback3_mkfa4w.jpg")
+                                img(src="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback3_mkfa4w.jpg" alt='feedback 1')
+                        .gallery_item
+                            picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback6_ovojoc.jpg")
+                                source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback6_ovojoc.jpg")
+                                source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback6_ovojoc.jpg")
+                                source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback6_ovojoc.jpg")
+                                img(src="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback6_ovojoc.jpg" alt='feedback 1')
+                        .gallery_item
+                            picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback2_ikjrqy.jpg")
+                                source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback2_ikjrqy.jpg")
+                                source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback2_ikjrqy.jpg")
+                                source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback2_ikjrqy.jpg")
+                                img(src="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback2_ikjrqy.jpg" alt='feedback 1')
+                        .gallery_item
+                            picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback8_fuv2dz.jpg")
+                                source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback8_fuv2dz.jpg")
+                                source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback8_fuv2dz.jpg")
+                                source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback8_fuv2dz.jpg")
+                                img(src="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback8_fuv2dz.jpg" alt='feedback 1')
+                        .gallery_item
+                            picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback7_tevf3o.jpg")
+                                source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback7_tevf3o.jpg")
+                                source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback7_tevf3o.jpg")
+                                source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback7_tevf3o.jpg")
+                                img(src="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback7_tevf3o.jpg" alt='feedback 1')
+                        .gallery_item
+                            picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback9_n3vch6.jpg")
+                                source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback9_n3vch6.jpg")
+                                source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback9_n3vch6.jpg")
+                                source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback9_n3vch6.jpg")
+                                img(src="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback9_n3vch6.jpg" alt='feedback 1')
+
+                        .gallery_item
+                            picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback4_woiakx.jpg")
+                                source(media='(max-width:991px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback4_woiakx.jpg")
+                                source(media='(min-width: 992px' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback4_woiakx.jpg")
+                                source(media='(min-width: 1440px)' srcset="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback4_woiakx.jpg")
+                                img(src="https://res.cloudinary.com/tacado/image/upload/v1604138611/feedback4_woiakx.jpg" alt='feedback 1')
+
+
+
+//- .gallery_item
+//-     picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_large.jpg?v=97')
+//-         source(media='(max-width:991px)' srcset='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_medium.jpg?v=97')
+//-         source(media='(min-width: 992px' srcset='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_medium.jpg?v=97')
+//-         source(media='(min-width: 1440px)' srcset='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_large.jpg?v=97')
+//-         img(src='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_large.jpg?v=97' alt='feedback 12')
+                        //- .gallery_item
+                        //-     picture.fancybox-thumb(data-fancybox='group' data-fancybox-group='group' href='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_large.jpg?v=97')
+                        //-         source(media='(max-width:991px)' srcset='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_medium.jpg?v=97')
+                        //-         source(media='(min-width: 992px' srcset='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_medium.jpg?v=97')
+                        //-         source(media='(min-width: 1440px)' srcset='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_large.jpg?v=97')
+                        //-         img(src='//theme.hstatic.net/1000253775/1000529442/14/instagram_12_img_large.jpg?v=97' alt='feedback 12')

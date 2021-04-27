@@ -60,6 +60,7 @@ const getOrderByToken = (tokenSign) => {
                         ['combination_id', 'combinationId'],
                         ['product_name', 'name'],
                         'qty',
+                        'avatar',
                         ['product_old_price', 'oldPrice'],
                         ['product_price', 'price'],
                         ['product_option', 'options']

@@ -11,20 +11,20 @@ block content
                         li
                             a(href=fn.linkProduct() target='_self') Danh mục
                         li.active
-                            span #{ result.name }
-            .row
-                .banner-collection-header
-                    img(src=result.avatar alt=result.name)
+                            span #{ title }
+            //.row
+            //    .banner-collection-header
+            //        img(src=result.avatar alt=title)
             .row
                 #collection-body.wrap-collection-body.clearfix
                     .col-md-12.col-sm-12.col-xs-12
                         .wrap-collection-title.row
                             .heading-collection.row
-                                .col-md-12.col-sm-12.col-xs-12
+                                .col-md-12.col-sm-12.col-xs-12.text-center
                                     h1.title
-                                        | #{ result.name }
+                                        | #{ title }
                                     .clearfix.filter-box
-                                        .browse-tags.pull-left
+                                        .browse-tags
                                             span.hidden Sắp xếp theo:
                                             span.custom-dropdown.custom-dropdown--white
                                                 select.sort-by.custom-dropdown__select.custom-dropdown__select--white.search-sort.select-sort
@@ -34,7 +34,7 @@ block content
                                                     option(class='price-descending' value='price-descending') Giá: Giảm dần
                                                     option(class='title-ascending' value='title-ascending') Tên: A-Z
                                                     option(class='title-descending' value='title-descending') Tên: Z-A
-                                        .product-filter.pull-left
+                                        .product-filter
                                             span.filter-title
                                                 | Lọc theo 
                                                 i.fa.fa-angle-down
@@ -85,8 +85,9 @@ block content
                                                         .box-pro-prices
                                                             p.pro-price.highlight
                                                                 span.giaban #{ product.price }
-                                                                span.pro-price-del
-                                                                    del.compare-price #{ product.oldPrice }
+                                                                if product.price < product.old_price
+                                                                    span.pro-price-del
+                                                                        del.compare-price #{ product.old_price }
                             if pagination
                                 include ./../include/pagination.pug
                             script.

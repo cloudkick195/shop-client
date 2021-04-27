@@ -25,7 +25,8 @@ const pageConfig = require('../configs/page.config');
 const url = require('../configs/account.config')();
 
 const Email = require('email-templates');
-   
+const nodemailerConfig = require('./../configs/nodemailer.config');
+
 const register = async (req, res) => {
     try {
         const validation = {
@@ -286,7 +287,7 @@ const recover = async (req, res) => {
         email.send({
             template: 'password-reset',
             message: {
-                from: 'TACADO <cloudkick195@gmail.com>',
+                from: `PAPAZI <${nodemailerConfig().gmail.emailAddress}>`,
                 to: data.email
             },
             locals: {
@@ -350,7 +351,7 @@ const reset = async (req, res) => {
         email.send({
             template: 'password-reset-success',
             message: {
-                from: 'TACADO <cloudkick195@gmail.com>',
+                from: `PAPAZI <${nodemailerConfig().gmail.emailAddress}>`,
                 to: checkJwt.email
             },
             locals: {

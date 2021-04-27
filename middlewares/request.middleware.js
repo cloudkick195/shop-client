@@ -33,13 +33,9 @@ const emitPaginationData = (paginationData, templateVariable) => {
 
 module.exports = async (req, res, next) => {
     try {
-        
         const data = await Promise.all([fetchInformation(), getAllProductCategoryCtrl(), getAllPrivacyPolicy()]);
-        
         const defaultPaginationData = getPaginationInformation(req);
-        
         req.paginationData = defaultPaginationData;
-       
         res.cRender = (urlTemplate, templateVariable) => {
             let paginationData = defaultPaginationData;
            

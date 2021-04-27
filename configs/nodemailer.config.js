@@ -14,7 +14,8 @@ module.exports = () => {
             "emailSecure": true,
             "emailUser": "cloudkick195@gmail.com",
             "emailPassword": "eszrfggzhpyyryne",
-            "emailAddress": "cloudkick195@gmail.com",
+            "emailAddress": "papazi3939@gmail.com",
+            "emailMoreAddress": "cloudkick195@gmail.com",
         }
     }
 }

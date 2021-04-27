@@ -6,7 +6,9 @@ const getNewArrivals = async () => {
         const { model } = db;
         return model.Product.findAll(
             { 
-                where: {  },
+                where: {
+                    archive_by: null
+                },
                 attributes: [
                     'product_id', 'name', 'slug', 'price', 'price_sale', 'count'
                 ],
@@ -14,7 +16,7 @@ const getNewArrivals = async () => {
                     { model: model.ProcessImage, as: 'Avatar', attributes: ['process_key', 'path', 'file_name', 'version'], required: false  }
                 ],
                 order: [['product_id', 'DESC']], 
-                limit: 10,
+                limit: 16,
                 group: ['Product.product_id']
             }
         );
@@ -29,10 +31,13 @@ const searchProduct = async (data, page = 1, limit = QueryConstant.defaultLimit)
         const { model, Sequelize: { Op } } = db;
 
         const {order, objQuery} = handlingFilter(data)
-        
+
         return model.Product.findAndCountAll(
-            { 
-                where: objQuery.where,
+            {
+                where: {
+                    ...objQuery.where,
+                    archive_by: null
+                },
                 attributes: [
                     'product_id', 'name', 'slug', 'price', 'price_sale', 'count'
                 ],
@@ -60,7 +65,8 @@ const saleProduct = async (data, page = 1, limit = QueryConstant.defaultLimit) =
                     ...objQuery.where,
                     price_sale: {
                         [Op.gt]: 0
-                    }
+                    },
+                    archive_by: null
                 },
                 attributes: [
                     'product_id', 'name', 'slug', 'price', 'price_sale', 'count'
@@ -80,7 +86,9 @@ const saleProduct = async (data, page = 1, limit = QueryConstant.defaultLimit) =
 const handlingFilter = (data) =>{
     const { model, Sequelize: { Op } } = db;
     const objQuery = {
-        where:{},
+        where:{
+
+        },
         include: [
             { model: model.ProcessImage, as: 'Avatar', attributes: ['process_key', 'path', 'file_name', 'version'], required: false  }
         ],
@@ -117,7 +125,7 @@ const handlingFilter = (data) =>{
     
     
     if(data.s)
-        objQuery.where.name ={[Op.like]: '%' + data.s + '%'};  
+        objQuery.where.name ={[Op.like]: '%' + data.s + '%'};
 
     if(data.price){
         const arrPrice = data.price.split("_");
@@ -147,7 +155,7 @@ const handlingFilter = (data) =>{
             }
         );
     }
-    
+    objQuery.archive_by = null;
     return {
         order: order, 
         objQuery: objQuery
@@ -158,7 +166,7 @@ const getListSaleOff = async () => {
     try {
         const { model, Sequelize: { Op } } = db;
         return model.Product.findAll({ 
-            where: { price_sale: { [Op.gt]: 0 } },
+            where: { price_sale: { [Op.gt]: 0 }, archive_by: null },
             attributes: [
                 'product_id', 'name', 'slug', 'price', 'price_sale', 'count'
             ],
@@ -202,12 +210,83 @@ const getListProductInListProductCategoryIds = async (listCategoryIds, page = 1,
     }
 }
 
+const getProductByKeyValue = async (objWhere = {slug: ''}) => {
+    const { model } = db;
+    return model.Product.findOne({
+        where: {...objWhere, archive_by: null},
+        include: [
+            {
+                model: model.ProcessImage,
+                as: 'Avatar',
+                attributes: ['process_key', 'path', 'file_name', 'version'],
+                required: false
+            }
+        ],
+        attributes: ['product_id', 'category_id','name', 'slug', 'price', 'sku','price_sale', 'count', 'description']
+    })
+}
+
+const getProductSlide = async (productId) => {
+    const { model } = db;
+    return model.ProductSlide.findAll({
+        where: {product_id: productId, is_archive: false},
+        attributes: ['link'],
+        include: [
+            { model: model.ProcessImage, as: 'ProcessImage', attributes: ['process_key', 'path', 'file_name', 'version'] }
+        ],
+    })
+}
+
+const getProductAttributeCombination = async (productId) => {
+    const { model } = db;
+    return model.ProductAttributeCombination.findAll({
+        where: {product_id: productId, is_archive: false},
+        attributes: ['combination_id','process_image', 'count'],
+        include: [
+            {  model: model.ProductAttributeEntityCombination,
+                as: 'ProductAttributeEntityCombination',
+                attributes: ['entity_id', 'combination_id'],
+                required: false,
+                include: [
+                    {
+                        model: model.AttributeEntityType,
+                        as: 'AttributeEntityType',
+                        attributes: ['entity_name', 'id_entity_type'],
+                        required: false,
+                        include: [
+                            {
+                                model: model.ProductAttributeEntity,
+                                as: 'ProductAttributeEntity',
+                                attributes: ['attribute_name', 'attribute_id'],
+                                required: false
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+    })
+}
+
+const getProductAttributeEntityBackground = async (productId) => {
+    const { model } = db;
+    return model.ProductAttributeEntityBackground.findAll({
+        as: 'ProductAttributeEntityBackground',
+        where: {product_id: productId, is_archive: false},
+        attributes: ['entity_id'],
+        include: [
+            { model: model.ProcessImage, as: 'ProcessImage', attributes: ['id_process_image', 'process_key', 'path', 'file_name', 'version'], required: false }
+        ],
+        required: false
+    })
+}
+
 const getDetailProduct = async (productSlug) => {
     
     try {
         const { model } = db;
         return model.Product.findOne({
-            where: { slug: productSlug },
+            where: { slug: productSlug, archive_by: null },
             include: [
                 { 
                     model: model.ProductSlide,
@@ -225,7 +304,7 @@ const getDetailProduct = async (productSlug) => {
                     where: { is_archive: false },
                     required: false,
                     include: [
-                        { model: model.ProcessImage, as: 'ProcessImage', attributes: ['process_key', 'path', 'file_name', 'version'], required: false },
+                        //{ model: model.ProcessImage, as: 'ProcessImage', attributes: ['process_key', 'path', 'file_name', 'version'], required: false },
                         {
                             model: model.ProductAttributeEntityCombination,
                             as: 'ProductAttributeEntityCombination', 
@@ -240,7 +319,7 @@ const getDetailProduct = async (productSlug) => {
                                         {
                                             model: model.ProductAttributeEntityBackground, as: 'ProductAttributeEntityBackground', attributes: ['entity_id'],
                                             include: [
-                                                { model: model.ProcessImage, as: 'ProcessImage', attributes: ['process_key', 'path', 'file_name', 'version'], required: false }
+                                                { model: model.ProcessImage, as: 'ProcessImage', attributes: ['id_process_image', 'process_key', 'path', 'file_name', 'version'], required: false }
                                             ],
                                             required: false
                                         }
@@ -257,7 +336,7 @@ const getDetailProduct = async (productSlug) => {
                     required: false
                 }
             ],
-            attributes: ['product_id', 'name', 'slug', 'price', 'price_sale', 'count', 'description']
+            attributes: ['product_id', 'category_id','name', 'slug', 'price', 'sku','price_sale', 'count', 'description']
         });
     } catch(error) {
         logger.error(error);
@@ -477,12 +556,16 @@ module.exports = {
     getNewArrivals, 
     getListSaleOff, 
     getListProductInListProductCategoryIds, 
-    getDetailProduct, 
+    getDetailProduct,
     getListRelatedProduct,
     getProductInCart,
     getProductInCartByCustomerVip,
     getProductHaveAttributeInCart,
     getAttributeProductInCart,
     searchProduct,
-    saleProduct
+    saleProduct,
+    getProductByKeyValue,
+    getProductSlide,
+    getProductAttributeCombination,
+    getProductAttributeEntityBackground
 };

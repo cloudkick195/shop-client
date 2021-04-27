@@ -5,7 +5,8 @@ const { createImagePath } = require('./../helpers/file.helper');
 const { formatWithCommas } = require('./../helpers/currency.helper');
 const { linkId } = require('./../helpers/function');
 
-const { getListProductCategoryInHome, getChildCategoriesByParentId } = require('./../repositories/product-category.repo');
+const { getListProductCategoryInHome, getChildCategoriesByParentId,
+    getAllProductCategoriesExclude0} = require('./../repositories/product-category.repo');
 
 const { getAllProductAttributeEntity } = require('./../repositories/product-attribute-entity.repo');
 const { getListFeedback } = require('./../repositories/feedback.repo');
@@ -18,9 +19,9 @@ const shopIndex = async (req, res) => {
             getListSlidesHome(),
             getNewArrivals(),
             getListSaleOff(),
-            getChildCategoriesByParentId("1"),
-            getChildCategoriesByParentId("2"),
-            getListFeedback()
+            getAllProductCategoriesExclude0(),
+            getListFeedback(),
+
         ];
         
         const result = await Promise.all(listQueries);
@@ -39,11 +40,11 @@ const productSearch = async (req, res) => {
         }
        
         const data = req.body;
-       
+
         reqValidator(validation, data);
-        
+
         const product = await searchProduct(data);
-        
+
         return res.status(200).json({ 
             currentUrl: '/search?'+new URLSearchParams(data),
             products: mapDataProduct(product.rows),
@@ -66,7 +67,7 @@ const searchPage = async (req, res) => {
                 validation[key] = {type: ['text']}
             }
         }
-        
+
         reqValidator(validation, dataQuery);
 
         const listQueries = [
@@ -83,8 +84,9 @@ const searchPage = async (req, res) => {
             mapProductData.rows = result[0].rows;
             mapProductData.count = result[0].count;
         }
-        
+
         return res.cRender('home/search.pug', {
+            dataQuery: dataQuery,
             pagination: true,attributes:result[1], products: mapDataProduct(mapProductData.rows), count: mapProductData.count, title: "Tìm kiếm" });
 
     } catch (error) {
@@ -120,7 +122,7 @@ const salePage = async (req, res) => {
             mapProductData.count = result[0].count;
         }
         
-        return res.cRender('home/search.pug', {
+        return res.cRender('home/san-pham.pug', {
             pagination: true,attributes:result[1], products: mapDataProduct(mapProductData.rows), count: mapProductData.count, title: "Khuyến mãi" });
 
     } catch (error) {
@@ -138,7 +140,7 @@ const mapDataProduct = (products) => {
                 id: item.product_id,
                 name: item.name,
                 slug: linkId(item.slug),
-                price: formatWithCommas(item.price - (item.price * item.price_sale / 100)),
+                price: formatWithCommas(item.price_sale ? item.price_sale : item.price),
                 old_price: formatWithCommas(item.price),
                 avatar: createImagePath(item.Avatar)
             }
@@ -166,7 +168,7 @@ const remapValueToRenderIndex = (data) => {
                     id: item.product_id,
                     name: item.name,
                     slug: item.slug,
-                    price: formatWithCommas(item.price - (item.price * item.price_sale / 100)),
+                    price: formatWithCommas(item.price_sale ? item.price_sale : item.price ),
                     old_price: formatWithCommas(item.price),
                     avatar: createImagePath(item.Avatar)
                 }
@@ -180,7 +182,7 @@ const remapValueToRenderIndex = (data) => {
                     id: item.product_id,
                     name: item.name,
                     slug: item.slug,
-                    price: formatWithCommas(item.price - (item.price * item.price_sale / 100)),
+                    price: formatWithCommas(item.price_sale ? item.price_sale : item.price),
                     old_price: formatWithCommas(item.price),
                     avatar: createImagePath(item.Avatar)
                 }
@@ -192,7 +194,6 @@ const remapValueToRenderIndex = (data) => {
             data[3].map(item => {
 
                 const itemCategory = {
-                    product_category_id: item.product_category_id,
                     name: item.name,
                     slug: item.slug,
                     avatar: createImagePath(item.Avatar)
@@ -202,24 +203,9 @@ const remapValueToRenderIndex = (data) => {
             }) || []
         )
     }
-    if (data && data[4]) {
+    if (data && data[4] && data[4].data) {
         result.push(
-            data[4].map(item => {
-
-                const itemCategory = {
-                    product_category_id: item.product_category_id,
-                    name: item.name,
-                    slug: item.slug,
-                    avatar: createImagePath(item.Avatar)
-                }
-                
-                return itemCategory;
-            }) || []
-        )
-    }
-    if (data && data[5] && data[5].data) {
-        result.push(
-            data[5].data.map(item => {
+            data[4].data.map(item => {
                 return {
                     image: createImagePath(data[4].cache ? item : item.Image)
                 }

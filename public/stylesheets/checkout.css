@@ -275,14 +275,15 @@ select {
     display: inline-block;
     border-radius: 4px;
     font-weight: 500;
-    padding: 1.4em 1.7em;
+    padding: 1em 1.7em;
     box-sizing: border-box;
     text-align: center;
     cursor: pointer;
     transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
     position: relative;
-    background: #338dbc;
-    color: white;
+    background: #f7f5f3;
+    color: #000;
+    border: 1px solid #000
 }
 
     .btn:hover {

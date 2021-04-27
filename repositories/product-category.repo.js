@@ -8,7 +8,7 @@ const getListProductCategoryInHome = () => {
     try {
         const { model } = db;
         return model.ProductCategory.findAll({
-            where: { is_archive: false, show_home: true, parent_id: 0 },
+            where: { is_archive: false, is_show_in_home: true, parent_id: 0 },
             attributes: [
                 'product_category_id', 'name', 'slug'
             ],
@@ -37,23 +37,44 @@ const getListProductCategoryInHome = () => {
 const getAllProductCategories = async () => {
     try {
         const { model } = db;
+
         const cacheData = await cacheAction.getKey('productCategory');
-        if (cacheData && cacheData.length > 0) {
-            return { cache: true, data: JSON.parse(cacheData) };
-        }
+
+        // if (cacheData && cacheData.length > 0) {
+        //     return { cache: true, data: JSON.parse(cacheData) };
+        // }
         return { cache: false, data: await model.ProductCategory.findAll({
             where: { is_archive: false },
             include: [
                 { model: model.ProcessImage, as: "Avatar", attributes: ['path', 'version', 'file_name', 'process_key'] }
             ],
-            attributes: ['product_category_id', 'product_category_id', 'name', 'slug', 'parent_id', 'is_archive', 'show_tooltip_background', 'show_home']
+            attributes: ['product_category_id', 'name', 'slug', 'parent_id', 'is_archive', 'show_tooltip_background', 'is_show_in_home']
         })};
     } catch (error) {
         logger.error(error);
         return null;
     }
 }
+const getAllProductCategoriesExclude0 = async () => {
+    try {
+        const { model, Sequelize: { Op } } = db;
 
+        return model.ProductCategory.findAll({
+            where: {
+                'parent_id': {
+                    [Op.notIn]:[0]
+                }
+            },
+            include: [
+                { model: model.ProcessImage, as: "Avatar", attributes: ['path', 'version', 'file_name', 'process_key'] }
+            ],
+            attributes: ['product_category_id', 'name', 'slug', 'parent_id', 'is_archive', 'show_tooltip_background', 'is_show_in_home']
+        });
+    } catch (error) {
+        logger.error(error);
+        return null;
+    }
+}
 const getChildCategoriesByParentId = async (parentId) => {
     try {
         const { model } = db;
@@ -63,7 +84,7 @@ const getChildCategoriesByParentId = async (parentId) => {
             include: [
                 { model: model.ProcessImage, as: "Avatar", attributes: ['path', 'version', 'file_name', 'process_key'] }
             ],
-            attributes: ['product_category_id', 'product_category_id', 'name', 'slug', 'parent_id', 'is_archive', 'show_tooltip_background', 'show_home']
+            attributes: ['product_category_id', 'product_category_id', 'name', 'slug', 'parent_id', 'is_archive', 'show_tooltip_background', 'is_show_in_home']
         })
     } catch (error) {
         logger.error(error);
@@ -108,12 +129,13 @@ const mapResultGetDetailProductCategory = (item) => {
     }
     if (item && item.Product && item.Product.rows && item.Product.rows.length > 0) {
         itemCategory.products = item.Product.rows.map(dataProduct => {
+
             return {
                 id: dataProduct.product_id,
                 name: dataProduct.name,
                 slug: dataProduct.slug,
-                price: formatWithCommas(dataProduct.price - (dataProduct.price * dataProduct.price_sale / 100)),
-                oldPrice: dataProduct.price,
+                price: formatWithCommas(dataProduct.price_sale ? dataProduct.price_sale : dataProduct.price),
+                old_price: formatWithCommas(dataProduct.price),
                 avatar: createImagePath(dataProduct.Avatar)
             }
         });
@@ -136,4 +158,8 @@ const getAllProductsOfCategory = async (productCategorySlug, page = 1, limit = Q
     }
 }
 
-module.exports = { getListProductCategoryInHome, getAllProductCategories, getAllProductsOfCategory, getChildCategoriesByParentId };
+module.exports = { getListProductCategoryInHome,
+    getAllProductCategories,
+    getAllProductsOfCategory,
+    getChildCategoriesByParentId,
+    getAllProductCategoriesExclude0};

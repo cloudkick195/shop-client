@@ -7,6 +7,9 @@ const getAllProvince = async () => {
         return model.Province.findAll(
             { 
                 where: { },
+                order: [
+                    ['name', 'ASC'],
+                ],
                 attributes: [
                     'provinceid', 'name'
                 ]
@@ -23,6 +26,9 @@ const getDistricts = async (provinceId) => {
         return model.District.findAll(
             { 
                 where: { provinceid: provinceId },
+                order: [
+                    ['name', 'ASC'],
+                ],
                 attributes: [
                     'districtid', 'name'
                 ]
@@ -39,6 +45,9 @@ const getWards = async (districtId) => {
         return model.Ward.findAll(
             { 
                 where: { districtid: districtId},
+                order: [
+                    ['name', 'ASC'],
+                ],
                 attributes: [
                     'wardid', 'name'
                 ]
@@ -57,6 +66,9 @@ const getLocation = async (provinceId, districtId, wardId) => {
             { 
                 attributes: [
                     'provinceid', 'name'
+                ],
+                order: [
+                    ['name', 'ASC'],
                 ],
                 include: [
                     { 

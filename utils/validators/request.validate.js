@@ -146,7 +146,7 @@ const handleValidator = {
     },
     text: (key, name, errors, data) => {
         if(!data[key])
-            return data[key] = undefined;
+            return data[key] = "";
 
         data[key] = trim(data[key])
     },
