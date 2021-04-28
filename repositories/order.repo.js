@@ -1,10 +1,11 @@
+require('dotenv').config();
 const logger = require('./../utils/logger');
 const { QueryConstant } = require('./../constants/query.constant');
 
 const createOrder = async (data, transac) => {
     try {
         const { model } = db;
-        
+
         return model.Order.create(
             { 
                 customer_id: data.customer_id,
