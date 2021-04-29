@@ -1,8 +1,11 @@
 require('dotenv').config();
+const axios = require('axios');
+const qs = require('qs');
 const { requestValidate, setNullVal} = require('./../utils/validators/request.validate');
 const logger = require('./../utils/logger');
 const { CartConstant } = require('./../constants/cart.constant');
 const { getListSlidesHome } = require('./../repositories/main-slide.repo');
+const { getProductByKeyValue } = require('../repositories/product.repo');
 const {  
     getProductInCart,
     getProductInCartByCustomerVip,
@@ -27,6 +30,7 @@ const {
 const { createOrdersDetail } = require('./../repositories/order-detail.repo');
 const { getCookieCart, getCookieCartForTemplate } = require('./../helpers/cart.helper');
 const jwt = require('jsonwebtoken');
+const { createApiKiotviet, createOrderApiKiotviet } = require('../utils/apiKiotviet');
 
 
 const redirectCart = (req, res) => {
@@ -495,7 +499,66 @@ const payment = async (req, res) => {
         try {
             const newOrder = await createOrder(data, transac);
 
+            const dataCustomer = {
+                branchId: process.env.BRANCH_ID,
+                name: data['full-name_field'],
+                contactNumber: data['phone_field'],
+                address: data['address1_field'],
+                code: `KH${data['phone_field']}`,
+                comment: 'test'
+            }
+            const url = `${process.env.KIOTVIET_PUBLIC_API}/customers`
+            const dataCustomerSend = JSON.stringify(dataCustomer)
+            // Create new customer to Kiotviet 
+            console.log('Create new order Kiotviet');
+            const newCustomerKiotviet = await createApiKiotviet(url, dataCustomerSend)
+            
+            let listPromiseProduct = [];
+            const productDetailOrder = [];
             const createOrderDetail = await createOrdersDetail(newOrder.order_id, getCookiesCart.items, transac);
+            createOrderDetail.forEach(item => {
+                listPromiseProduct.push(getProductByKeyValue({
+                    product_id: item.product_id
+                }))
+                productDetailOrder.push(
+                    {
+                        productName: item.product_name,
+                        quantity: item.qty,
+                        price: item.product_price
+                    }
+                )
+            });
+
+            const listProduct = await Promise.all(listPromiseProduct)
+
+            
+            for (const item of listProduct) {
+                for(const product of productDetailOrder) {
+                    if(item.name === product.productName) {
+                        product['productCode'] = item.sku
+                    }
+                }
+                
+            }
+
+            const dataOrder = {
+                "branchId": parseInt(process.env.BRANCH_ID),
+                "discount": data.discount,
+                "orderDelivery": {
+                    "address": data['address1_field'],
+                    "price": data['ship_price']
+                },
+                "orderDetails": productDetailOrder,
+                "customer": {   
+                    "id": newCustomerKiotviet.id,
+                    "code": newCustomerKiotviet.code
+                }
+            }
+            
+            const urlOrder = `${process.env.KIOTVIET_PUBLIC_API}/orders`
+            console.log('Create new order Kiotviet');
+            await createOrderApiKiotviet(urlOrder, dataOrder);
+
             await transac.commit();
             
             res.clearCookie('cart');
