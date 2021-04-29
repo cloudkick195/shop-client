@@ -30,7 +30,7 @@ const {
 const { createOrdersDetail } = require('./../repositories/order-detail.repo');
 const { getCookieCart, getCookieCartForTemplate } = require('./../helpers/cart.helper');
 const jwt = require('jsonwebtoken');
-const { createApirKiotviet } = require('../utils/apiKiotviet');
+const { createApiKiotviet, createOrderApiKiotviet } = require('../utils/apiKiotviet');
 
 
 const redirectCart = (req, res) => {
@@ -510,9 +510,9 @@ const payment = async (req, res) => {
             const url = `${process.env.KIOTVIET_PUBLIC_API}/customers`
             const dataCustomerSend = JSON.stringify(dataCustomer)
             // Create new customer to Kiotviet 
-            const newCustomerKiotviet = await createApirKiotviet(url, dataCustomerSend)
+            console.log('Create new order Kiotviet');
+            const newCustomerKiotviet = await createApiKiotviet(url, dataCustomerSend)
             
-            console.log(newCustomerKiotviet);
             let listPromiseProduct = [];
             const productDetailOrder = [];
             const createOrderDetail = await createOrdersDetail(newOrder.order_id, getCookiesCart.items, transac);
@@ -541,8 +541,6 @@ const payment = async (req, res) => {
                 
             }
 
-            console.log(productDetailOrder)
-
             const dataOrder = {
                 "branchId": parseInt(process.env.BRANCH_ID),
                 "discount": data.discount,
@@ -550,38 +548,16 @@ const payment = async (req, res) => {
                     "address": data['address1_field'],
                     "price": data['ship_price']
                 },
-                "orderDetails": [
-                    {
-                        "productId": 20927850,
-                        "productCode": "SPTEST118888",
-                        "quantity": 2,
-                        "price": 20000
-                    }, 
-                    {
-                        "productId": 20937927,
-                        "productCode": "SPTEST19979",
-                        "quantity": 6,
-                        "price": 50000
-                    }
-                ],
-                "customer": {
+                "orderDetails": productDetailOrder,
+                "customer": {   
                     "id": newCustomerKiotviet.id,
                     "code": newCustomerKiotviet.code
                 }
             }
             
             const urlOrder = `${process.env.KIOTVIET_PUBLIC_API}/orders`
-            // const newOrderKiotviet = await createApirKiotviet(urlOrder, dataOrder);
-            const res = await axios.post(urlOrder, dataOrder, {
-                headers: {
-                    'Authorization': `Bearer ${process.env.KIOTVIET_ACCESS_TOKEN}`,
-                    'Retailer': process.env.RETAIL_ID,
-                    'Content-Type': 'application/json'
-                }
-            });
-
-            console.log(res.data)
-
+            console.log('Create new order Kiotviet');
+            await createOrderApiKiotviet(urlOrder, dataOrder);
 
             await transac.commit();
             
