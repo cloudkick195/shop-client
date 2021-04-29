@@ -2,8 +2,8 @@ const redis = require('redis');
 
 module.exports = () => {
     const redisClient = redis.createClient({
-        host: 'localhost',
-        port: 63792
+        host: '127.0.0.1',
+        port: 6379
     });
 
     const client = {};

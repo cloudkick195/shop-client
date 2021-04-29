@@ -3,9 +3,9 @@ const Sequelize = require('sequelize');
 module.exports = () => {
     const db = {};
     const sequelize = new Sequelize('shop160_db', 'root', 'root', {
-        host: 'localhost',
+        host: '127.0.0.1',
         dialect: 'mysql',
-        port: 33065
+        port: 3306
     });
 
     db.sequelize = sequelize;
