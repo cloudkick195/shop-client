@@ -1,54 +1,6 @@
 require('dotenv').config();
 const axios = require('axios');
 var qs = require('qs');
-let token;
-const cron = require('node-cron');
-
-(async () => {
-  console.log('alo')
-  cron.schedule("0 0 */12 * * *", async function() {
-    try {
-      const data = {
-        "client_id": process.env.CLIENT_ID,
-        "client_secret": process.env.CLIENT_SECRET,
-        "grant_type": process.env.GRANT_TYPE,
-        "scopes": process.env.SCOPES,
-      }
-    
-      const newToken = await axios.post(process.env.KIOTVIET_URL_TOKEN, qs.stringify(data), {
-        headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      })
-      token = res.data.access_token
-    } catch (error) {
-      console.log(error)
-    }
-  });
-})()
-
-
-// (async () => {
-//   try {
-//       const data = {
-//           "client_id": process.env.CLIENT_ID,
-//           "client_secret": process.env.CLIENT_SECRET,
-//           "grant_type": process.env.GRANT_TYPE,
-//           "scopes": process.env.SCOPES,
-//       }
-  
-//       const res = await axios.post(process.env.KIOTVIET_URL_TOKEN, qs.stringify(data), {
-//           headers: {
-//           'Content-Type': 'application/x-www-form-urlencoded'
-//           }
-//       })
-
-//       token = res.data.access_token
-//   } catch (error) {
-//     console.log(error);
-//     return error
-//   }
-// })()
 
 exports.createApiKiotviet = async function (url, data){
   try {
