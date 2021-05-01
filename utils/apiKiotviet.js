@@ -73,8 +73,10 @@ exports.createOrderApiKiotviet = async function (url, data){
         'Content-Type': 'application/json'
       }
     })
+    console.log(345, res);
     return res.data;
   } catch (error) {
+    console.log(3456, error);
     return error
   }
 }
