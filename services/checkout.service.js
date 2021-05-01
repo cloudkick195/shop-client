@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ override: true });
 const axios = require('axios');
 const qs = require('qs');
 const { requestValidate, setNullVal} = require('./../utils/validators/request.validate');
@@ -402,6 +402,20 @@ const postCheckout = async (req, res) => {
 const payment = async (req, res) => {
     try {
         const token = req.params.token;
+        const kiotvietConfig = {
+            "client_id": process.env.CLIENT_ID,
+            "client_secret": process.env.CLIENT_SECRET,
+            "grant_type": process.env.GRANT_TYPE,
+            "scopes": process.env.SCOPES,
+        }
+    
+        const newAccessTokenKiotviet = await axios.post(process.env.KIOTVIET_URL_TOKEN, qs.stringify(kiotvietConfig), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        })
+        process.env['KIOTVIET_ACCESS_TOKEN'] = newAccessTokenKiotviet.data.access_token;
+        console.log(process.env.KIOTVIET_ACCESS_TOKEN)
         
         if(!token || !req.cookies.cart){
             return res.status(400).json({ message: 'Không tồn tại giỏ hàng, vui lòng load lại trang', url: '/cart'});
@@ -557,7 +571,8 @@ const payment = async (req, res) => {
             
             const urlOrder = `${process.env.KIOTVIET_PUBLIC_API}/orders`
             console.log('Create new order Kiotviet');
-            await createOrderApiKiotviet(urlOrder, dataOrder);
+            const neworder = await createOrderApiKiotviet(urlOrder, dataOrder);
+            console.log(neworder)
 
             await transac.commit();
             

@@ -19,6 +19,7 @@ var flash = require('connect-flash');
 const databaseConnect = require('./configs/db.config');
 const redisClient = require('./configs/redis.client');
 const pageConfig = require('./configs/page.config');
+const qs = require('qs');
 
 
 const listFnHelper = require('./helpers/function');
@@ -129,5 +130,6 @@ cron.schedule("0 0 */12 * * *", function() {
         console.error(error)
     })
 });
+
 
 module.exports = app;
