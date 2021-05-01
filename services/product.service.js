@@ -9,6 +9,7 @@ const { getDetailProduct,
 const { createImagePath } = require('./../helpers/file.helper');
 const { formatWithCommas } = require('./../helpers/currency.helper');
 const { getAllProductAttributeEntity } = require('./../repositories/product-attribute-entity.repo');
+const { getSales } = require('./../repositories/sale.repo');
 const { reqValidator } = require('./../utils/validators/request.validate');
 const { QueryConstant } = require('./../constants/query.constant');
 
@@ -118,7 +119,8 @@ const productsPage = async (req, res) => {
 
         const listQueries = [
             searchProduct(dataQuery, paginationData.page, paginationData.limit),
-            getAllProductAttributeEntity()
+            getAllProductAttributeEntity(),
+            getSales()
         ];
         
         

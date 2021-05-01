@@ -32,6 +32,7 @@ module.exports = () => {
     db.model.Ward = require('./../models/location/ward.model')(sequelize, Sequelize);
     db.model.Customer = require('./../models/customer.model')(sequelize, Sequelize);
     db.model.Order = require('./../models/order.model')(sequelize, Sequelize);
+    db.model.Sale = require('./../models/sale.model')(sequelize, Sequelize);
     db.model.OrderDetail = require('./../models/order-detail.model')(sequelize, Sequelize);
     db.model.ConfigShipping = require('./../models/config-shipping.model')(sequelize, Sequelize);
     db.model.PolicyPost = require('../models/privacy-policy.model')(sequelize, Sequelize);
