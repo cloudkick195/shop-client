@@ -8,7 +8,7 @@ const getSales = (id) => {
         const { model } = db;
         return model.Sale.findAll({
             where: { status: 1 },
-            order: ['prioritize', 'DESC']
+            order: [['prioritize', 'DESC']]
         });
     } catch (error) {
         logger.error(error);

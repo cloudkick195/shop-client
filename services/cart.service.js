@@ -9,6 +9,13 @@ const {
     getAttributeProductInCart
 } = require('./../repositories/product.repo');
 
+const { getSales } = require('./../repositories/sale.repo');
+
+const {
+    convertSales,
+    checkProductSale
+} = require('./../utils/checkProductSale');
+
 const getCart = async (req, res) => {
     try { 
        
@@ -47,7 +54,8 @@ const addToCart = async (req, res) => {
 
         const listQueries = [
             getProductInCart(productId),
-            getAttributeProductInCart(combinationId)
+            getAttributeProductInCart(combinationId),
+            getSales()
         ];
 
         const result = await Promise.all(listQueries);
@@ -76,7 +84,11 @@ const addToCart = async (req, res) => {
 
         if(req.cookies.cart) 
             reqCookiesCart = JSON.parse(req.cookies.cart);
-
+        let sales = result[2];
+        if(sales && sales.length > 0){
+            sales = convertSales(sales);
+        }
+        checkProductSale(product, sales);
         const getCart = mapDataProductInCart(reqCookiesCart, productQuantity, product);
         
 
@@ -111,9 +123,13 @@ const updateCart = async (req, res) => {
         
         // Don't allow negative quantity
         if(productQuantity < 1) productQuantity = 1;
-
-        let product = await getProductInCart(productId);
+        const result = await Promise.all([
+            getProductInCart(productId),
+            getSales()
+        ]);
+        let product = result[0];
         
+
         if(!product[0]){
             return res.status(400).json({ message: 'Không tìm thấy sản phẩm'});
         }
@@ -149,7 +165,11 @@ const updateCart = async (req, res) => {
         }
         
         res.clearCookie('cart');
-        
+        let sales = result[1];
+        if(sales && sales.length > 0){
+            sales = convertSales(sales);
+        }
+        checkProductSale(product, sales);
         // Update the cart
         const productPrice = product.price_sale ? product.price_sale : product.price;
         
@@ -184,7 +204,11 @@ const removeCartItem = async (req, res) => {
         if(!cartItem)
             return res.status(400).json({ message: 'Không tìm thấy sản phẩm trong giỏ hàng' });
 
-        let product = await getProductInCart(productId);
+        const result = await Promise.all([
+            getProductInCart(productId),
+            getSales()
+        ]);
+        let product = result[0];
         
         if(!product[0]){
             product[0] = cartCookie.items[req.body.productId];
@@ -198,7 +222,11 @@ const removeCartItem = async (req, res) => {
         }else{
             product = product[0];
         }
-        
+        let sales = result[1];
+        if(sales && sales.length > 0){
+            sales = convertSales(sales);
+        }
+        checkProductSale(product, sales);
         const productPrice = product.price_sale ? product.price_sale : product.price;
         cartCookie.total_qty = cartCookie.total_qty - cartItem.qty;
         cartCookie.total_price = cartCookie.total_price - (cartItem.qty * productPrice); 
@@ -227,7 +255,7 @@ const removeCartItem = async (req, res) => {
     }
 }
 
-const mapDataProductInCart= (preqCookiesCart, productQuantity, product) => {
+const mapDataProductInCart= (preqCookiesCart, productQuantity, product, sales) => {
         let reqCookiesCarts = preqCookiesCart;
         reqCookiesCarts.total_qty =  0;
         reqCookiesCarts.total_price = 0;

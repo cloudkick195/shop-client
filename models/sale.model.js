@@ -51,7 +51,7 @@ module.exports = (sequelize, Sequelize) => {
     }, {
         underscored: true,
         timestamps: false,
-        tableName: 'sale'
+        tableName: 'sales'
     });
 
     Sale.associate = function(models) {

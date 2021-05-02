@@ -3,6 +3,12 @@ const { QueryConstant } = require('./../constants/query.constant');
 const { getListProductInListProductCategoryIds } = require('./product.repo');
 const { createImagePath } = require('./../helpers/file.helper');
 const { formatWithCommas } = require('./../helpers/currency.helper');
+const { getSales } = require('./../repositories/sale.repo');
+
+const {
+    convertSales,
+    checkProductSale
+} = require('./../utils/checkProductSale');
 
 const getListProductCategoryInHome = () => {
     try {
@@ -118,7 +124,7 @@ const mapReturnListProductCategoryId = (listProductCategories) => {
     });
 };
 
-const mapResultGetDetailProductCategory = (item) => {
+const mapResultGetDetailProductCategory = (item, sales) => {
     const itemCategory = {
         id: item.product_category_id,
         name: item.name,
@@ -129,7 +135,7 @@ const mapResultGetDetailProductCategory = (item) => {
     }
     if (item && item.Product && item.Product.rows && item.Product.rows.length > 0) {
         itemCategory.products = item.Product.rows.map(dataProduct => {
-
+            checkProductSale(dataProduct, sales);
             return {
                 id: dataProduct.product_id,
                 name: dataProduct.name,
@@ -145,11 +151,22 @@ const mapResultGetDetailProductCategory = (item) => {
 
 const getAllProductsOfCategory = async (productCategorySlug, page = 1, limit = QueryConstant.defaultLimit, dataQuery) => {
     try {
-        const dataProductCategory = await getListChildrenProductCategory(productCategorySlug);
         
+        
+        
+        const result = await Promise.all([
+            getListChildrenProductCategory(productCategorySlug),
+            getSales()
+        ]);
+        const dataProductCategory = result[0];
+
+        let sales = result[1];
+        if(sales && sales.length > 0){
+            sales = convertSales(sales);
+        }
         if (dataProductCategory && dataProductCategory.dataValues) {
             const listProductCategoryIds = [dataProductCategory.product_category_id, ...mapReturnListProductCategoryId(dataProductCategory.ChildCategory)]
-            return mapResultGetDetailProductCategory({ ...dataProductCategory.dataValues, Product: await getListProductInListProductCategoryIds(listProductCategoryIds, page, limit, dataQuery) }) 
+            return mapResultGetDetailProductCategory({ ...dataProductCategory.dataValues, Product: await getListProductInListProductCategoryIds(listProductCategoryIds, page, limit, dataQuery) }, sales) 
         }
         return null;
     } catch (error) {
