@@ -11,6 +11,7 @@ const { QueryConstant } = require('./../constants/query.constant');
 const checkProductSale = (product, sales) => {
     let prioritize;
     
+    if(!sales || sales.length < 1) return;
     if(sales.all.active){
         
         prioritize = sales.all.prioritize;
