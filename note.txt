@@ -23,3 +23,6 @@ vd: thông báo user thay đổi mật khẩu cách đây bao lâu, hoặc tạo
 22. Add ckeditor vào product description
 23, Lỗi product load 2 lần, là do template pug, biến phải có giá trị, nếu ko sẽ bị lỗi, phải check if biến có tồn tại không
 http://localhost:3000/checkout/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjYXJ0IjpbIl8xXzIiXSwiaWF0IjoxNTg3MjY3Njg3LCJleHAiOjE1ODc0NDA0ODd9.wsyLIrKwuPGXiuPURcbpkORzAa5YqrGwlRZbMzYJIRM/thank_you
+
+DONE BUGS:
+xong product sale

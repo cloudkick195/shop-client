@@ -54,9 +54,17 @@ const checkEmptyObject = (object) => {
     return Object.keys(object).length === 0 && object.constructor === Object;
 }
 
+
 const revertSlugToUrl = (endPointUrl, slugParamsObject = {}) => {
     return `${ !checkEmptyObject(slugParamsObject) ? endPointUrl + '?' + encodeData(slugParamsObject) : endPointUrl }`
 }
 
+const convertStringToArray = (str) => {
+    if(str && JSON.parse(str)){
+        return JSON.parse(str);
+    }
+    return;
+}
+
 module.exports = { linkIdList, linkId, linkProduct, linkSaleProduct, linkPolicyAndReturn, linkIdPolicyAndReturn,
-    linkIdFull, linkCategoryIdList, linkCategoryId, linkCategory, linkSearch, linkSearchList };
+    linkIdFull, linkCategoryIdList, linkCategoryId, linkCategory, linkSearch, linkSearchList, convertStringToArray };

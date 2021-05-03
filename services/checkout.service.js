@@ -32,6 +32,13 @@ const { getCookieCart, getCookieCartForTemplate } = require('./../helpers/cart.h
 const jwt = require('jsonwebtoken');
 const { createApiKiotviet, createOrderApiKiotviet, getApiKiotviet } = require('../utils/apiKiotviet');
 
+const { getSales } = require('./../repositories/sale.repo');
+
+const {
+    convertSales,
+    checkProductSale
+} = require('./../utils/checkProductSale');
+
 
 const redirectCart = (req, res) => {
     return res.redirect('/cart');
@@ -240,6 +247,10 @@ const checkDataInCart = async (preqCookiesCart, res) => {
     }
     
     const getArrProduct = await Promise.all(arrQueryProduct);
+    let sales = await getSales();
+    if(sales && sales.length > 0){
+        sales = convertSales(sales);
+    }
     
     //Create object from 1-dimensional array Query product
     let objProducts = {};
@@ -249,6 +260,7 @@ const checkDataInCart = async (preqCookiesCart, res) => {
             if(valP.combination_id){
                 objKeyProduct = "_" + valP.product_id + "_" + valP.combination_id;
             }
+            checkProductSale(valP, sales);
             objProducts[objKeyProduct] = valP;
         }
     }

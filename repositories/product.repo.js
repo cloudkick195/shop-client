@@ -10,7 +10,7 @@ const getNewArrivals = async () => {
                     archive_by: null
                 },
                 attributes: [
-                    'product_id', 'name', 'slug', 'price', 'price_sale', 'count'
+                    'product_id', 'name', 'slug', 'price', 'price_sale', 'count', 'category_id'
                 ],
                 include: [
                     { model: model.ProcessImage, as: 'Avatar', attributes: ['process_key', 'path', 'file_name', 'version'], required: false  }
@@ -39,7 +39,7 @@ const searchProduct = async (data, page = 1, limit = QueryConstant.defaultLimit)
                     archive_by: null
                 },
                 attributes: [
-                    'product_id', 'name', 'slug', 'price', 'price_sale', 'count'
+                    'product_id', 'name', 'slug', 'price', 'price_sale', 'count', 'category_id'
                 ],
                 include: objQuery.include,
                 order: order, 
@@ -69,7 +69,7 @@ const saleProduct = async (data, page = 1, limit = QueryConstant.defaultLimit) =
                     archive_by: null
                 },
                 attributes: [
-                    'product_id', 'name', 'slug', 'price', 'price_sale', 'count'
+                    'product_id', 'name', 'slug', 'price', 'price_sale', 'count', 'category_id'
                 ],
                 include: objQuery.include,
                 order: order, 
@@ -168,7 +168,7 @@ const getListSaleOff = async () => {
         return model.Product.findAll({ 
             where: { price_sale: { [Op.gt]: 0 }, archive_by: null },
             attributes: [
-                'product_id', 'name', 'slug', 'price', 'price_sale', 'count'
+                'product_id', 'name', 'slug', 'price', 'price_sale', 'count', 'category_id'
             ],
             include: [
                 { model: model.ProcessImage, as: 'Avatar', attributes: ['process_key', 'path', 'file_name', 'version'], required: false  }
@@ -196,7 +196,7 @@ const getListProductInListProductCategoryIds = async (listCategoryIds, page = 1,
                     archive_by: null, category_id: { [Op.in]: listCategoryIds }
                 },
                 attributes: [
-                    'product_id', 'name', 'slug', 'price', 'price_sale', 'count'
+                    'product_id', 'name', 'slug', 'price', 'price_sale', 'count', 'category_id'
                 ],
                 include: objQuery.include,
                 order: order, 
@@ -348,6 +348,7 @@ const getProductHaveAttributeInCart = async (id, combinationId, qty) => {
         return db.sequelize.query(`
         SELECT 
             p.product_id, 
+            p.category_id,
             p.name,
             p.price, 
             p.price_sale, 
@@ -390,6 +391,7 @@ const getProductInCart = async (id) => {
         return db.sequelize.query(`
         SELECT 
             p.product_id, 
+            p.category_id,
             p.name,
             p.price, 
             p.price_sale, 
@@ -427,6 +429,7 @@ const getProductInCartByCustomerVip = async (id, qty) => {
         return db.sequelize.query(`
         SELECT 
             p.product_id, 
+            p.category_id,
             p.name,
             p.price, 
             p.price_sale, 
@@ -469,7 +472,8 @@ const getProductsInCart = async (arrId) => {
     try {
         return db.sequelize.query(`
         SELECT 
-            p.product_id, 
+            p.product_id,
+            p.category_id, 
             p.name,
             p.price, 
             p.price_sale, 
@@ -545,7 +549,7 @@ const getListRelatedProduct = (productSlug) => {
                     required: false
                 }
             ],
-            attributes: ['product_id', 'name', 'slug', 'price', 'price_sale', 'count']
+            attributes: ['product_id', 'name', 'slug', 'price', 'price_sale', 'count', 'category_id']
         });
     } catch(error) {
         logger.error(error);

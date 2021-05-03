@@ -4,6 +4,13 @@ const { reqValidator } = require('./../utils/validators/request.validate');
 const { getAllProductAttributeEntity } = require('./../repositories/product-attribute-entity.repo');
 const { createImagePath } = require('./../helpers/file.helper');
 const { linkId } = require('./../helpers/function');
+const { formatWithCommas } = require('./../helpers/currency.helper');
+const { getSales } = require('./../repositories/sale.repo');
+
+const {
+    convertSales,
+    checkProductSale
+} = require('./../utils/checkProductSale');
 
 const getAllProductCategoryCtrl = async () => {
     try {
@@ -48,10 +55,11 @@ const transformListProductCategory = (data) => {
     return dataItemNoParent;
 }
 
-const mapDataProduct = (products) => {
+const mapDataProduct = (products, sales) => {
     const result = [];
     for (const item of products) {
-        
+        console.log(21, item.Avatar);
+        checkProductSale(item, sales);
         result.push(
             {
                 id: item.product_id,
@@ -95,6 +103,8 @@ const productCategoryPage = async (req, res) => {
             mapProductData.rows = result[0].products;
             mapProductData.count = result[0].count;
         }
+       
+       
         res.cRender('product/product-category.pug', {result: result[1], attributes:result[1], products: mapProductData.rows, count: mapProductData.count, title: result[0] && result[0].name, pagination: true });
     } catch (error) {
         console.log(error)

@@ -11,6 +11,12 @@ const { getListProductCategoryInHome, getChildCategoriesByParentId,
 const { getAllProductAttributeEntity } = require('./../repositories/product-attribute-entity.repo');
 const { getListFeedback } = require('./../repositories/feedback.repo');
 const { reqValidator } = require('./../utils/validators/request.validate');
+const { getSales } = require('./../repositories/sale.repo');
+
+const {
+    convertSales,
+    checkProductSale
+} = require('./../utils/checkProductSale');
 
 
 const shopIndex = async (req, res) => {
@@ -21,13 +27,17 @@ const shopIndex = async (req, res) => {
             getListSaleOff(),
             getAllProductCategoriesExclude0(),
             getListFeedback(),
-
+            getSales()
         ];
         
         const result = await Promise.all(listQueries);
-        
-        return res.cRender('home/home.pug', { result: remapValueToRenderIndex(result), title: "Express" });
+        let sales = result[5];
+        if(sales && sales.length > 0){
+            sales = convertSales(sales);
+        }
+        return res.cRender('home/home.pug', { result: remapValueToRenderIndex(result, sales), title: "Express" });
     } catch (error) {
+        console.log(error);
         logger.error(error);
     }
 }
@@ -42,16 +52,23 @@ const productSearch = async (req, res) => {
         const data = req.body;
 
         reqValidator(validation, data);
-
-        const product = await searchProduct(data);
-
+        const results = await Promise.all([
+            searchProduct(data),
+            getSales()
+        ])
+        const product = results[0];
+        let sales = result[1];
+        if(sales && sales.length > 0){
+            sales = convertSales(sales);
+        }
         return res.status(200).json({ 
             currentUrl: '/search?'+new URLSearchParams(data),
-            products: mapDataProduct(product.rows),
+            products: mapDataProduct(product.rows, sales),
             count: product.count
         });
 
     } catch (error) {
+        
         logger.error(error);
     }
 }
@@ -72,7 +89,8 @@ const searchPage = async (req, res) => {
 
         const listQueries = [
             searchProduct(dataQuery, paginationData.page, paginationData.limit),
-            getAllProductAttributeEntity()
+            getAllProductAttributeEntity(),
+            getSales()
         ];
         
         const result = await Promise.all(listQueries);
@@ -84,10 +102,13 @@ const searchPage = async (req, res) => {
             mapProductData.rows = result[0].rows;
             mapProductData.count = result[0].count;
         }
-
+        let sales = result[2];
+        if(sales && sales.length > 0){
+            sales = convertSales(sales);
+        }
         return res.cRender('home/search.pug', {
             dataQuery: dataQuery,
-            pagination: true,attributes:result[1], products: mapDataProduct(mapProductData.rows), count: mapProductData.count, title: "Tìm kiếm" });
+            pagination: true,attributes:result[1], products: mapDataProduct(mapProductData.rows, sales), count: mapProductData.count, title: "Tìm kiếm" });
 
     } catch (error) {
         logger.error(error);
@@ -109,9 +130,11 @@ const salePage = async (req, res) => {
 
         const listQueries = [
             saleProduct(dataQuery, paginationData.page, paginationData.limit),
-            getAllProductAttributeEntity()
+            getAllProductAttributeEntity(),
+            getSales()
         ];
-        
+       
+       
         const result = await Promise.all(listQueries);
         const mapProductData = {
             rows: [],
@@ -121,20 +144,26 @@ const salePage = async (req, res) => {
             mapProductData.rows = result[0].rows;
             mapProductData.count = result[0].count;
         }
+        let sales = result[2];
+        if(sales && sales.length > 0){
+            sales = convertSales(sales);
+        }
         
         return res.cRender('home/san-pham.pug', {
-            pagination: true,attributes:result[1], products: mapDataProduct(mapProductData.rows), count: mapProductData.count, title: "Khuyến mãi" });
+            pagination: true,attributes:result[1], products: mapDataProduct(mapProductData.rows, sales), count: mapProductData.count, title: "Khuyến mãi" });
 
     } catch (error) {
+        console.log(error);
         logger.error(error);
     }
 
 }
 
 
-const mapDataProduct = (products) => {
+const mapDataProduct = (products, sales) => {
     const result = [];
     for (const item of products) {
+        checkProductSale(item, sales);
         result.push(
             {
                 id: item.product_id,
@@ -149,11 +178,12 @@ const mapDataProduct = (products) => {
     return result;
 }
 
-const remapValueToRenderIndex = (data) => {
+const remapValueToRenderIndex = (data, sales) => {
     const result = [];
     if (data && data[0]) {
         result.push(
             data[0].map(item => {
+        
                 return {
                     link: item.link,
                     path: createImagePath(item.Avatar)
@@ -164,6 +194,7 @@ const remapValueToRenderIndex = (data) => {
     if (data && data[1]) {
         result.push(
             data[1].map(item => {
+                checkProductSale(item, sales);
                 return {
                     id: item.product_id,
                     name: item.name,
@@ -178,6 +209,7 @@ const remapValueToRenderIndex = (data) => {
     if (data && data[2]) {
         result.push(
             data[2].map(item => {
+                checkProductSale(item, sales);
                 return {
                     id: item.product_id,
                     name: item.name,

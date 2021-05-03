@@ -1,4 +1,8 @@
 const logger = require('./../utils/logger');
+const {
+    convertSales,
+    checkProductSale
+} = require('./../utils/checkProductSale');
 const { getDetailProduct,
     getProductByKeyValue,
     getListRelatedProduct,
@@ -13,7 +17,22 @@ const { getSales } = require('./../repositories/sale.repo');
 const { reqValidator } = require('./../utils/validators/request.validate');
 const { QueryConstant } = require('./../constants/query.constant');
 
-const mapListProduct = (listProducts) => {
+
+const mapListProduct = (listProducts, sales) => {
+    if(sales && sales.length > 0){
+        const saleConvert = convertSales(sales);
+        return listProducts.map(item => {
+            checkProductSale(item, saleConvert)
+            return {
+                id: item.product_id,
+                name: item.name,
+                slug: fn.linkId(item.slug),
+                price: formatWithCommas(item.price_sale ? item.price_sale : item.price),
+                old_price: formatWithCommas(item.price),
+                avatar: createImagePath(item.Avatar)
+            }
+        })
+    }
     return listProducts.map(item => {
         return {
             id: item.product_id,
@@ -44,7 +63,7 @@ const productDetailPage = async (req, res) => {
         const listQueries = [
             getProductByKeyValue({slug: slug}),
             getListRelatedProduct(slug),
-
+            getSales()
         ];
 
         const result = await Promise.all(listQueries);
@@ -67,7 +86,7 @@ const productDetailPage = async (req, res) => {
             else{
                 const viewedProducts = req.session.viewedProducts
                 const newViewedProducts = viewedProducts.filter(item => item.id != product.product_id)
-                console.log(35, newViewedProducts)
+            
                 newViewedProducts.unshift(mapProduct(product))
                 if(newViewedProducts.length > 10){
                     newViewedProducts.pop();
@@ -77,7 +96,7 @@ const productDetailPage = async (req, res) => {
             }
         }
 
-        const data = product ? mapDataDetailProduct(product) : null;
+        const data = product ? mapDataDetailProduct(product, result[2]) : null;
 
         /*Chỉ làm tạm, vd: hôm nay sản phẩm có khuyễn mãi và đã xem sản phầm này,
         ngày mai hết khuyến mãi thì sẽ lấy sản phẩm ngày hôm qua
@@ -94,7 +113,7 @@ const productDetailPage = async (req, res) => {
         return res.cRender('product/product-detail.pug',
             { title: 'Detail', ...data,
                 viewedProducts: req.session.viewedProducts || [],
-                relatedProducts: mapListProduct(result[1]) });
+                relatedProducts: mapListProduct(result[1], result[2]) });
     } catch (error) {
         req.session.viewedProducts = [];
         logger.error(error);
@@ -103,7 +122,7 @@ const productDetailPage = async (req, res) => {
 
 const productsPage = async (req, res) => {
     try {
-
+        
         const { paginationData } = req;
 
         const validation = {}
@@ -133,16 +152,24 @@ const productsPage = async (req, res) => {
             mapProductData.rows = result[0].rows;
             mapProductData.count = result[0].count;
         }
-
+      
         return res.cRender('home/san-pham.pug', {
             dataQuery: dataQuery,
-            pagination: true,attributes:result[1], products: mapListProduct(mapProductData.rows), count: mapProductData.count, title: "Tất cả sản phẩm" });
+            pagination: true,attributes:result[1], products: mapListProduct(mapProductData.rows, result[2]), count: mapProductData.count, title: "Tất cả sản phẩm" });
 
     } catch (error) {
+        console.log(2, error);
         logger.error(error);
     }
 }
-const mapDataDetailProduct = (dataProduct) => {
+const mapDataDetailProduct = (dataProduct, sales) => {
+   
+    if(sales && sales.length > 0){
+        const saleConvert = convertSales(sales);
+        
+        checkProductSale(dataProduct, saleConvert);
+        
+    }
     const product = {
         id: dataProduct.product_id,
         category: dataProduct.category_id,
@@ -155,6 +182,7 @@ const mapDataDetailProduct = (dataProduct) => {
         old_price: formatWithCommas(dataProduct.price),
         avatar: createImagePath(dataProduct.Avatar),
     }
+    
     const listSlides = dataProduct.ProductSlide.map(item => {
         return {
             link: item.link,
