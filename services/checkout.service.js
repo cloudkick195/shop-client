@@ -563,7 +563,9 @@ const payment = async (req, res) => {
                     "discount": data.discount,
                     "orderDelivery": {
                         "address": data['address1_field'],
-                        "price": data['ship_price']
+                        "price": data['ship_price'],
+                        "receiver": data['full-name_field'],
+                        "contactNumber": data['phone_field']
                     },
                     "orderDetails": productDetailOrder,
                     "customer": {   
