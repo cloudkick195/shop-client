@@ -1,27 +1,11 @@
 const logger = require('./../utils/logger');
 const { QueryConstant } = require('./../constants/query.constant');
 
-const createOrdersDetail = async (orderId, data, transac) => {
+const createOrdersDetail = async (data, transac) => {
     try {
         const { model } = db;
-        const dataOrderDetail = [];
-        for (const item in data) {
-            dataOrderDetail.push(
-                {
-                    order_id: orderId,
-                    product_id: data[item].id,
-                    combination_id: data[item].combinationId,
-                    qty: data[item].qty,
-                    product_price: data[item].price,
-                    product_old_price: data[item].oldPrice,
-                    product_name: data[item].name,
-                    product_option: data[item].options,
-                    avatar: data[item].avatar,
-                }
-            )
-        }
                 
-        return model.OrderDetail.bulkCreate(dataOrderDetail, { transaction: transac });
+        return model.OrderDetail.bulkCreate(data, { transaction: transac });
     } catch (error) {
         logger.error(error);
         return null;
