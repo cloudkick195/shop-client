@@ -62,30 +62,19 @@ const getWards = async (districtId) => {
 const getLocation = async (provinceId, districtId, wardId) => {
     try {
         const { model } = db;
-        return model.Province.findOne(
+        return model.Ward.findOne(
             { 
-                attributes: [
-                    'provinceid', 'name'
-                ],
-                order: [
-                    ['name', 'ASC'],
-                ],
+                attributes: ['name'],
+                where: { wardid: wardId },
                 include: [
                     { 
-                        model: model.District, as: 'District', required: true,
-                        attributes: [
-                            'districtid', 'name'
-                        ],
+                        model: model.District, as: 'District', required: true,attributes: ['name'],
                         include: [
                             { 
-                                model: model.Ward, as: 'Ward', required: true,
-                                where: { wardid: wardId},  
-                                attributes: [
-                                    'wardid', 'name'
-                                ]
+                                model: model.Province, as: 'Province', required: true,attributes: ['name'],
                             }
                         ]
-                    },
+                    }
                 ],
                 
             }

@@ -36,7 +36,7 @@ const checkProductSale = (product, sales) => {
 
 const changeProductSale = {
     percen: (product, value) => {
-        product.price_sale = product.price - product.price * (value/100);
+        product.price_sale = Math.round((product.price - product.price * (value/100)) / 1000) * 1000;
     },
     minus_amount: (product, value) => {
         product.price_sale = product.price - value;

@@ -285,6 +285,7 @@ const checkDataInCart = async (preqCookiesCart, res) => {
                 name: objProducts[keyCookieItem].name,
                 slug: objProducts[keyCookieItem].slug,
                 combinationId: objProducts[keyCookieItem].combination_id,
+                combinationSku: objProducts[keyCookieItem].combination_sku,
                 price: objProducts[keyCookieItem].price_sale ? 
                     objProducts[keyCookieItem].price_sale :
                     objProducts[keyCookieItem].price,
@@ -366,6 +367,7 @@ const checkDataInCartCustomerVip = async (preqCookiesCart, res) => {
                 name: objProducts[keyCookieItem].name,
                 slug: objProducts[keyCookieItem].slug,
                 combinationId: objProducts[keyCookieItem].combination_id,
+                combinationSku: objProducts[keyCookieItem].combination_sku,
                 price: objProducts[keyCookieItem].discount ? objProducts[keyCookieItem].discount : objProducts[keyCookieItem].price,
                 qty: reqCookiesCarts.items[keyCookieItem].qty,
                 oldPrice: objProducts[keyCookieItem].price,
@@ -500,8 +502,8 @@ const payment = async (req, res) => {
             });
             return res.status(400).json({ message: 'Vui lòng thực hiện lại', url: '/cart'});
         }
-        
-        if(!results[1]) {
+        const locationFull = results[1];
+        if(!locationFull) {
             res.status(400).json({ message: 'Vui lòng thực hiện load lại trang', url: '/checkout/' + req.params.token});
         }
         const getCookiesCart = results[0].getCookiesCart; 
@@ -524,127 +526,87 @@ const payment = async (req, res) => {
         const transac = await db.sequelize.transaction({autocommit: false});
         try {
             const newOrder = await createOrder(data, transac);
-
+            const addressFull = `${data['address1_field']}, ${locationFull.name}, ${locationFull.District.name}, ${locationFull.District.Province.name}`;
             const dataCustomer = {
                 branchId: process.env.BRANCH_ID,
                 name: data['full-name_field'],
                 contactNumber: data['phone_field'],
-                address: data['address1_field'],
+                address: addressFull,
                 code: `KH${data['phone_field']}`,
                 comment: 'test'
             }
+            const dataOrderDetail = [];
+            const productForKiotviet = [];
+            const dataDetail = getCookiesCart.items;
+            for (const itemDetail in dataDetail) {
+                dataOrderDetail.push(
+                    {
+                        order_id: newOrder.order_id,
+                        product_id: dataDetail[itemDetail].id,
+                        combination_id: dataDetail[itemDetail].combinationId,
+                        qty: dataDetail[itemDetail].qty,
+                        product_price: dataDetail[itemDetail].price,
+                        product_old_price: dataDetail[itemDetail].oldPrice,
+                        product_name: dataDetail[itemDetail].name,
+                        product_option: dataDetail[itemDetail].options,
+                        avatar: dataDetail[itemDetail].avatar,
+                    }
+                )
+                productForKiotviet.push(
+                   {
+                        productCode: dataDetail[itemDetail].combinationSku,
+                        productName: dataDetail[itemDetail].name,
+                        quantity: dataDetail[itemDetail].qty,
+                        price: dataDetail[itemDetail].price
+                   }
+                );
+            }
             const url = `${process.env.KIOTVIET_PUBLIC_API}/customers`
-            const urlCheckPhone = `${process.env.KIOTVIET_PUBLIC_API}/customers?contactNumber=${data['phone_field']}`
-            const customerExistByPhone = await getApiKiotviet(urlCheckPhone)
+            const urlCheckPhone = `${process.env.KIOTVIET_PUBLIC_API}/customers?contactNumber=${data['phone_field']}`;
+            const resultOrder = await Promise.all([
+                getApiKiotviet(urlCheckPhone),
+                createOrdersDetail(dataOrderDetail, transac)
+            ]);
+            
+
+            const customerExistByPhone = resultOrder[0];
+            const dataOrderKiotviet = {
+                "branchId": parseInt(process.env.BRANCH_ID),
+                "discount": data.discount,
+                "description": data.note,
+                "orderDelivery": {
+                    "address": addressFull,
+                    "price": data['ship_price'],
+                    "receiver": data['full-name_field'],
+                    "contactNumber": data['phone_field']
+                },
+                "orderDetails": productForKiotviet,
+                "makeInvoice": true
+            }
             if(customerExistByPhone.length === 0) {
                 const dataCustomerSend = JSON.stringify(dataCustomer)
                 // Create new customer to Kiotviet 
-                console.log('Create new order Kiotviet');
+                console.log('Create new Customer Kiotviet');
                 const newCustomerKiotviet = await createApiKiotviet(url, dataCustomerSend)
-                
-                let listPromiseProduct = [];
-                const productDetailOrder = [];
-                const createOrderDetail = await createOrdersDetail(newOrder.order_id, getCookiesCart.items, transac);
-                createOrderDetail.forEach(item => {
-                    listPromiseProduct.push(getProductByKeyValue({
-                        product_id: item.product_id
-                    }))
-                    productDetailOrder.push(
-                        {
-                            productName: item.product_name,
-                            quantity: item.qty,
-                            price: item.product_price
-                        }
-                    )
-                });
 
-                const listProduct = await Promise.all(listPromiseProduct)
-
-                
-                for (const item of listProduct) {
-                    for(const product of productDetailOrder) {
-                        if(item.name === product.productName) {
-                            product['productCode'] = item.sku
-                        }
-                    }
-                    
+                dataOrderKiotviet['customer'] = {   
+                    "id": newCustomerKiotviet.id,
+                    "code": newCustomerKiotviet.code
                 }
-
-                const dataOrder = {
-                    "branchId": parseInt(process.env.BRANCH_ID),
-                    "discount": data.discount,
-                    "orderDelivery": {
-                        "address": data['address1_field'],
-                        "price": data['ship_price'],
-                        "receiver": data['full-name_field'],
-                        "contactNumber": data['phone_field']
-                    },
-                    "orderDetails": productDetailOrder,
-                    "customer": {   
-                        "id": newCustomerKiotviet.id,
-                        "code": newCustomerKiotviet.code
-                    }
-                }
-                
-                const urlOrder = `${process.env.KIOTVIET_PUBLIC_API}/orders`
-                console.log('Create new order Kiotviet');
-                const neworder = await createOrderApiKiotviet(urlOrder, dataOrder);
-                console.log(neworder)
-
-                await transac.commit();
+     
             } else {
                 // Số điện thoại đã tồn tại trong hệ thống Kiotviet thì chỉ tạo đặt hàng
-                console.log('Create new order Kiotviet');
-                
-                let listPromiseProduct = [];
-                const productDetailOrder = [];
-                const createOrderDetail = await createOrdersDetail(newOrder.order_id, getCookiesCart.items, transac);
-                createOrderDetail.forEach(item => {
-                    listPromiseProduct.push(getProductByKeyValue({
-                        product_id: item.product_id
-                    }))
-                    productDetailOrder.push(
-                        {
-                            productName: item.product_name,
-                            quantity: item.qty,
-                            price: item.product_price
-                        }
-                    )
-                });
-
-                const listProduct = await Promise.all(listPromiseProduct)
-
-                
-                for (const item of listProduct) {
-                    for(const product of productDetailOrder) {
-                        if(item.name === product.productName) {
-                            product['productCode'] = item.sku
-                        }
-                    }
-                    
+                dataOrderKiotviet['customer'] = {   
+                    "id": customerExistByPhone[0].id,
+                    "code": customerExistByPhone[0].code
                 }
 
-                const dataOrder = {
-                    "branchId": parseInt(process.env.BRANCH_ID),
-                    "discount": data.discount,
-                    "orderDelivery": {
-                        "address": data['address1_field'],
-                        "price": data['ship_price']
-                    },
-                    "orderDetails": productDetailOrder,
-                    "customer": {   
-                        "id": customerExistByPhone[0].id,
-                        "code": customerExistByPhone[0].code
-                    }
-                }
-                
-                const urlOrder = `${process.env.KIOTVIET_PUBLIC_API}/orders`
-                console.log('Create new order Kiotviet');
-                const neworder = await createOrderApiKiotviet(urlOrder, dataOrder);
-                console.log(neworder)
-
-                await transac.commit();
             }
+            console.log('Create new order Kiotviet');
+            const urlOrder = `${process.env.KIOTVIET_PUBLIC_API}/orders`
+            const newOrderKiotviet = await createOrderApiKiotviet(urlOrder, dataOrderKiotviet);
+            await transac.commit();
+
 
             res.clearCookie('cart');
 
@@ -653,7 +615,7 @@ const payment = async (req, res) => {
             if(!order)
                 return res.redirect('/');
 
-
+            
             const orderCart = {
                 items: [],
                 total_qty: 0,
