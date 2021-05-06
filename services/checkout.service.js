@@ -20,6 +20,7 @@ const Email = require('email-templates');
 const { createImagePath } = require('./../helpers/file.helper');
 const { formatWithCommas } = require('./../helpers/currency.helper');
 const { sendEmail,sendTransporter } = require('./../helpers/nodemailer.helper');
+const { createNewTokenKiotviet } = require('./../helpers/jwt.helper');
 
 const { getAllProvince, getDistricts, getWards, getLocation } = require('./../repositories/location.repo');
 const { getAllShipping, getAllPayment, getShipping } = require('./../repositories/config-shipping.repo');
@@ -76,7 +77,6 @@ const handleFunctionShipping = {
 const checkout = async (req, res) => {
     try {
         const token = req.params.token;
-       
         
         const tokenSign = token.split('.')[2];
         const listQuery = [
@@ -405,18 +405,9 @@ const postCheckout = async (req, res) => {
         }
         const cart = Object.keys(getCookieCart(req, res).items);
         const token = jwt.sign({cart: cart}, process.env.CHECKOUT_SECRET || 'CHECKOUTCLOUDKICK892', { expiresIn: 172800 });
-
         var { exp } = jwt_decode(process.env.KIOTVIET_ACCESS_TOKEN);
-
-        // Check access token kiotviet expire 
         if (Date.now() >= exp * 1000) {
-            const newAccessTokenKiotviet = await axios.post(process.env.KIOTVIET_URL_TOKEN, qs.stringify(kiotvietConfig), {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                }
-            })
-            process.env['KIOTVIET_ACCESS_TOKEN'] = newAccessTokenKiotviet.data.access_token;
-            console.log(process.env.KIOTVIET_ACCESS_TOKEN)
+            await createNewTokenKiotviet();
         }
         
         return res.status(200).json({ token: token});
@@ -430,14 +421,6 @@ const postCheckout = async (req, res) => {
 const payment = async (req, res) => {
     try {
         const token = req.params.token;
-        const kiotvietConfig = {
-            "client_id": process.env.CLIENT_ID,
-            "client_secret": process.env.CLIENT_SECRET,
-            "grant_type": process.env.GRANT_TYPE,
-            "scopes": process.env.SCOPES,
-        }
-    
-       
         
         if(!token || !req.cookies.cart){
             return res.status(400).json({ message: 'Không tồn tại giỏ hàng, vui lòng load lại trang', url: '/cart'});
@@ -569,12 +552,20 @@ const payment = async (req, res) => {
                    }
                 );
             }
+            
             const url = `${process.env.KIOTVIET_PUBLIC_API}/customers`
             const urlCheckPhone = `${process.env.KIOTVIET_PUBLIC_API}/customers?contactNumber=${data['phone_field']}`;
             const resultOrder = await Promise.all([
                 getApiKiotviet(urlCheckPhone),
                 createOrdersDetail(dataOrderDetail, transac)
             ]);
+        
+            if(resultOrder[0].response && resultOrder[0].response.status == 401){
+                await createNewTokenKiotviet();
+                resultOrder[0] = await getApiKiotviet(urlCheckPhone);
+            }
+    
+            
             
 
             const customerExistByPhone = resultOrder[0];
