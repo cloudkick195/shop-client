@@ -5,7 +5,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
-const cron = require('node-cron');
+// const cron = require('node-cron');
 const axios = require('axios');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -108,28 +108,28 @@ app.use(function (err, req, res, next) {
 });
 
 // Run cronjob to get new KIOTVIET access token
-cron.schedule("0 0 */12 * * *", function() {
-    const data = {
-        "client_id": process.env.CLIENT_ID,
-        "client_secret": process.env.CLIENT_SECRET,
-        "grant_type": process.env.GRANT_TYPE,
-        "scopes": process.env.SCOPES,
-    }
+// cron.schedule("0 0 */12 * * *", function() {
+//     const data = {
+//         "client_id": process.env.CLIENT_ID,
+//         "client_secret": process.env.CLIENT_SECRET,
+//         "grant_type": process.env.GRANT_TYPE,
+//         "scopes": process.env.SCOPES,
+//     }
 
-    axios.post(process.env.KIOTVIET_URL_TOKEN, qs.stringify(data), {
-        headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    })
-    .then((res) => {
-        console.log('****** data: ', res.data)
-        process.env['KIOTVIET_ACCESS_TOKEN'] = res.data.access_token;
-        console.log('new token: ', process.env.KIOTVIET_ACCESS_TOKEN);
-    })
-    .catch((error) => {
-        console.error(error)
-    })
-});
+//     axios.post(process.env.KIOTVIET_URL_TOKEN, qs.stringify(data), {
+//         headers: {
+//         'Content-Type': 'application/x-www-form-urlencoded'
+//         }
+//     })
+//     .then((res) => {
+//         console.log('****** data: ', res.data)
+//         process.env['KIOTVIET_ACCESS_TOKEN'] = res.data.access_token;
+//         console.log('new token: ', process.env.KIOTVIET_ACCESS_TOKEN);
+//     })
+//     .catch((error) => {
+//         console.error(error)
+//     })
+// });
 
 
 module.exports = app;

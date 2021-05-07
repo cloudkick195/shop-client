@@ -428,7 +428,7 @@ jQuery(window).scroll(function() {
 		} else {
 			$(".main-header").addClass("scroll-menu");		
 		}
-		console.log(3,scroll, $(".viewed-product").offset().top)
+
 		if($(".viewed-product").length > 0)
 			if(scroll > $(".viewed-product").offset().top ){
 				$(".product-action-bottom").addClass("e-hidden");

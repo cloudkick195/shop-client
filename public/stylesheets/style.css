@@ -4537,6 +4537,7 @@ svg.ruler-icon.base {
 }
 #sizeModal {
 	background: rgba(0, 0, 0, 0.5);
+	z-index: 999999;
 }
 .address-map h3 {
 	font-size: 18px;
